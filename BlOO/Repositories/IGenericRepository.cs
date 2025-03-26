@@ -8,5 +8,6 @@
         T GetById(int id);
         void Save();
         void Update(T entity);
+        List<T> GetAll();
     }
 }

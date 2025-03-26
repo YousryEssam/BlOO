@@ -16,9 +16,6 @@ namespace BlOO.Models
     public class ApplicationUser //: IdentityUser<int>
     {
     
-        [MaxLength(100)]
-        public string DisplayName { get; set; }
-
         public string ProfileImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
 

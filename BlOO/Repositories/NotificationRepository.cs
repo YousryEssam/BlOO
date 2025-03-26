@@ -2,9 +2,9 @@
 
 namespace BlOO.Repositories
 {
-    public class ApplicationUserRepository : IApplicationUserRepository
+    public class NotificationRepository : INotificationRepository
     {
-        public void Delete(ApplicationUser entity)
+        public void Delete(Notification entity)
         {
             throw new NotImplementedException();
         }
@@ -14,17 +14,17 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
-        public List<ApplicationUser> GetAll()
+        public List<Notification> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public ApplicationUser GetById(int id)
+        public Notification GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Insert(ApplicationUser entity)
+        public void Insert(Notification entity)
         {
             throw new NotImplementedException();
         }
@@ -34,7 +34,7 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
-        public void Update(ApplicationUser entity)
+        public void Update(Notification entity)
         {
             throw new NotImplementedException();
         }

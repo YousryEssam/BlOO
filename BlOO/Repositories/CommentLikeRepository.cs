@@ -2,9 +2,9 @@
 
 namespace BlOO.Repositories
 {
-    public class ApplicationUserRepository : IApplicationUserRepository
+    public class CommentLikeRepository : ICommentLikeRepository
     {
-        public void Delete(ApplicationUser entity)
+        public void Delete(CommentLike entity)
         {
             throw new NotImplementedException();
         }
@@ -14,17 +14,17 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
-        public List<ApplicationUser> GetAll()
+        public List<CommentLike> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public ApplicationUser GetById(int id)
+        public CommentLike GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Insert(ApplicationUser entity)
+        public void Insert(CommentLike entity)
         {
             throw new NotImplementedException();
         }
@@ -34,7 +34,7 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
-        public void Update(ApplicationUser entity)
+        public void Update(CommentLike entity)
         {
             throw new NotImplementedException();
         }

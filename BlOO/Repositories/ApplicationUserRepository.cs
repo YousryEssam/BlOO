@@ -14,6 +14,11 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
+        public List<ApplicationUser> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public ApplicationUser GetById(int id)
         {
             throw new NotImplementedException();

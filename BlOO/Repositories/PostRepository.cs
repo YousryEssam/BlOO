@@ -14,6 +14,11 @@ namespace BlOO.Repositories
             throw new NotImplementedException();
         }
 
+        public List<Post> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public Post GetById(int id)
         {
             throw new NotImplementedException();

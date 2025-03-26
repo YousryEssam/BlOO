@@ -4,5 +4,6 @@ namespace BlOO.Repositories
 {
     public interface IPostLike:IGenericRepository<PostLike>
     {
+
     }
 }

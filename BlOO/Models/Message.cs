@@ -11,9 +11,8 @@ namespace BlOO.Models
         [Required]
         public string Content {  get; set; }
 
-        public bool MessageSeen {  get; set; }=false;
+        public bool MessageSeen { get; set; } = false;
 
         public DateTime SendingDate { get; set; } = DateTime.UtcNow;
-
     }
 }

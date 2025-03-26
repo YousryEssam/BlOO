@@ -6,7 +6,6 @@ namespace BlOO.Models
     {
         public int Id { get; set; }
 
-
         [Required]
         public int FollowerId { get; set; }// uncompleted
 
@@ -14,8 +13,6 @@ namespace BlOO.Models
         public int FollowingId { get; set; }// uncompleted
 
         public DateTime FollowingDate { get; set; } = DateTime.UtcNow;
-
-
 
     }
 }

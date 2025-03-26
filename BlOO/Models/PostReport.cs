@@ -47,8 +47,6 @@ namespace BlOO.Models
                     .Property(e => e.Reason)
                     .HasConversion<string>();
             }
-
-         
          */
 
         [Required]

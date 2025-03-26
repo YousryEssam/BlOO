@@ -5,16 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BlOO.Models
 {
 
-    [Index(nameof(User_id), nameof(Post_id), IsUnique = true)]
-    public class Post_Like
+    [Index(nameof(UserId), nameof(PostId), IsUnique = true)]
+    public class PostLike
     {
 
-        int Like_id { get; set; } 
+        int LikeId { get; set; } 
         [ForeignKey("User")]
-        public int User_id { get; set; }
+        public int UserId { get; set; }
         [ForeignKey("Post")]
-        public int Post_id { get; set; }
-        public DateTime Like_date { get; set; }
+        public int PostId { get; set; }
+        public DateTime LikeDate { get; set; }
 
        // public virtual User? User { get; set; }//not completed
         //public virtual Post? Post { get; set; }

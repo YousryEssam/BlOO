@@ -16,7 +16,7 @@ namespace BlOO.Models
         public int UserId { get; set; }
         //[ForeignKey("PostId")]
         //public virtual Post? post { get; set; }
-        ///[ForeignKey("UserId")]
+        //[ForeignKey("UserId")]
         //public virtual User? user { get; set; }
     }
 }

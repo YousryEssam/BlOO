@@ -19,8 +19,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\assets\icons\" />
     <Folder Include="wwwroot\assets\logo\" />
-    <Folder Include="wwwroot\assets\profile-covers\" />
-    <Folder Include="wwwroot\assets\profile-pictures\" />
   </ItemGroup>
 
 </Project>

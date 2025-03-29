@@ -15,15 +15,16 @@ namespace BlOO.Models
 
     public class ApplicationUser //: IdentityUser<int>
     {
-    
-        public string ProfileImageUrl { get; set; }
-        public string BannerImageUrl { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ProfileImageUrl { get; set; } = "/assets/profile-pictures/default-user.jpg";
+        public string CoverImageUrl { get; set; } = "/assets/profile-covers/default-cover.jpg";
 
-        public int FollowerCount { get; set; } 
+        public int FollowersCount { get; set; } 
         public int FollowingCount { get; set; } 
         public int PostCount { get; set; } 
 
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
 
         public DateTime JoinDate { get; set; } = DateTime.UtcNow;
 

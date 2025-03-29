@@ -1,7 +1,58 @@
 ﻿@model ProfileViewModel 
 @{
     ViewData["Title"] = "Profile";
+    string FullName = Model.FirstName + " " + Model.LastName;
 }
 
-<h1>Profile</h1>
+<link rel="stylesheet" href="~/css/profile-page.css" asp-append-version="true" />
 
+@* ********************************** Profile info Section begin *************************************** *@
+<div class="profile-card">    
+    <div class="cover-photo" style="background : url('@Model.CoverImageUrl');">
+        <img src="@Model.ProfileImageUrl" alt="Profile" class="profile-photo">
+    </div>
+
+    <!-- Profile Info -->
+    <div class="profile-info">
+
+        <h4 class="profile-name">@FullName</h4>  
+        <p class="username">&#64;@Model.UserName</p>
+        <p>
+            <strong>Bio</strong>
+            <br/>
+            @if(Model.Bio != null)
+            {
+                @Model.Bio
+            }
+        </p>
+       
+        <!-- Follow & Message Buttons -->
+        <div class="profile-actions d-flex justify-content-end gap-3">
+            <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Follow</button>
+            <button class="btn btn-outline-secondary visually-hidden"><i class="fas fa-user-plus"></i> Unfollow</button>
+            <button class="btn btn-outline-secondary"><i class="fas fa-envelope"></i> Message</button>
+        </div>
+
+    </div>
+
+    <!-- Stats Section -->
+    <div class="profile-stats">
+        <div class="stat">
+            <i class="fas fa-users"></i>
+            <p>Followers</p>
+            <strong> @Model.FollowersCount </strong>
+        </div>
+        <div class="stat">
+            <i class="fas fa-user-friends"></i>
+            <p>Following</p>
+            <strong>@Model.FollowingCount</strong>
+        </div>
+        <div class="stat">
+            <i class="fas fa-file-alt"></i>
+            <p>Posts</p>
+            <strong>@Model.PostCount</strong>
+        </div>
+    </div>
+
+</div>
+@* ********************************** Profile info Section end *************************************** *@

@@ -1,0 +1,31 @@
+﻿.logo-img {
+    width: 45px; 
+    height: 45px;
+}
+.rotate-center {
+    animation: rotate-center .6s ease-in-out both
+}
+.custom-input {
+background-color: lightgray;
+color: dimgray;
+border-radius: 12px;
+}
+a span {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: small;
+}
+img {
+    width: 25px;
+}
+li {
+    margin: 0 15px;
+}
+.nav-hover {
+    text-align: center;
+    transition: all 0.3 ease;
+}
+.nav-hover:hover {
+    transform: scale(1.5);
+}

@@ -11,8 +11,5 @@ namespace BlOO.ViewModels
         public int LikeCount { get; set; }
         public int CommentCount { get; set; } 
         public int RepostCount { get; set; }
-
-    
-
     }
 }

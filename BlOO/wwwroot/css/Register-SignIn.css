@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+body {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+
+/* add padding on input */
+
+.text-indent {
+    text-indent: .5rem;
+}
+
+
+/* add password hide and show icon */
+
+html, body {
+    overflow: auto;
+    
+}
+.password__icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+/* backgroun grey */
+
+.bg-grey-light {
+    background: #f0f0f0;
+}
+
+.bg-grey-light:focus {
+    background: #f0f0f0;
+}
+
+@media (min-width: 1024px) {
+    body {
+        overflow-y: hidden;
+    }
+    /* add circle blue background */
+    .ball {
+        overflow: hidden;
+        transition: margin 1s;
+        width: 600px;
+        height: 600px;
+    }
+    .ball.login {
+        margin-left: 43%;
+        margin-top: 5%;
+    }
+    .ball.register {
+        margin-left: 14%;
+        margin-top: 6%;
+    }
+    /* bouncing effect */
+    .bounce {
+        animation: bounce 2s infinite alternate;
+        -webkit-animation: bounce 2s infinite alternate;
+    }
+    @keyframes bounce {
+        from {
+            transform: translateY(0px);
+        }
+        to {
+            transform: translateY(-35px);
+        }
+    }
+    @-webkit-keyframes bounce {
+        from {
+            transform: translateY(0px);
+        }
+        to {
+            transform: translateY(-35px);
+        }
+    }
+    /* register form active */
+
+}
+
+@media (max-width: 768px) {
+    .container .col-12.p-5 {
+        padding: 0px !important;
+    }
+    body {
+        overflow-x: hidden;
+    }
+}
+
+
+/* register default */
+
+.register__form {
+    width: 100%;
+    margin-left: -100%;
+    opacity: 0;
+    transition: margin 1s, opacity .5s;
+    z-index: 1;
+}
+
+
+/* register form active */
+
+.register__form.active {
+    margin-left: -5%;
+    opacity: 1;
+}
+
+
+/* login form default */
+
+.login__form {
+    width: 100%;
+    margin-left: -100%;
+    opacity: 0;
+    transition: margin 1s, opacity .5s;
+    z-index: 1;
+}
+
+
+/* login form active */
+
+    .login__form.active {
+        opacity: 1;
+        margin-left: -5%;
+    }

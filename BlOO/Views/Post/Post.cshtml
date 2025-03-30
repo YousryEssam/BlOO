@@ -23,7 +23,11 @@
                 <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
             </div>
             <p>Welcome to my new post</p>
-            <img src="@Model.ImgUrl" class="post-image" />
+
+            @if (!string.IsNullOrEmpty(Model.ImgUrl))
+            {
+                <img src="@Model.ImgUrl" class="post-image" />
+            }
         </div>
     </div>
 

@@ -22,8 +22,24 @@ public class BloContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, 
         public DbSet<Post> posts { get; set; }
         public DbSet<PostLike> postLikes { get; set; }
         public DbSet<PostReport> postReports { get; set; }
-        public DbSet<Repost> reposts { get; set; }  
+        public DbSet<Repost> reposts { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany(u => u.Notifications)
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Actor)
+                .WithMany(a => a.NotificationsSent)
+                .HasForeignKey(n => n.ActorId)
+                .OnDelete(DeleteBehavior.NoAction); 
+        }
 
     }
 }

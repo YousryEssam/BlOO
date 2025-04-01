@@ -12,37 +12,44 @@ namespace BlOO.Models
         Comment,
         Message,
         Follow,
-        Post
+        Post ,
+        Report
     }
     [Index(nameof(UserId))]
     [Index(nameof(ReadStatus))]
     [Index(nameof(CreationDate))]
     public class Notification
     {
+        [Key]
         public int Id { get; set; }
-        public int UserId { get; set; } // uncompleted
-        public int ActorId { get; set; } // uncompleted
 
-        [NotNull]
+        [Required]
+        [ForeignKey(nameof(User))]
+        public int UserId { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(Actor))]
+        public int ActorId { get; set; }
+
+        [Required]
         public string NotificationMessage { get; set; }
-        public int ReferenceId { get; set; } // uncompleted
+        
+        [Required]
+        public int ReferenceId { get; set; }
 
-        [Required] 
+        [Required]
         [EnumDataType(typeof(NotificationType))]
         [Column(TypeName = "nvarchar(20)")]
         public NotificationType NotificationType { get; set; }
-        /*
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<Notification>()
-                    .Property(n => n.NotificationType)
-                    .HasConversion<string>();
-            }
 
-         */
+        [Required]
+        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
-        public DateTime CreationDate { get; set; } = DateTime.UtcNow; 
+        [Required]
+        public bool ReadStatus { get; set; } = false;
 
-        public bool ReadStatus { get; set; } = false; 
+        // Navigation Properties
+        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser Actor { get; set; }
     }
 }

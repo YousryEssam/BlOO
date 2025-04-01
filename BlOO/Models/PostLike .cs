@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlOO.Models
@@ -9,20 +10,23 @@ namespace BlOO.Models
     public class PostLike
     {
 
-        int LikeId { get; set; } 
-        [ForeignKey("User")]
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(User))]
         public int UserId { get; set; }
-        [ForeignKey("Post")]
+
+        [Required]
+        [ForeignKey(nameof(Post))]
         public int PostId { get; set; }
-        public DateTime LikeDate { get; set; }
 
-       // public virtual User? User { get; set; }//not completed
-        //public virtual Post? Post { get; set; }
+        [Required]
+        public DateTime LikeDate { get; set; } = DateTime.UtcNow;
 
+        // Navigation Properties
+        public virtual Post Post { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Post_Like>().HasIndex(c => new { c.user_id, c.post_id }).IsUnique();
-        //    modelBuilder.Entity<Post_Like>().Property(c => c.like_date).HasDefaultValueSql("GETDATE()");
     }
 }

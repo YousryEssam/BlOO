@@ -1,4 +1,5 @@
 using BlOO.Models;
+using BlOO.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,17 @@ namespace BlOO
               }
 
               );
+            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            builder.Services.AddScoped<ICommentLikeRepository, CommentLikeRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
+            builder.Services.AddScoped<IPostReportRepository, PostReportRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IRepostRepository, RepostRepository>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

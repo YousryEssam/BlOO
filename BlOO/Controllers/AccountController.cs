@@ -12,10 +12,10 @@ namespace BlOO.Controllers
     {
         public UserManager<ApplicationUser> userManager;
         public SignInManager<ApplicationUser> signInManager;
-        public RoleManager<IdentityRole> roleManager;
+        public RoleManager<IdentityRole<int>> roleManager;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager , RoleManager<IdentityRole> roleManager)
+            SignInManager<ApplicationUser> signInManager , RoleManager<IdentityRole<int>> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager; 
@@ -43,16 +43,18 @@ namespace BlOO.Controllers
                     user.FirstName = registerViewModel.FirstName;
                     user.LastName = registerViewModel.LastName;
                     user.Email = registerViewModel.Email;
+                    user.UserName = registerViewModel.Email;
 
-                    if (existingUser.Email == "Admin@gmail.com")
-                    {
-                        await AddRole();
-                        await userManager.AddToRoleAsync(user, "Admin");
-
-                    }
 
                     IdentityResult result = await userManager.CreateAsync(user, registerViewModel.Password);
 
+
+                    if (user.Email == "Admin@gmail.com")
+                    {
+                        await MakeRole();
+                        await userManager.AddToRoleAsync(user, "Admin");
+
+                    }
                     if (result.Succeeded)
                     {
                         await signInManager.SignInAsync(user, isPersistent: false);
@@ -60,7 +62,7 @@ namespace BlOO.Controllers
                     }
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        ModelState.AddModelError("Password", error.Description);
                     }
 
                 }
@@ -77,9 +79,9 @@ namespace BlOO.Controllers
 
 
         [NonAction]
-        public async Task<bool> AddRole()
+        public async Task<bool> MakeRole()
         {
-            IdentityRole role = new IdentityRole();
+            IdentityRole<int> role = new IdentityRole<int>();
             role.Name = "Admin";
             IdentityResult result= await roleManager.CreateAsync(role);
             if (result.Succeeded)

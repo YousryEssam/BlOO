@@ -14,6 +14,7 @@ namespace BlOO
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<BloContext>();
+
             builder.Services.AddDbContext<BloContext>(
               Contextbuilder =>
               {

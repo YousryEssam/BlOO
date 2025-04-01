@@ -30,6 +30,8 @@
                         <p class="fw-lighter fs-6">Don't have an account, <a asp-controller="Account" asp-action="Register">Sign Up</a></p>
 
                         <form asp-controller="Account" asp-action="LogInData" method="post" class="mt-5">
+                            <span asp-validation-summary="All" class="text-danger"></span>
+
                             <div class="mb-3">
                                 <label asp-for="Email" class="form-label">Email</label>
                                 <input asp-for="Email" class="form-control text-indent shadow-sm bg-grey-light border-0 rounded-pill fw-lighter fs-7 p-3" placeholder="name@example.com">
@@ -78,6 +80,9 @@
             </div>
         </div>
     </div>
+
+
+    <partial name="_ValidationScriptsPartial" />
 
 </body>
 </html>

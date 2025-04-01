@@ -4,7 +4,8 @@ namespace BlOO.ViewModels
 {
     public class RegisterViewModel
     {
-        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         [DataType(DataType.Password)]
         public string Password { get; set; }

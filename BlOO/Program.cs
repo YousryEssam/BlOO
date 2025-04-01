@@ -1,3 +1,7 @@
+using BlOO.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace BlOO
 {
     public class Program
@@ -8,7 +12,14 @@ namespace BlOO
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<BloContext>();
+            builder.Services.AddDbContext<BloContext>(
+              Contextbuilder =>
+              {
+                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+              }
 
+              );
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

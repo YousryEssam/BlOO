@@ -13,14 +13,14 @@ namespace BlOO.Models
         Deleted
     }
 
-    public class ApplicationUser //: IdentityUser<int>
+    public class ApplicationUser : IdentityUser<int>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ProfileImageUrl { get; set; } = "/assets/profile-pictures/default-user.jpg";
         public string CoverImageUrl { get; set; } = "/assets/profile-covers/default-cover.jpg";
 
-        public int FollowersCount { get; set; } 
+        public int FollowersCount { get; set; }
         public int FollowingCount { get; set; } 
         public int PostCount { get; set; } 
 

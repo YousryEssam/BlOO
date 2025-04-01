@@ -28,10 +28,18 @@
                     <p class="fw-lighter fs-6">Have an account, <a asp-controller="Account" asp-action="LogIn">Log In</a></p>
 
                     <form asp-controller="Account" asp-action="RegisterData" method="post" class="mt-5">
+
+                         <span asp-validation-summary="All" class="text-danger"></span>
+
                         <div class="mb-3">
-                            <label asp-for="UserName" class="form-label">UserName</label>
-                            <input asp-for="UserName" class="form-control text-indent shadow-sm bg-grey-light border-0 rounded-pill fw-lighter fs-7 p-3" placeholder="name">
-                            <span asp-validation-for="UserName" class="text-danger"></span>
+                            <label asp-for="FirstName" class="form-label">FirstName</label>
+                            <input asp-for="FirstName" class="form-control text-indent shadow-sm bg-grey-light border-0 rounded-pill fw-lighter fs-7 p-3" placeholder="name">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label">LastName</label>
+                            <input asp-for="LastName" class="form-control text-indent shadow-sm bg-grey-light border-0 rounded-pill fw-lighter fs-7 p-3" placeholder="name">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label asp-for="Email" class="form-label">Email</label>
@@ -86,5 +94,8 @@
     </div>
 
     @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script> *@
+
+    <partial name="_ValidationScriptsPartial" />
+    
 </body>
 </html>

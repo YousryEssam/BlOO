@@ -1,15 +1,22 @@
 ﻿using BlOO.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlOO.Controllers
 {
     public class PostController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        [Authorize]     
+        public IActionResult HomePage()
+        {
+            return Content("Hello, HomePage");
+        }
 
+        [Authorize(Roles ="Admin")]
+        public IActionResult AdminPage()
+        {
+            return Content("Hello, AdminPage");
+        }
 
 
         public IActionResult Post()

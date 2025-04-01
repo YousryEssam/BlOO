@@ -8,10 +8,10 @@
 }
 
 .custom-input {
-    color: dimgray;
-    border-radius: 25px;
+    color: dimgray !important;
+    border-radius: 25px !important;
     width: 30rem !important;
-    background-color: lightgray;
+    background-color: lightgray !important;
 }
 
 a span {
@@ -39,6 +39,6 @@ li {
     transition: all 0.3s ease;
 }
 
-    .nav-hover:hover {
-        transform: scale(1.5);
-    }
+.nav-hover:hover {
+    transform: scale(1.5);
+}

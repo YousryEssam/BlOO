@@ -23,34 +23,38 @@ namespace BlOO.Models
     [Index(nameof(ReportedAt))]
     public class PostReport
     {
+        [Key]
         public int Id { get; set; }
-        public int ReporterId { get; set; } // uncompleted
-        public int PostId { get; set; }  // uncompleted
+
+        [Required]
+        [ForeignKey(nameof(Reporter))]
+        public int ReporterId { get; set; } // User who reported the post
+
+        [Required]
+        [ForeignKey(nameof(Post))]
+        public int PostId { get; set; }  // Post that was reported
+
+
 
         [Required]
         [EnumDataType(typeof(ReportReason))]
         [Column(TypeName = "nvarchar(20)")]
-        public ReportReason Reason { get; set; } // uncompleted
+        public ReportReason Reason { get; set; } // The reason for the report
+
+
         [Required]
         [EnumDataType(typeof(ReportStatus))]
         [Column(TypeName = "nvarchar(20)")]
-        public ReportStatus Status { get; set; } = ReportStatus.Pending; // uncompleted
+        public ReportStatus Status { get; set; } = ReportStatus.Pending; // Default to pending
 
-        /*
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<PostReport>()
-                    .Property(e => e.Status)
-                    .HasConversion<string>();
-
-                modelBuilder.Entity<PostReport>()
-                    .Property(e => e.Reason)
-                    .HasConversion<string>();
-            }
-         */
 
         [Required]
-        public DateTime ReportedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ReportedAt { get; set; } = DateTime.UtcNow; // When the post was reported
 
+
+        // Navigation Properties
+        public virtual Post Post { get; set; } // The reported post
+        public virtual ApplicationUser Reporter { get; set; } // The user who made the report
+       
     }
 }

@@ -57,3 +57,53 @@
 
 </div>
 @* ********************************** Profile info Section end *************************************** *@
+ 
+<div class="container">
+    <h1 class="text-center">Posts</h1>
+    <div class="container bg-white h-100 posts rounded">
+        <p>hello</p>
+    </div>
+    </div>
+
+
+@* <div class="container" >
+     <h1>Posts</h1>
+                <div class="posts">
+@foreach(Post post in ViewBag.Posts){
+            <div class="post_container">
+                <h2>Posts</h2>
+                <div class="post_card">
+                    <div class="post_section">
+                        <div class="post_card_section_head">
+                            <div>
+                                <img src="@post.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
+                                <h3>@post.UserName</h3>
+                            </div>
+                            <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p>Welcome to my new post</p>
+
+                        @if (!string.IsNullOrEmpty(post.ImgUrl))
+                        {
+                            <img src="@post.ImgUrl" class="post-image" />
+                        }
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="post-stats">
+                    <div class="stat">
+                        <i class="fa-regular fa-heart"></i>
+                        <strong>@post.LikeCount</strong>
+                    </div>
+                    <div class="stat">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <strong>@post.CommentCount</strong>
+                    </div>
+                    <input type="text" placeholder="Add Comment" class="comment-input" />
+                </div>
+            </div>
+
+}
+                </div>
+            </div> *@

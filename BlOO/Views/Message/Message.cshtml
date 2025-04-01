@@ -1,0 +1,130 @@
+﻿@model MessageViewModel
+
+@{
+    ViewData["Title"] = "Message";
+    Layout = "_MyNav";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/Message-Page.css" asp-append-version="true" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row chat">
+                <div class="col-4">
+                    <div class="chat-header d-flex align-items-center justify-content-around">
+                        <h3>Chats</h3>
+                        <div class="input-group" style="width:15em;">
+                            <input type="text" name="search" id="search" placeholder="Search" class="form-control custom" />
+                            <span class="input-group-text custom-icon">
+                                <img src="~/assets/icons/search-icon.svg" width="25" height="25" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chat-list">
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around chat-item">
+                            <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@Model.FirstName @Model.LastName</h5>
+                                <h6>@Model.Content</h6>
+                            </div>
+                            <div class="details-user">
+                                <h6>@Model.SendingDate</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-paging">
+                        <div class="d-flex justify-content-between paging">
+                            <div class="d-flex previous">
+                                <button class="previous">
+                                    <img src="~/assets/icons/previous.png" />
+                                </button>
+                                <h6>Previous</h6>
+                            </div>
+                            <div class="d-flex next">
+                                <h6>Next</h6>
+                                <button class="next">
+                                    <img src="~/assets/icons/next.png" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8 chat-content">
+                    <div class="d-flex justify-content-between align-items-center chat_top">
+                        <div class="user_info">
+                            <img src="~/assets/icons/user.png" />
+                            <h4>@Model.FirstName @Model.LastName</h4>
+                        </div>
+                        <div>
+						    <button class="btn_profile"><h6>View Profile</h6></button>
+                        </div>
+                    </div>
+                    <div id="messageArea"></div>
+                    <div class="message-input-container">
+                        <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
+                        <button name="send" onclick="SendMessage()" class="send-button">
+                            <img src="~/assets/icons/send.png" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,7 +1,5 @@
-﻿using BlOO.Models;
-using BlOO.ViewModels;
+﻿using BlOO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -22,7 +20,6 @@ namespace BlOO.Controllers
 
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(string Email)
         {
             ApplicationUser applicationUser = await _UserManager.FindByEmailAsync(Email);
@@ -48,8 +45,6 @@ namespace BlOO.Controllers
             ProfileVM.PostCount = user.PostCount;
             ProfileVM.CoverImageUrl = user.CoverImageUrl;
             ProfileVM.ProfileImageUrl = user.ProfileImageUrl;
-
-
 
             return ProfileVM;
         }

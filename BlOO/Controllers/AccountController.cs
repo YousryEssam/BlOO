@@ -1,5 +1,4 @@
-﻿using BlOO.Models;
-using BlOO.ViewModels;
+﻿using BlOO.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

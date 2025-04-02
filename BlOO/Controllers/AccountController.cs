@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlOO.Controllers
@@ -105,13 +107,40 @@ namespace BlOO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult LogInData(LoginUserViewModel loginUserViewModel)
+        public async Task<IActionResult> LogInData(LoginUserViewModel UserFromLogin)
         {
-            //if (ModelState.IsValid)
-            //{
 
-            //}
-            return View("LogIn", loginUserViewModel);
+            if (!ModelState.IsValid)
+            {
+                return View("LogIn", UserFromLogin);
+            }
+
+            ApplicationUser UserFromDatabase = await userManager.FindByEmailAsync(UserFromLogin.Email);
+            if (UserFromDatabase == null) 
+            {
+                return ReturnInvalidLogin(UserFromLogin);
+            }
+
+
+            bool CorrectPassworded = await userManager.CheckPasswordAsync(UserFromDatabase, UserFromLogin.Password);
+            if (!CorrectPassworded)
+            {
+                return ReturnInvalidLogin(UserFromLogin);
+            }
+
+            List<Claim> claims = new List<Claim>();
+            await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
+            return RedirectToAction("Profile", "User", new { id = UserFromDatabase.Id });
+        }
+
+
+        ///////////////////////////////// Helper Methods /////////////////////////////////////////
+        
+        // Helper Method for Invalid Logins
+        private IActionResult ReturnInvalidLogin(LoginUserViewModel UserFromLogin)
+        {
+            ModelState.AddModelError("", "Incorrect Login attempt");
+            return View("LogIn", UserFromLogin);
         }
     }
 }

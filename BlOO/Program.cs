@@ -18,7 +18,7 @@ namespace BlOO
             builder.Services.AddDbContext<BloContext>(
               Contextbuilder =>
               {
-                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
               }
 
               );

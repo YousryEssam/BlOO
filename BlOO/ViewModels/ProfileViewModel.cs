@@ -2,7 +2,6 @@
 {
     public class ProfileViewModel
     {
-       
         public string? Bio { get; set; }
         public int PostCount { get; set; }
         public int FollowersCount { get; set; }

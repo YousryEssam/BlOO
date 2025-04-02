@@ -130,7 +130,7 @@ namespace BlOO.Controllers
 
             List<Claim> claims = new List<Claim>();
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
-            return RedirectToAction("Profile", "User", new { id = UserFromDatabase.Id });
+            return RedirectToAction("Profile", "User", new { Email = UserFromDatabase.Email });
         }
 
 

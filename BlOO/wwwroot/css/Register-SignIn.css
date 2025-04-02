@@ -11,6 +11,9 @@ body {
 }
 
 
+
+
+
 /* add password hide and show icon */
 
 html, body {
@@ -44,10 +47,12 @@ html, body {
         overflow: hidden;
         transition: margin 1s;
         width: 600px;
-        height: 600px;
+        height:60%;
+        border-radius:10px;
+        
     }
     .ball.login {
-        margin-left: 43%;
+        margin-left: 33%;
         margin-top: 5%;
     }
     .ball.register {
@@ -125,3 +130,11 @@ html, body {
         opacity: 1;
         margin-left: -5%;
     }
+
+
+
+
+
+
+
+

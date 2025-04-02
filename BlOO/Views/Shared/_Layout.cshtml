@@ -24,45 +24,47 @@
 
                     <div class="col-4 d-flex align-items-center">
                         <a class="navbar-brand d-flex align-items-center" href="#">
-                            <img style="width:60px" class="img" src="~/assets/logo/Logo2.png" class="rounded-circle logo-img" />
+                            <img src="~/assets/logo/Logo-only.png" class="rounded-circle logo-img" alt="BlOO Logo" />
                         </a>
-                        <img class="img" src="~/assets/icons/search-icon.svg" alt="search-icon" style="margin:15px;" />
-                        <input class="form-control custom-input" type="Search" placeholder="Search" name="search" id="search" />
+                        <div class="group">
+                            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
+                            <input placeholder="Search" type="search" class="input">
+                        </div>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-5">
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <img class="img" src="~/assets/icons/home-button-icon.svg" class="nav-hover" />
+                                    <img src="~/assets/icons/home-button-icon.svg" class="nav-hover icon-img" />
                                     <br />
                                     <span>Home</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <img class="img" src="~/assets/icons/compass-icon.svg" class="nav-hover" />
+                                    <img src="~/assets/icons/compass-icon.svg" class="nav-hover icon-img" />
                                     <br />
                                     <span>Explore</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <img class="img" src="~/assets/icons/notification-icon.svg" class="nav-hover" />
+                                    <img src="~/assets/icons/notification-icon.svg" class="nav-hover icon-img" />
                                     <br />
                                     <span>Notification</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <img class="img" src="~/assets/icons/setting-icon.svg" class="nav-hover" />
+                                    <img src="~/assets/icons/setting-icon.svg" class="nav-hover icon-img" />
                                     <br />
                                     <span>Setting</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    <img class="img" src="~/assets/icons/message-bubble-icon.svg" class="nav-hover" />
+                                    <img src="~/assets/icons/message-bubble-icon.svg" class="nav-hover icon-img" />
                                     <br />
                                     <span>Messages</span>
                                 </a>
@@ -70,22 +72,20 @@
                         </ul>
                     </div>
 
-
-                    <div class="col-2">
-                        <ul class="navbar-nav">
-                            @if(SignInManager.IsSignedIn(User))
+                    <div class="col-3 d-flex justify-content-end">
+                        <ul class="navbar-nav ms-auto">
+                            @if (SignInManager.IsSignedIn(User))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="User" asp-action="Profile" asp-route-id="@user.Id">
-                                        <img class="img" src="@user.ProfileImageUrl" class="rounded-circle nav-hover" />
+                                        <img src="@user.ProfileImageUrl" class="rounded-circle nav-hover icon-img" />
                                         <br />
                                         <span>Profile</span>
                                     </a>
                                 </li>
-                                @* uncompled *@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
-                                        <img class="img" src="~/assets/icons/door-check-out-icon.svg" class="nav-hover" /><br />
+                                        <img src="~/assets/icons/door-check-out-icon.svg" class="nav-hover icon-img" /><br />
                                         <span>Logout</span>
                                     </a>
                                 </li>
@@ -94,21 +94,20 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Account" asp-action="Register">
-                                        <img class="img" src="~/assets/icons/register-icon.png" class="nav-hover" /><br />
+                                        <img src="~/assets/icons/register-icon.png" class="nav-hover icon-img" /><br />
                                         <span>Register</span>
                                     </a>
-                                </li> 
-
+                                </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="logIn">
-                                        <img class="img" src="~/assets/icons/account-login.png" class="nav-hover" /><br />
+                                    <a class="nav-link" asp-controller="Account" asp-action="LogIn">
+                                        <img src="~/assets/icons/account-login.png" class="nav-hover icon-img" /><br />
                                         <span>Login</span>
                                     </a>
                                 </li>
                             }
-
                         </ul>
                     </div>
+
                 </div>
             </div>
         </nav>

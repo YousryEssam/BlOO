@@ -76,7 +76,7 @@
                             @if(SignInManager.IsSignedIn(User))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="User" asp-action="Profile" asp-route-Email="@user.Email">
+                                    <a class="nav-link" asp-controller="User" asp-action="Profile" asp-route-id="@user.Id">
                                         <img src="@user.ProfileImageUrl" class="rounded-circle nav-hover" />
                                         <br />
                                         <span>Profile</span>

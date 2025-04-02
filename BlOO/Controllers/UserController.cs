@@ -1,6 +1,7 @@
 ﻿using BlOO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace BlOO.Controllers
@@ -20,10 +21,10 @@ namespace BlOO.Controllers
 
 
         [Authorize]
-        public async Task<IActionResult> Profile(string Email)
+        public async Task<IActionResult> Profile(int id)
         {
-            ApplicationUser applicationUser = await _UserManager.FindByEmailAsync(Email);
-            if(applicationUser == null)
+            ApplicationUser applicationUser = await _UserManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (applicationUser == null)
             {
                 return NotFound();
             }

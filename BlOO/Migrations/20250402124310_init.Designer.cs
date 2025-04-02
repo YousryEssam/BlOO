@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlOO.Migrations
 {
-    [DbContext(typeof(BloContext))]
-    [Migration("20250401192414_init")]
+    [DbContext(typeof(BlooContext))]
+    [Migration("20250402124310_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -320,9 +320,6 @@ namespace BlOO.Migrations
                     b.Property<DateTime>("PostDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RepostCount")
                         .HasColumnType("int");
 
@@ -334,8 +331,6 @@ namespace BlOO.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -666,10 +661,6 @@ namespace BlOO.Migrations
 
             modelBuilder.Entity("BlOO.Models.Post", b =>
                 {
-                    b.HasOne("BlOO.Models.Post", null)
-                        .WithMany("Reposts")
-                        .HasForeignKey("PostId");
-
                     b.HasOne("BlOO.Models.ApplicationUser", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
@@ -720,7 +711,7 @@ namespace BlOO.Migrations
             modelBuilder.Entity("BlOO.Models.Repost", b =>
                 {
                     b.HasOne("BlOO.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("Reposts")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

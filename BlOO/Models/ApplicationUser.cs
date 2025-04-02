@@ -34,18 +34,16 @@ namespace BlOO.Models
         public AccountStatus AccountStatus { get; set; } = AccountStatus.Active;
 
         // Navigation Properties
-        public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
-        public virtual ICollection<Repost> Reposts { get; set; } = new List<Repost>();
-        public virtual ICollection<Follow> Followers { get; set; } = new List<Follow>();
-        public virtual ICollection<Follow> Following { get; set; } = new List<Follow>();
-        public virtual ICollection<PostLike> LikedPosts { get; set; } = new List<PostLike>();
-        public virtual ICollection<Message> SentMessages { get; set; } = new List<Message>();
-        public virtual ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
-        public virtual ICollection<PostReport> ReportsMade { get; set; } = new List<PostReport>();
-        public virtual ICollection<CommentLike> LikedComments { get; set; } = new List<CommentLike>();
-        public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>(); 
-        public virtual ICollection<Notification> NotificationsSent { get; set; } = new List<Notification>();
-
-
+        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Repost> Reposts { get; set; } 
+        public virtual ICollection<Follow> Followers { get; set; } 
+        public virtual ICollection<Follow> Following { get; set; } 
+        public virtual ICollection<PostLike> LikedPosts { get; set; } 
+        public virtual ICollection<Message> SentMessages { get; set; } 
+        public virtual ICollection<Message> ReceivedMessages { get; set; } 
+        public virtual ICollection<PostReport> ReportsMade { get; set; } 
+        public virtual ICollection<CommentLike> LikedComments { get; set; } 
+        public virtual ICollection<Notification> Notifications { get; set; }  
+        public virtual ICollection<Notification> NotificationsSent { get; set; }
     }
 }

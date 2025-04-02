@@ -30,22 +30,19 @@ namespace BlOO.Models
         public int CommentCount { get; set; } = 0;
         public int RepostCount { get; set; } = 0;
 
-        public DateTime? DeletedAt { get; set; }
 
         [Required]
         [EnumDataType(typeof(PostStatus))]
         [Column(TypeName = "nvarchar(10)")]
         public PostStatus Status { get; set; } = PostStatus.Active;
         
+        public DateTime? DeletedAt { get; set; }
 
         // Navigation Property
         public virtual ApplicationUser User { get; set; }
-
-        // Navigation Properties to Related Entities
-        public virtual ICollection<Post> Reposts { get; set; } = new List<Post>();
-        public virtual ICollection<PostLike> Likes { get; set; } = new List<PostLike>(); 
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public virtual ICollection<PostReport> Reports { get; set; } = new List<PostReport>();
-
+        public virtual ICollection<Repost> Reposts { get; set; }
+        public virtual ICollection<PostLike> Likes { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<PostReport> Reports { get; set; }
     }
 }

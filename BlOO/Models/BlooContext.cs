@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Models
 {
-    public class BloContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+    public class BlooContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
-            public BloContext() { }
+            public BlooContext() { }
 
-            public BloContext(DbContextOptions<BloContext> options) : base(options)
+            public BlooContext(DbContextOptions<BlooContext> options) : base(options)
             {
 
             }

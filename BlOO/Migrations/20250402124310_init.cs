@@ -266,9 +266,8 @@ namespace BlOO.Migrations
                     LikeCount = table.Column<int>(type: "int", nullable: false),
                     CommentCount = table.Column<int>(type: "int", nullable: false),
                     RepostCount = table.Column<int>(type: "int", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -279,11 +278,6 @@ namespace BlOO.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_posts_posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "posts",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -557,11 +551,6 @@ namespace BlOO.Migrations
                 name: "IX_postReports_Status",
                 table: "postReports",
                 column: "Status");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_posts_PostId",
-                table: "posts",
-                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_posts_UserId",

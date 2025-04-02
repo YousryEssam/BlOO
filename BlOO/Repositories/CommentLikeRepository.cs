@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class CommentLikeRepository : ICommentLikeRepository
     {
+        BlooContext blooContext;
+        public CommentLikeRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(CommentLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.commentLikes.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            CommentLike commentLike = GetById(id);
+            blooContext.commentLikes.Remove(commentLike);
         }
 
         public List<CommentLike> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.commentLikes.ToList();
         }
 
         public CommentLike GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.commentLikes.FirstOrDefault(c => c.Id == id);
         }
 
         public void Insert(CommentLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.commentLikes.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(CommentLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.commentLikes.Update(entity);
         }
     }
 }

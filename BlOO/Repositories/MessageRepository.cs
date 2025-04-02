@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class MessageRepository : IMessageRepository
     {
+        BlooContext blooContext;
+        public MessageRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(Message entity)
         {
-            throw new NotImplementedException();
+            blooContext.messages.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Message message=GetById(id);
+            blooContext.messages.Remove(message);
         }
 
         public List<Message> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.messages.ToList();
         }
 
         public Message GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.messages.FirstOrDefault(m => m.Id == id);
         }
 
         public void Insert(Message entity)
         {
-            throw new NotImplementedException();
+            blooContext.messages.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Message entity)
         {
-            throw new NotImplementedException();
+            blooContext.messages.Update(entity);
         }
     }
 }

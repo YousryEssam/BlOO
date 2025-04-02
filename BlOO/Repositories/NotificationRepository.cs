@@ -4,39 +4,43 @@ namespace BlOO.Repositories
 {
     public class NotificationRepository : INotificationRepository
     {
+        BlooContext blooContext;
+        public NotificationRepository(BlooContext blooContext) {
+        this.blooContext=blooContext;
+        }
         public void Delete(Notification entity)
         {
-            throw new NotImplementedException();
+          blooContext.notifications.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Notification notification = GetById(id);
+            blooContext.notifications.Remove(notification);
         }
 
         public List<Notification> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.notifications.ToList();
         }
 
         public Notification GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.notifications.FirstOrDefault(n => n.Id == id);
         }
 
         public void Insert(Notification entity)
         {
-            throw new NotImplementedException();
+            blooContext.notifications.Add(entity);
         }
-
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Notification entity)
         {
-            throw new NotImplementedException();
+            blooContext.notifications.Update(entity);
         }
     }
 }

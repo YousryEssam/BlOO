@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class RepostRepository : IRepostRepository
     {
+        BlooContext blooContext;
+        public RepostRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(Repost entity)
         {
-            throw new NotImplementedException();
+            blooContext.reposts.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Repost repost = GetById(id);
+            blooContext.reposts.Remove(repost);
         }
 
         public List<Repost> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.reposts.ToList();
         }
 
         public Repost GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.reposts.FirstOrDefault(r => r.Id == id);
         }
 
         public void Insert(Repost entity)
         {
-            throw new NotImplementedException();
+            blooContext.reposts.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Repost entity)
         {
-            throw new NotImplementedException();
+            blooContext.reposts.Update(entity);
         }
     }
 }

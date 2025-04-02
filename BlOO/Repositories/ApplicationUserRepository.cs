@@ -4,39 +4,45 @@ namespace BlOO.Repositories
 {
     public class ApplicationUserRepository : IApplicationUserRepository
     {
+        BlooContext blooContext;
+        public ApplicationUserRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(ApplicationUser entity)
         {
-            throw new NotImplementedException();
+            blooContext.applicationUsers.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            ApplicationUser applicationUser = GetById(id);
+            blooContext.applicationUsers.Remove(applicationUser);
         }
 
         public List<ApplicationUser> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.applicationUsers.ToList();
         }
-
         public ApplicationUser GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.applicationUsers.FirstOrDefault(u => u.Id == id);
         }
 
         public void Insert(ApplicationUser entity)
         {
-            throw new NotImplementedException();
+            blooContext.applicationUsers.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(ApplicationUser entity)
         {
-            throw new NotImplementedException();
+            blooContext.applicationUsers.Update(entity);
         }
     }
 }

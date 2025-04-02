@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
+        BlooContext blooContext;
+        public CommentRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(Comment entity)
         {
-            throw new NotImplementedException();
+            blooContext.comments.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Comment comment = GetById(id);
+            blooContext.comments.Remove(comment);
         }
 
         public List<Comment> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.comments.ToList();
         }
 
         public Comment GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.comments.FirstOrDefault(c => c.Id == id);
         }
 
         public void Insert(Comment entity)
         {
-            throw new NotImplementedException();
+            blooContext.comments.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Comment entity)
         {
-            throw new NotImplementedException();
+            blooContext.comments.Update(entity);
         }
     }
 }

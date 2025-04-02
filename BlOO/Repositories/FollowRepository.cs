@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class FollowRepository : IFollowRepository
     {
+        BlooContext blooContext;
+        public FollowRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(Follow entity)
         {
-            throw new NotImplementedException();
+            blooContext.follows.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Follow follow = GetById(id);
+            blooContext.follows.Remove(follow);
         }
 
         public List<Follow> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.follows.ToList();
         }
 
         public Follow GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.follows.FirstOrDefault(f => f.Id == id);
         }
 
         public void Insert(Follow entity)
         {
-            throw new NotImplementedException();
+            blooContext.follows.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Follow entity)
         {
-            throw new NotImplementedException();
+            blooContext.follows.Update(entity);
         }
     }
 }

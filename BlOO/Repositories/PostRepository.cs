@@ -1,42 +1,48 @@
 ﻿using BlOO.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace BlOO.Repositories
 {
     public class PostRepository : IPostRepository
     {
+        BlooContext blooContext;
+        public PostRepository(BlooContext blooContext) { 
+            this.blooContext = blooContext;   
+        }
         public void Delete(Post entity)
         {
-            throw new NotImplementedException();
+            blooContext.posts.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            Post post = GetById(id);
+            blooContext.posts.Remove(post);
         }
 
         public List<Post> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.posts.ToList();
         }
 
         public Post GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.posts.FirstOrDefault(p => p.Id == id);
         }
 
         public void Insert(Post entity)
         {
-            throw new NotImplementedException();
+            blooContext.posts.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            blooContext.SaveChanges();
         }
 
         public void Update(Post entity)
         {
-            throw new NotImplementedException();
+            blooContext.posts.Update(entity);
         }
     }
 }

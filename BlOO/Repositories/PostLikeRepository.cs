@@ -4,39 +4,46 @@ namespace BlOO.Repositories
 {
     public class PostLikeRepository : IPostLikeRepository
     {
+        BlooContext blooContext;
+        public PostLikeRepository(BlooContext blooContext)
+        {
+            this.blooContext = blooContext;
+        }
+
         public void Delete(PostLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.postLikes.Remove(entity);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            PostLike postLike=GetById(id);
+            blooContext.postLikes.Remove(postLike);
         }
 
         public List<PostLike> GetAll()
         {
-            throw new NotImplementedException();
+            return blooContext.postLikes.ToList();
         }
 
         public PostLike GetById(int id)
         {
-            throw new NotImplementedException();
+            return blooContext.postLikes.FirstOrDefault(l => l.Id == id);
         }
 
         public void Insert(PostLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.postLikes.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+          blooContext.SaveChanges();
         }
 
         public void Update(PostLike entity)
         {
-            throw new NotImplementedException();
+            blooContext.postLikes.Update(entity);
         }
     }
 }

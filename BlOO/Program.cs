@@ -1,5 +1,6 @@
 using BlOO.Models;
 using BlOO.Repositories;
+using BLOO.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +31,7 @@ namespace BlOO
             builder.Services.AddScoped<IPostReportRepository, PostReportRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IRepostRepository, RepostRepository>();
-
+            builder.Services.AddSignalR();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,10 +39,11 @@ namespace BlOO
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.MapHub<ChatMessageHub>("/ChatMessage");
             app.UseAuthorization();
 
             app.MapControllerRoute(

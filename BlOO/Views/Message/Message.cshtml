@@ -7,8 +7,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/Message-Page.css" asp-append-version="true" />
     </head>
@@ -71,11 +76,46 @@
                     <div class="message-input-container">
                         <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
                         <button name="send" onclick="SendMessage()" class="send-button">
-                            <img src="~/assets/icons/send.png" />
+                           @*  <img src="~/assets/icons/send.png" /> *@
+                        <i class="fa-regular fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/microsoft-signalr/signalr.min.js"></script>
+    <script>
+
+        var hub = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
+        //2) start Connection
+        hub.start().then(
+            function () {
+                console.log("Hub Connect opened Success");
+            }
+        );
+        function SendMessage() {
+            var messageArea = document.getElementById("messageArea");
+            var msg = document.getElementById("msgtext").value;
+
+            hub.invoke("writeMessage",msg);
+
+        }
+        hub.on("NewMessage", function (text) {
+            var messageDiv = document.createElement("div");
+            messageDiv.className = "message-div";
+            // if (IsReciver) {
+            //     messageDiv.classList.add("message-style");
+            // }
+            // else {
+            //     messageDiv.classList.remove("message-style");
+            // }
+           messageDiv.innerHTML = `<img src="/assets/icons/user.png" alt="Alternate Text" /> <div > <p>${text}</p> </div>`;
+
+            messageArea.appendChild(messageDiv);
+            document.getElementById("msgtext").value = "";
+        })
+
+    </script>
     </body>
 </html>

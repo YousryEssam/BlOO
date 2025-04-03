@@ -10,6 +10,7 @@ body {
 
 .chat {
     margin-top: 0.75em;
+    height:100vh;
 }
 
 .chat-header {
@@ -172,10 +173,24 @@ body {
 
 .message-div {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Aligns messages at the top */
     gap: 15px;
     margin-block: 10px;
+  width:90%;
 }
+
+    .message-div p {
+        background-color: #d5f2f2;
+        width: fit-content;
+        max-width: 100%; /* Adjust width dynamically */
+        padding: 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        word-wrap: break-word; /* Breaks long words */
+      
+    }
+   
+
 
 .message-div img {
     width: 50px;
@@ -183,14 +198,7 @@ body {
     border-radius: 50%;
 }
 
-.message-div p {
-    background-color: #d5f2f2;
-    width: auto;
-    max-width: 100%;
-    padding: 10px;
-    border-radius: 15px;
-    font-size: 14px;
-}
+
 
 .message-style {
     flex-direction: row-reverse;

@@ -15,13 +15,11 @@ namespace BlOO
             builder.Services.AddControllersWithViews();
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<BlooContext>();
 
-            builder.Services.AddDbContext<BlooContext>(
-              Contextbuilder =>
-              {
+            builder.Services.AddDbContext<BlooContext>( Contextbuilder => 
+            {
                   Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
-              }
+            });
 
-              );
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<ICommentLikeRepository, CommentLikeRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();

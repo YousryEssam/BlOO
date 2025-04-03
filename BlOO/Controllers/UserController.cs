@@ -28,26 +28,11 @@ namespace BlOO.Controllers
             {
                 return NotFound();
             }
-            ProfileViewModel ProfileVM = GetProfileViewModel(applicationUser);
+            ProfileViewModel ProfileVM = new ProfileViewModel(applicationUser);
             return View(ProfileVM);
         }
 
         ///////////////////////////////// Helper Methods /////////////////////////////////////////
         
-        private ProfileViewModel GetProfileViewModel(ApplicationUser user)
-        {
-            ProfileViewModel ProfileVM = new ProfileViewModel();
-            ProfileVM.Bio = user.Email;
-            ProfileVM.LastName = user.LastName;
-            ProfileVM.UserName = user.UserName;
-            ProfileVM.FirstName = user.FirstName;
-            ProfileVM.FollowersCount = user.FollowersCount;
-            ProfileVM.FollowingCount = user.FollowingCount;
-            ProfileVM.PostCount = user.PostCount;
-            ProfileVM.CoverImageUrl = user.CoverImageUrl;
-            ProfileVM.ProfileImageUrl = user.ProfileImageUrl;
-
-            return ProfileVM;
-        }
     }
 }

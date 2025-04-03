@@ -2,6 +2,7 @@
 {
     public class ProfileViewModel
     {
+        public int UserId { get; set; }
         public string? Bio { get; set; }
         public int PostCount { get; set; }
         public int FollowersCount { get; set; }
@@ -11,5 +12,19 @@
         public string UserName { get; set; } = "User_Name";
         public string ProfileImageUrl { get; set; } = "/assets/profile-pictures/default-user.jpg";
         public string CoverImageUrl { get; set; } = "/assets/profile-covers/default-cover.jpg";
+        public ProfileViewModel() { }
+        public ProfileViewModel(ApplicationUser user)
+        {
+            this.Bio = user.Bio;
+            this.UserId = user.Id;
+            this.LastName = user.LastName;
+            this.UserName = user.UserName;
+            this.FirstName = user.FirstName;
+            this.FollowersCount = user.FollowersCount;
+            this.FollowingCount = user.FollowingCount;
+            this.PostCount = user.PostCount;
+            this.CoverImageUrl = user.CoverImageUrl;
+            this.ProfileImageUrl = user.ProfileImageUrl;
+        }
     }
 }

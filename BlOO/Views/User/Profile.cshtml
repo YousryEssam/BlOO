@@ -1,7 +1,12 @@
-﻿@model ProfileViewModel 
+﻿@inject UserManager<ApplicationUser> UserManager 
+@inject SignInManager<ApplicationUser> SignInManager
+@model ProfileViewModel 
 @{
     ViewData["Title"] = "Profile";
     string FullName = Model.FirstName + " " + Model.LastName;
+    var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
+    bool isProfileOwner = loggedInUser != null && loggedInUser.Id == Model.UserId;
+    bool isFollower = false;
 }
 
 <link rel="stylesheet" href="~/css/profile-page.css" asp-append-version="true" />
@@ -18,19 +23,34 @@
         <h4 class="profile-name">@FullName</h4>  
         <p class="username">&#64;@Model.UserName</p>
         <p>
-            <strong>Bio</strong>
-            <br/>
+            <strong>Bio :</strong> <br/>
             @if(Model.Bio != null)
             {
                 @Model.Bio
             }
         </p>
-       
+
         <!-- Follow & Message Buttons -->
         <div class="profile-actions d-flex justify-content-end gap-3">
-            <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Follow</button>
-            <button class="btn btn-outline-secondary visually-hidden"><i class="fas fa-user-plus"></i> Unfollow</button>
-            <button class="btn btn-outline-secondary"><i class="fas fa-envelope"></i> Message</button>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                if (isProfileOwner)
+                {
+                    <button class="btn btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit profile</button>
+                }
+                else
+                {
+                    if (isFollower)
+                    {
+                        <button class="btn btn-danger"><i class="fas fa-user-minus"></i> Unfollow</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Follow</button>
+                    }
+                    <button class="btn btn-outline-secondary"><i class="fas fa-envelope"></i> Message</button>
+                }
+            }
         </div>
 
     </div>
@@ -56,13 +76,16 @@
 
 </div>
 @* ********************************** Profile info Section end *************************************** *@
- 
-@* <div class="container"> *@
-@*     <h1 class="text-center">Posts</h1> *@
-@*     <div class="container bg-white h-100 posts rounded"> *@
-@*         <p>hello</p> *@
-@*     </div> *@
-@* </div> *@
+
+@await Component.InvokeAsync("PostInput")
+
+
+<div class="container">
+    <h1 class="text-center">Posts</h1>
+    <div class="container bg-white h-100 posts rounded">
+        @* <p>hello</p> *@
+    </div>
+</div>
     
 
 @* <div class="container" >

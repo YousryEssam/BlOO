@@ -1,29 +1,26 @@
-﻿* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+﻿
 
-body {
-    background-color: linen;
+/*body {
+    background-color: #E2DAD6;
 }
-
+*/
 .chat {
-    margin-top: 0.75em;
+    width: 100%;
     height: 100vh;
+    margin-top: 0.5rem;
 }
 
 .chat-header {
-    background-color: darkslategrey;
     color: white;
-    height: 4.25em;
+    height: 3.5rem;
+    background-color: #6482AD;
 }
 
 .custom {
     color: dimgray;
     background-color: azure;
     border-radius: 12px;
-    height: 2.5em;
+    height: 2.0em;
 }
 
 .custom-icon {
@@ -63,7 +60,7 @@ body {
 
 .main-paging {
     overflow-y: auto;
-    background-color: white;
+    background-color: #7FA1C3;
     height: 3.75em;
 }
 
@@ -90,7 +87,7 @@ body {
     }
 
 .chat_top {
-    background-color: darkslategray;
+    background-color: #6482AD;
     padding: 0 15px;
     height: 4.25em;
 }
@@ -141,7 +138,7 @@ body {
 
 
 .message-input-container {
-    background-color: lightgray;
+    background-color: #7FA1C3;
     width: 100%;
     display: flex;
     align-items: center;

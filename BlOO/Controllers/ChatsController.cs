@@ -1,13 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlOO.Controllers
 {
     public class ChatsController : Controller
     {
-        public IActionResult Index()
+        private UserManager<ApplicationUser> _UserManager;
+        private SignInManager<ApplicationUser> _SignInManager;
+
+        public ChatsController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            ChatsViewModel chatViewModel = new ChatsViewModel();
+            _UserManager = userManager;
+            _SignInManager = signInManager;
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Index()
+        {
+            ApplicationUser? user = await _UserManager.GetUserAsync(User);
+            ChatsViewModel chatViewModel = new ChatsViewModel(user);
             return View(chatViewModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Chat(int id)
+        {
+            ApplicationUser? user = await _UserManager.GetUserAsync(User);
+            ChatsViewModel chatViewModel = new ChatsViewModel(user, id);
+            return View("Index",chatViewModel);
         }
     }
 }

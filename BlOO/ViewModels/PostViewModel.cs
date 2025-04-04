@@ -4,6 +4,7 @@ namespace BlOO.ViewModels
 {
     public class PostViewModel
     {
+        public int Id { get; set; }
         public string UserName { get; set; } = "Nour Maged";
         public string UserImgUrl { get; set; } = "/assets/profile-pictures/default-user.jpg";
         public string Content { get; set; }

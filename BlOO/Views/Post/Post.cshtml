@@ -1,4 +1,4 @@
-﻿@model PostViewModel
+﻿ @model PostViewModel 
 @{
     ViewData["Title"] = "Post";
 }
@@ -43,5 +43,7 @@
             <strong>@Model.CommentCount</strong>
         </div>
         <input type="text" placeholder="Add Comment" class="comment-input" />
+
     </div>
 </div>
+<a href="/Post/EditPost/@Model.Id" class="btn btn-primary">Edit</a>

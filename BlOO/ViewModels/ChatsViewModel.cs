@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BlOO.ViewModels
+﻿namespace BlOO.ViewModels
 {
-    public class MessageViewModel
+    public class ChatsViewModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; } = "Madonna";

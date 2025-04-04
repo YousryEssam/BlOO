@@ -5,82 +5,115 @@
 
 <link rel="stylesheet" href="~/css/chats-page.css" asp-append-version="true" />
 
+
 <div class="container-fluid">
-    <div class="row chat">
+
+    <div class="row chat-layout">
+
+        @* Chats List Container *@
         <div class="col-4">
-            
-            <div class="chat-header d-flex align-items-center justify-content-center">
-                <h3>Chats</h3>
-                <div class="input-group" style="width:15em;">
-                    <div class="group" title="Search">
-                        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
-                        <input placeholder="Search" type="search" class="input">
-                    </div>
+            <div class="chats-list-header d-flex align-items-center justify-content-center">
+                <h3 class="text-white">Chats</h3>
+                <div class="group" title="Search" style="margin-right : 5px;">
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
+                    <input placeholder="Search" type="search" class="input">
                 </div>
             </div>
 
 
-            <div class="chat-list">
+            <div class="chats-list">
+                @foreach (var item in Model.Conversations)
+                {
+                    <div class="d-flex justify-content-around conversation-item">
+                        <img src="@item.UserImgURL" class="rounded-circle" />
+                        <div class="details-user">
+                            <h5>@item.FirstName @Model.LastName</h5>
+                            <p class="justify-content-center">@item.LastMessage</p>
+                        </div>
+
+                        <div class="date-place">
+                            <h6>@item.SendingDate</h6>
+                        </div>
+                    </div>
+                }
+
+                @* **************** This Will remove after get data from database **********************************@
                 @for (var i = 1; i <= 6; i++)
                 {
-                    <div class="d-flex justify-content-around chat-item">
+
+                    <div class="d-flex justify-content-around conversation-item">
                         <img src="@Model.ProfileImageUrl" class="rounded-circle" />
                         <div class="details-user">
                             <h5>@Model.FirstName @Model.LastName</h5>
-                            <h6>@Model.Content</h6>
+                            <p>@Model.Content</p>
                         </div>
-                        <div class="details-user">
+                        <div class="date-place">
                             <h6>@Model.SendingDate</h6>
                         </div>
                     </div>
                 }
             </div>
 
-            <div class="main-paging">
-                <div class="d-flex justify-content-between paging">
-                    <div class="d-flex previous">
+
+            <div class="chat-list-control">
+
+                <div class="d-flex justify-content-between align-items-center control-bar">
+
+                    <div class="d-flex control-btn justify-content-start align-items-center">
                         <button class="previous">
                             <img src="~/assets/icons/previous.png" />
                         </button>
                         <h6>Previous</h6>
                     </div>
-                    <div class="d-flex next">
+                    <div class="d-flex control-btn justify-content-start align-items-center">
                         <h6>Next</h6>
                         <button class="next">
                             <img src="~/assets/icons/next.png" />
                         </button>
                     </div>
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-8  col-sm-12 chat-content">
-            <div class="d-flex justify-content-between align-items-center chat_top">
-                <div class="user_info">
-                    <img src="~/assets/icons/user.png" />
-                    <h4>@Model.FirstName @Model.LastName</h4>
+        @* Open Chat Container *@
+        <div class="col-8 active-chat">
+            @if (Model.TargetUserId == 0)
+            {
+                @* if no chat is active *@
+                <div class="container d-flex justify-content-center align-items-center vh-100 text-black">
+                    <div class="text-center">
+                        <h3 class="mt-3 fw-semibold">BlOO Chats</h3>
+                        <p class="text-muted">Send and receive messages with your friends.</p>
+                        <p class="text-muted small"><i class="bi bi-lock"></i> End-to-end encrypted</p>
+                    </div>
                 </div>
-                <div>
-
-                    <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.TargetUserId" class="btn btn_profile">
-                         View Profile
-                    </a>
-
-                    @* <button class="btn_profile"><h6>View Profile</h6></button> *@
+            }
+            else
+            {
+                <div class="d-flex justify-content-between align-items-center chats-list-header">
+                    <div class="user_info">
+                        <img src="@Model.ActiveChat.ProfileImageUrl"/>
+                        <h4>@Model.ActiveChat.FirstName @Model.ActiveChat.LastName</h4>
+                    </div>
+                    <div>
+                        <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.ActiveChat.Id" class="btn btn_profile">View Profile</a>
+                    </div>
                 </div>
-            </div>
-            <div id="messageArea"></div>
-            <div class="message-input-container">
-                <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
-                <button name="send" onclick="SendMessage()" class="send-button">
-                    @*  <img src="~/assets/icons/send.png" /> *@
-                    <i class="fa-regular fa-paper-plane"></i>
-                </button>
-            </div>
+
+                <div id="messageArea"></div>
+                
+                <div class="message-input-container">
+                    <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
+                    <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
+                </div>
+
+            }
         </div>
-    
     </div>
 </div>
+
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 <script>

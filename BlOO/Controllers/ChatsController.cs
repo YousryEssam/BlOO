@@ -26,7 +26,8 @@ namespace BlOO.Controllers
         public async Task<IActionResult> Chat(int id)
         {
             ApplicationUser? user = await _UserManager.GetUserAsync(User);
-            ChatsViewModel chatViewModel = new ChatsViewModel(user, id);
+            ApplicationUser? target = await _UserManager.FindByIdAsync(id.ToString());
+            ChatsViewModel chatViewModel = new ChatsViewModel(user, target);
             return View("Index",chatViewModel);
         }
     }

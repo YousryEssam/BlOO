@@ -45,5 +45,17 @@ namespace BlOO.Repositories
         {
             blooContext.messages.Update(entity);
         }
+        public Message? getLastMessage(int senderID, int receiverID)
+        {
+            return blooContext.messages
+                .Where(m => (m.SenderId == senderID && m.ReceiverId == receiverID) ||
+                            (m.SenderId == receiverID && m.ReceiverId == senderID))
+                .OrderByDescending(m => m.SendingDate) // ترتيب تنازلي حسب أحدث رسالة
+                .FirstOrDefault(); // استخدام FirstOrDefault بدلاً من LastOrDefault
+        }
+      
+
+
+
     }
 }

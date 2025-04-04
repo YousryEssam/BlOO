@@ -24,11 +24,13 @@
             <div class="chats-list">
                 @foreach (var item in Model.Conversations)
                 {
-                    <div class="d-flex justify-content-around conversation-item">
-                        <img src="@item.UserImgURL" class="rounded-circle" />
-                        <div class="details-user">
-                            <h5>@item.FirstName @Model.LastName</h5>
-                            <p class="justify-content-center">@item.LastMessage</p>
+                    <div class="d-flex justify-content-between conversation-item">
+                        <div class="d-flex ">
+                            <img src="@item.UserImgURL" class="rounded-circle" />
+                            <div class="details-user">
+                                <h5>@item.FirstName @item.LastName</h5>
+                                <p class="justify-content-center">@item.LastMessage</p>
+                            </div>
                         </div>
 
                         <div class="date-place">
@@ -38,37 +40,43 @@
                 }
 
                 @* **************** This Will remove after get data from database **********************************@
-                @for (var i = 1; i <= 6; i++)
+                @*     @for (var i = 1; i <= 6; i++)
                 {
 
-                    <div class="d-flex justify-content-around conversation-item">
-                        <img src="@Model.ProfileImageUrl" class="rounded-circle" />
-                        <div class="details-user">
-                            <h5>@Model.FirstName @Model.LastName</h5>
-                            <p>@Model.Content</p>
-                        </div>
-                        <div class="date-place">
-                            <h6>@Model.SendingDate</h6>
-                        </div>
-                    </div>
-                }
+                <div class="d-flex justify-content-around conversation-item">
+                <img src="@Model.ProfileImageUrl" class="rounded-circle" />
+                <div class="details-user">
+                <h5>@Model.FirstName @Model.LastName</h5>
+                <p>@Model.Content</p>
+                </div>
+                <div class="date-place">
+                <h6>@Model.SendingDate</h6>
+                </div>
+                </div>
+                } *@
             </div>
 
 
-            <div class="chat-list-control">
+            <div class="chat-list-control d-flex justify-content-center align-items-center overflow-hidden">
 
                 <div class="d-flex justify-content-between align-items-center control-bar">
-
-                    <div class="d-flex control-btn justify-content-start align-items-center">
-                        <button class="previous">
-                            <img src="~/assets/icons/previous.png" />
-                        </button>
-                        <h6>Previous</h6>
-                    </div>
-                    <div class="d-flex control-btn justify-content-start align-items-center">
-                        <h6>Next</h6>
+                    
+                        <div class="d-flex control-btn justify-content-start align-items-center ">
+                            <button class="previous">
+                                <a style="border: navajowhite;background-color: transparent;" asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber - 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
+                                    <img src="~/assets/icons/previous.png" /> 
+                                </a>
+                            </button>
+                            <h6>Previous</h6>
+                        </div>
+                    
+                   
+                        <div class="d-flex control-btn justify-content-start align-items-center">
+                            <h6>Next</h6>
                         <button class="next">
-                            <img src="~/assets/icons/next.png" />
+                            <a  style="border: navajowhite;background-color: transparent;"asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber + 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
+                                 <img src="~/assets/icons/next.png" />
+                            </a>
                         </button>
                     </div>
                 </div>
@@ -94,7 +102,7 @@
             {
                 <div class="d-flex justify-content-between align-items-center chats-list-header">
                     <div class="user_info">
-                        <img src="@Model.ActiveChat.ProfileImageUrl"/>
+                        <img src="@Model.ActiveChat.ProfileImageUrl" />
                         <h4>@Model.ActiveChat.FirstName @Model.ActiveChat.LastName</h4>
                     </div>
                     <div>
@@ -103,7 +111,7 @@
                 </div>
 
                 <div id="messageArea"></div>
-                
+
                 <div class="message-input-container">
                     <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
                     <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
@@ -129,7 +137,7 @@
         var messageArea = document.getElementById("messageArea");
         var msg = document.getElementById("msgtext").value;
 
-        hub.invoke("writeMessage",msg);
+        hub.invoke("writeMessage", msg);
 
     }
     hub.on("NewMessage", function (text) {
@@ -141,10 +149,10 @@
         // else {
         //     messageDiv.classList.remove("message-style");
         // }
-        messageDiv.innerHTML = `<img src="/assets/icons/user.png" alt="Alternate Text" /> <div style="width: 90%;"> <p>${text}</p> </div>`;
+        messageDiv.innerHTML = <img src="/assets/icons/user.png" alt = "Alternate Text" /> <div style="width: 90%;" > <p>${ text } </p> </div >;
 
         messageArea.appendChild(messageDiv);
         document.getElementById("msgtext").value = "";
     })
 
-</script>
+</script> 

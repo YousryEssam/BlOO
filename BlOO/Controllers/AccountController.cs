@@ -11,10 +11,10 @@ namespace BlOO.Controllers
         public RoleManager<IdentityRole<int>> roleManager;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager , RoleManager<IdentityRole<int>> roleManager)
+            SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole<int>> roleManager)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager; 
+            this.signInManager = signInManager;
             this.roleManager = roleManager;
         }
 
@@ -54,7 +54,7 @@ namespace BlOO.Controllers
                     if (result.Succeeded)
                     {
                         await signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("HomePage","Post");
+                        return RedirectToAction("HomePage", "Post");
                     }
                     foreach (var error in result.Errors)
                     {
@@ -79,7 +79,7 @@ namespace BlOO.Controllers
         {
             IdentityRole<int> role = new IdentityRole<int>();
             role.Name = "Admin";
-            IdentityResult result= await roleManager.CreateAsync(role);
+            IdentityResult result = await roleManager.CreateAsync(role);
             if (result.Succeeded)
             {
                 return true;//ملهمش لزمة لحد دلوقتي
@@ -110,7 +110,7 @@ namespace BlOO.Controllers
             }
 
             ApplicationUser UserFromDatabase = await userManager.FindByEmailAsync(UserFromLogin.Email);
-            if (UserFromDatabase == null) 
+            if (UserFromDatabase == null)
             {
                 return ReturnInvalidLogin(UserFromLogin);
             }
@@ -124,9 +124,9 @@ namespace BlOO.Controllers
 
             List<Claim> claims = new List<Claim>
             {
-            new Claim("imgUrl", UserFromDatabase.ProfileImageUrl ?? ""),
-            new Claim("FirstName", UserFromDatabase.FirstName ?? ""),
-            new Claim("LastName", UserFromDatabase.LastName ?? "")
+                new Claim("imgUrl", UserFromDatabase.ProfileImageUrl ?? ""),
+                new Claim("FirstName", UserFromDatabase.FirstName ?? ""),
+                new Claim("LastName", UserFromDatabase.LastName ?? "")
             };
 
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
@@ -135,7 +135,7 @@ namespace BlOO.Controllers
 
 
         ///////////////////////////////// Helper Methods /////////////////////////////////////////
-        
+
         // Helper Method for Invalid Logins
         private IActionResult ReturnInvalidLogin(LoginUserViewModel UserFromLogin)
         {

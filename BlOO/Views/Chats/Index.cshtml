@@ -22,21 +22,24 @@
 
 
             <div class="chats-list">
+
                 @foreach (var item in Model.Conversations)
                 {
-                    <div class="d-flex justify-content-between conversation-item">
-                        <div class="d-flex ">
-                            <img src="@item.UserImgURL" class="rounded-circle" />
-                            <div class="details-user">
-                                <h5>@item.FirstName @item.LastName</h5>
-                                <p class="justify-content-center">@item.LastMessage</p>
+                    <a asp-controller="Chats" asp-action="Chat" asp-route-id="@item.Id" class="chat-item">
+                        <div class="d-flex justify-content-between conversation-item">
+                            <div class="d-flex ">
+                                <img src="@item.UserImgURL" class="rounded-circle" />
+                                <div class="details-user">
+                                    <h5>@item.FirstName @item.LastName</h5>
+                                    <p class="justify-content-center">@item.LastMessage</p>
+                                </div>
+                            </div>
+
+                            <div class="date-place">
+                                <h6>@item.SendingDate</h6>
                             </div>
                         </div>
-
-                        <div class="date-place">
-                            <h6>@item.SendingDate</h6>
-                        </div>
-                    </div>
+                    </a>
                 }
 
                 @* **************** This Will remove after get data from database **********************************@
@@ -60,22 +63,22 @@
             <div class="chat-list-control d-flex justify-content-center align-items-center overflow-hidden">
 
                 <div class="d-flex justify-content-between align-items-center control-bar">
-                    
-                        <div class="d-flex control-btn justify-content-start align-items-center ">
-                            <button class="previous">
-                                <a style="border: navajowhite;background-color: transparent;" asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber - 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
-                                    <img src="~/assets/icons/previous.png" /> 
-                                </a>
-                            </button>
-                            <h6>Previous</h6>
-                        </div>
-                    
-                   
-                        <div class="d-flex control-btn justify-content-start align-items-center">
-                            <h6>Next</h6>
+
+                    <div class="d-flex control-btn justify-content-start align-items-center ">
+                        <button class="previous">
+                            <a style="border: navajowhite;background-color: transparent;" asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber - 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
+                                <img src="~/assets/icons/previous.png" />
+                            </a>
+                        </button>
+                        <h6>Previous</h6>
+                    </div>
+
+
+                    <div class="d-flex control-btn justify-content-start align-items-center">
+                        <h6>Next</h6>
                         <button class="next">
-                            <a  style="border: navajowhite;background-color: transparent;"asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber + 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
-                                 <img src="~/assets/icons/next.png" />
+                            <a style="border: navajowhite;background-color: transparent;" asp-action="Index" asp-route-pageNumber="@(ViewBag.PageNumber + 1)" asp-route-pageSize="@ViewBag.PageSize" class="btn btn-primary">
+                                <img src="~/assets/icons/next.png" />
                             </a>
                         </button>
                     </div>
@@ -113,7 +116,7 @@
                 <div id="messageArea"></div>
 
                 <div class="message-input-container">
-                    <input type="text" name="message" placeholder="Type a Message!" id="msgtext" class="form-control message-input" />
+                    <input type="text" name="message" placeholder="Type a Message!" id="MessageBox" class="form-control message-input" />
                     <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
                 </div>
 
@@ -125,34 +128,65 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 <script>
+    // Create Connection
+    var connection = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
 
-    var hub = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
-    //2) start Connection
-    hub.start().then(
-        function () {
-            console.log("Hub Connect opened Success");
+    // Test Connection
+    connection.start().then(function () {
+        console.log("Connected");
+    })
+    .catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    // connection.on("TestNewMsg", function (MSG){
+    //     console.log(MSG);
+    // });
+
+    function SendMessage(Model){
+        var NewMessage = $("#MessageBox").val();
+        $("#MessageBox").val("");
+
+        if(NewMessage == "") {
+            return;
         }
-    );
-    function SendMessage() {
-        var messageArea = document.getElementById("messageArea");
-        var msg = document.getElementById("msgtext").value;
 
-        hub.invoke("writeMessage", msg);
 
+        var newMessageObj = {
+            SenderId: @Model.Id,
+            ReceiverId: @Model.TargetUserId,
+            Message: NewMessage
+        };
+
+        connection.invoke("NewMessage" , newMessageObj).
+        catch(function (err) {
+                return console.error(err.toString());
+        });
     }
-    hub.on("NewMessage", function (text) {
-        var messageDiv = document.createElement("div");
-        messageDiv.className = "message-div";
+
+
+
+
+    // function SendMessage() {
+    //     var messageArea = document.getElementById("messageArea");
+    //     var msg = document.getElementById("msgtext").value;
+
+    //     hub.invoke("writeMessage", msg);
+
+    // }
+    // hub.on("NewMessage", function (text) {
+    //     var messageDiv = document.createElement("div");
+    //     messageDiv.className = "message-div";
         // if (IsReciver) {
         //     messageDiv.classList.add("message-style");
         // }
         // else {
         //     messageDiv.classList.remove("message-style");
         // }
-        messageDiv.innerHTML = <img src="/assets/icons/user.png" alt = "Alternate Text" /> <div style="width: 90%;" > <p>${ text } </p> </div >;
+        // messageDiv.innerHTML = <img src="/assets/icons/user.png" alt = "Alternate Text" /> <div style="width: 90%;" > <p>${ text } </p> </div >;
 
-        messageArea.appendChild(messageDiv);
-        document.getElementById("msgtext").value = "";
-    })
+    //     messageArea.appendChild(messageDiv);
+    //     document.getElementById("msgtext").value = "";
+    // })
 
 </script> 

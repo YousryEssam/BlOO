@@ -3,6 +3,7 @@
     public class ConversationViewModel
     {
 
+        public int Id { get; set; }
         public string UserImgURL { get; set; }
         public string FirstName { get; set; } = "Yousry";
         public string LastName { get; set; } = "Essam";

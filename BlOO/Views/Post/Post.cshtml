@@ -1,4 +1,5 @@
-﻿@model PostViewModel
+@model PostViewModel 
+@* @model List<PostViewModel> *@
 @{
     ViewData["Title"] = "Post";
 }
@@ -8,6 +9,7 @@
     </header>
 
 <partial name="_AddPosts" />
+
 
             @if (!string.IsNullOrEmpty(Model.ImgUrl))
             {
@@ -27,5 +29,19 @@
             <strong>@Model.CommentCount</strong>
         </div>
         <input type="text" placeholder="Add Comment" class="comment-input" />
+
     </div>
 </div>
+<a href="/Post/EditPost/@Model.Id" class="btn btn-primary">Edit</a>
+
+
+
+@* Edittttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt *@
+
+@* <div id="postContainer">
+    @foreach (var post in Model)
+    {
+        <partial name="_ShowPosts" model="post" />
+    }
+</div> *@
+

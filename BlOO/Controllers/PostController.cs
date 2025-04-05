@@ -9,7 +9,16 @@ namespace BlOO.Controllers
 {
     public class PostController : Controller
     {
-        [Authorize]     
+
+        
+
+        IPostRepository postRepository;
+        public PostController(IPostRepository postRepository)
+        {
+                this.postRepository = postRepository;
+        }
+        [Authorize]
+
         public IActionResult HomePage()
         {
             List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
@@ -31,12 +40,13 @@ namespace BlOO.Controllers
 
             }
             string? UserName = $"{User.FindFirst("FirstName")?.Value} {User.FindFirst("LastName")?.Value}";
-
+            
             postViewModel.UserName = UserName;
             postViewModel.UserImgUrl = User.FindFirst("imgUrl")?.Value;
 
             Post post = new Post()
             {
+               
                 UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value),
                 Content= postViewModel.Content,
                 ImgUrl = postViewModel.ImgUrl,
@@ -50,6 +60,62 @@ namespace BlOO.Controllers
             postRepository.Save();
 
             return PartialView("_ShowPosts", postViewModel);
+        }
+
+
+
+        public IActionResult Post()
+        {
+
+            PostViewModel postViewModel = new PostViewModel();
+            return View(postViewModel);
+        }
+
+        public IActionResult EditPost(int id)
+        {
+            var postRequest = postRepository.GetById(id);
+            if (postRequest == null)
+            {
+                return NotFound(); 
+            }
+
+            var postVM = new PostViewModel
+            {
+                Id = postRequest.Id,
+                Content = postRequest.Content,
+                ImgUrl = postRequest.ImgUrl,
+                LikeCount = postRequest.LikeCount,
+                CommentCount = postRequest.CommentCount,
+                RepostCount = postRequest.RepostCount,
+                UserName = postRequest.User?.UserName ,
+                UserImgUrl = postRequest.User?.ProfileImageUrl 
+            };
+
+            return View("EditPost", postVM);
+        }
+
+
+        [HttpPost]
+        public IActionResult SaveEditedPost(PostViewModel postVM)
+        {
+            var postFromDB = postRepository.GetById(postVM.Id);
+            if (postFromDB == null)
+            {
+                return NotFound(); 
+            }
+
+            if (ModelState.IsValid)
+            {
+                
+                postFromDB.Content = postVM.Content;
+                postFromDB.ImgUrl = postVM.ImgUrl;
+
+                postRepository.Save();
+
+                return RedirectToAction("Profile", "user");
+            }
+
+            return View("EditPost", postVM);
         }
 
 

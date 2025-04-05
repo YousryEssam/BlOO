@@ -9,6 +9,11 @@ namespace BlOO.Controllers
 {
     public class PostController : Controller
     {
+        IPostRepository postRepository;
+        public PostController(IPostRepository postRepository)
+        {
+            this.postRepository = postRepository;
+        }
         [Authorize]     
         public IActionResult HomePage()
         {

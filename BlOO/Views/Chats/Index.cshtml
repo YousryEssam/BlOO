@@ -22,21 +22,24 @@
 
 
             <div class="chats-list">
+
                 @foreach (var item in Model.Conversations)
                 {
-                    <div class="d-flex justify-content-between conversation-item">
-                        <div class="d-flex ">
-                            <img src="@item.UserImgURL" class="rounded-circle" />
-                            <div class="details-user">
-                                <h5>@item.FirstName @item.LastName</h5>
-                                <p class="justify-content-center">@item.LastMessage</p>
+                    <a asp-controller="Chats" asp-action="Chat" asp-route-id="@item.Id" class="chat-item">
+                        <div class="d-flex justify-content-between conversation-item">
+                            <div class="d-flex ">
+                                <img src="@item.UserImgURL" class="rounded-circle" />
+                                <div class="details-user">
+                                    <h5>@item.FirstName @item.LastName</h5>
+                                    <p class="justify-content-center">@item.LastMessage</p>
+                                </div>
+                            </div>
+
+                            <div class="date-place">
+                                <h6>@item.SendingDate</h6>
                             </div>
                         </div>
-
-                        <div class="date-place">
-                            <h6>@item.SendingDate</h6>
-                        </div>
-                    </div>
+                    </a>
                 }
 
                 @* **************** This Will remove after get data from database **********************************@

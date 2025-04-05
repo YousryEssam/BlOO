@@ -17,6 +17,10 @@
         margin: 5px;
     }
 
+.chat-item{
+    text-decoration : none;
+}
+
 .chats-list {
     height: 65vh;
     overflow-y: auto;

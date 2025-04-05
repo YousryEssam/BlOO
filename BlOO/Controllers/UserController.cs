@@ -43,78 +43,68 @@ namespace BlOO.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveEdit(EditProfileViewModel UserFromEdit)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View("EditProfile", UserFromEdit);
+
+            var userFromDb = await _UserManager.FindByEmailAsync(UserFromEdit.Email);
+            if (userFromDb == null)
+                return NotFound();
+
+            userFromDb.ProfileImageUrl = await UploadImageAsync(UserFromEdit.ProfileImage, "/assets/profile-pictures/default-user.jpg");
+            userFromDb.CoverImageUrl = await UploadImageAsync(UserFromEdit.CoverImage, "/assets/profile-covers/default-cover.jpg");
+            userFromDb.FirstName = UserFromEdit.FirstName;
+            userFromDb.LastName = UserFromEdit.LastName;
+            userFromDb.Bio = UserFromEdit.Bio;
+
+            var changePass = await _UserManager.ChangePasswordAsync(userFromDb, UserFromEdit.OldPassword, UserFromEdit.NewPassword);
+            if (!changePass.Succeeded)
             {
-                var userFromDb = await _UserManager.FindByEmailAsync(UserFromEdit.Email);
-                if (userFromDb != null)
+                foreach (var error in changePass.Errors)
                 {
-                    if (UserFromEdit.ProfileImage != null)
-                    {
-                        var profileImageFileName = Guid.NewGuid().ToString() + Path.GetExtension(UserFromEdit.ProfileImage.FileName);
-                        var profileImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profileImageFileName);
-
-                        using (var stream = new FileStream(profileImagePath, FileMode.Create))
-                        {
-                            await UserFromEdit.ProfileImage.CopyToAsync(stream);
-                        }
-
-                        userFromDb.ProfileImageUrl = "/uploads/" + profileImageFileName;
-                    }
-                    else if(string.IsNullOrEmpty(UserFromEdit.ProfileImageUrl))
-                    {
-                         userFromDb.ProfileImageUrl = "/assets/profile-pictures/default-user.jpg";
-                    }
-
-                    
-                    if (UserFromEdit.CoverImage != null)
-                    {
-                        var coverImageFileName = Guid.NewGuid().ToString() + Path.GetExtension(UserFromEdit.CoverImage.FileName);
-                        var coverImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", coverImageFileName);
-
-                        using (var stream = new FileStream(coverImagePath, FileMode.Create))
-                        {
-                            await UserFromEdit.CoverImage.CopyToAsync(stream);
-                        }
-
-                        userFromDb.CoverImageUrl = "/uploads/" + coverImageFileName;
-                    }
-                    else if (string.IsNullOrEmpty(UserFromEdit.CoverImageUrl))
-                    {
-                        userFromDb.CoverImageUrl = "/assets/profile-covers/default-cover.jpg";
-                    }
-
-
-                    userFromDb.FirstName = UserFromEdit.FirstName;
-                    userFromDb.LastName = UserFromEdit.LastName;
-                    userFromDb.Bio = UserFromEdit.Bio;
-
-                    
-                    var changePass = await _UserManager.ChangePasswordAsync(userFromDb, UserFromEdit.OldPassword, UserFromEdit.NewPassword);
-                    if (!changePass.Succeeded)
-                    {
-                        foreach (var error in changePass.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                    }
-
-                    var updateUser = await _UserManager.UpdateAsync(userFromDb);
-                    if (updateUser.Succeeded)
-                    {
-                        return RedirectToAction("Profile",new {id = UserFromEdit.Id});
-                    }
-
-                    foreach (var error in updateUser.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
+                    ModelState.AddModelError("", error.Description);
                 }
+                return View("EditProfile", UserFromEdit);
             }
+
+            var result = await _UserManager.UpdateAsync(userFromDb);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Profile", new { id = userFromDb.Id });
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
             return View("EditProfile", UserFromEdit);
         }
 
 
+
         ///////////////////////////////// Helper Methods /////////////////////////////////////////
+        private async Task<string> UploadImageAsync(IFormFile imageFile, string defaultImagePath)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return defaultImagePath;
+
+            if (imageFile.Length > 2 * 1024 * 1024)
+                return defaultImagePath;
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var extension = Path.GetExtension(imageFile.FileName).ToLower();
+            if (!allowedExtensions.Contains(extension))
+                return defaultImagePath;
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            return "/uploads/" + fileName;
+        }
 
     }
 }

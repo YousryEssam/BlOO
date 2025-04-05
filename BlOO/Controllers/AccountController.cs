@@ -110,7 +110,7 @@ namespace BlOO.Controllers
             }
 
             ApplicationUser UserFromDatabase = await userManager.FindByEmailAsync(UserFromLogin.Email);
-            if (UserFromDatabase == null) 
+            if (UserFromDatabase == null)
             {
                 return ReturnInvalidLogin(UserFromLogin);
             }
@@ -124,9 +124,9 @@ namespace BlOO.Controllers
 
             List<Claim> claims = new List<Claim>
             {
-            new Claim("imgUrl", UserFromDatabase.ProfileImageUrl ?? ""),
-            new Claim("FirstName", UserFromDatabase.FirstName ?? ""),
-            new Claim("LastName", UserFromDatabase.LastName ?? "")
+                new Claim("imgUrl", UserFromDatabase.ProfileImageUrl ?? ""),
+                new Claim("FirstName", UserFromDatabase.FirstName ?? ""),
+                new Claim("LastName", UserFromDatabase.LastName ?? "")
             };
 
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);

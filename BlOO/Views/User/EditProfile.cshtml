@@ -1,7 +1,8 @@
 ﻿@model BlOO.ViewModels.EditProfileViewModel
-
+@inject UserManager<ApplicationUser> UserManager;
 @{
     ViewData["Title"] = "EditProfile";
+    var user = await UserManager.GetUserAsync(User);
 }
 
 <html>
@@ -61,7 +62,7 @@
                         <input type="submit" value="Save" class="btn btn-success" />
                     </div>
                 </form>
-                <a asp-action="Profile" class="btn btn-outline-secondary">Back to Profile</a>
+            <a asp-action="Profile" asp-route-id="@user.Id" class="btn btn-outline-secondary">Back to Profile</a>
             </div>
         </div>
 

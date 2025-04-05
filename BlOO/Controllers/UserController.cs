@@ -1,8 +1,10 @@
 ﻿using BlOO.Repositories;
 using BlOO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlOO.Controllers
@@ -48,6 +50,7 @@ namespace BlOO.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveEdit(EditProfileViewModel UserFromEdit)
         {
+            ViewBag.Id = _UserManager.GetUserId(User);
             if (!ModelState.IsValid)
                 return View("EditProfile", UserFromEdit);
 

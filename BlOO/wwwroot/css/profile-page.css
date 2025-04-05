@@ -75,12 +75,12 @@
     justify-content: space-around;
 }
 
-.stat {
+.stat-profile-page {
     text-align: center;
     font-size: 14px;
 }
 
-    .stat i {
+    .stat-profile-page i {
         font-size: 18px;
         color: #333;
     }

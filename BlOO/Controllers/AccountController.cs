@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlOO.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace BlOO.Controllers
@@ -121,7 +122,13 @@ namespace BlOO.Controllers
                 return ReturnInvalidLogin(UserFromLogin);
             }
 
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new List<Claim>
+            {
+            new Claim("imgUrl", UserFromDatabase.ProfileImageUrl ?? ""),
+            new Claim("FirstName", UserFromDatabase.FirstName ?? ""),
+            new Claim("LastName", UserFromDatabase.LastName ?? "")
+            };
+
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
             return RedirectToAction("Profile", "User", new { id = UserFromDatabase.Id });
         }

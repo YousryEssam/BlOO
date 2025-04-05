@@ -12,6 +12,9 @@
         public string UserName { get; set; } = "User_Name";
         public string ProfileImageUrl { get; set; } = "/assets/profile-pictures/default-user.jpg";
         public string CoverImageUrl { get; set; } = "/assets/profile-covers/default-cover.jpg";
+
+        public List<PostViewModel> Posts { get; set; }
+
         public ProfileViewModel() { }
         public ProfileViewModel(ApplicationUser user)
         {

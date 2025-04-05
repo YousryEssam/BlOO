@@ -1,4 +1,5 @@
-﻿using BlOO.ViewModels;
+﻿using BlOO.Repositories;
+using BlOO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +12,15 @@ namespace BlOO.Controllers
         private UserManager<ApplicationUser> _UserManager;
         private RoleManager<IdentityRole<int>> _RoleManager;
         private SignInManager<ApplicationUser> _SignInManager;
+        IPostRepository postRepository;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager, IPostRepository postRepository)
         {
             _UserManager = userManager;
             _RoleManager = roleManager;
             _SignInManager = signInManager;
+            this.postRepository = postRepository;
+
         }
 
 
@@ -29,6 +33,7 @@ namespace BlOO.Controllers
                 return NotFound();
             }
             ProfileViewModel ProfileVM = new ProfileViewModel(applicationUser);
+            ProfileVM.Posts =  postRepository.GetAllPostsWithId(id);
             return View(ProfileVM);
         }
 

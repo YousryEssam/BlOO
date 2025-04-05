@@ -1,4 +1,4 @@
-﻿@model PostViewModel
+﻿@model List<PostViewModel>
 @{
     ViewData["Title"] = "Post";
 }
@@ -6,42 +6,12 @@
 <link rel="stylesheet" href="~/css/post-page.css" asp-append-version="true" />
 <header><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </header>
-<div class="in_mind d-flex justify-content-end gap-3">
-    <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo" width="50">
-    <input type="text" placeholder="What is in your mind?" class="searchBox" />
-    <button><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-</div>
 
-<div class="post_container">
-    <h2>Posts</h2>
-    <div class="post_card">
-        <div class="post_section">
-            <div class="post_card_section_head">
-                <div>
-                    <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
-                    <h3>@Model.UserName</h3>
-                </div>
-                <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
-            </div>
-            <p>Welcome to my new post</p>
+<partial name="_AddPosts" />
 
-            @if (!string.IsNullOrEmpty(Model.ImgUrl))
-            {
-                <img src="@Model.ImgUrl" class="post-image" />
-            }
-        </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="post-stats">
-        <div class="stat">
-            <i class="fa-regular fa-heart"></i>
-            <strong>@Model.LikeCount</strong>
-        </div>
-        <div class="stat">
-            <i class="fa-regular fa-comment-dots"></i>
-            <strong>@Model.CommentCount</strong>
-        </div>
-        <input type="text" placeholder="Add Comment" class="comment-input" />
-    </div>
+<div id="postContainer">
+    @foreach (var post in Model)
+    {
+        <partial name="_ShowPosts" model="post" />
+    }
 </div>

@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 namespace BlOO.Repositories
@@ -23,6 +24,43 @@ namespace BlOO.Repositories
         public List<Post> GetAll()
         {
             return blooContext.posts.ToList();
+        }
+
+   
+            public List<PostViewModel> GetAllPostsWithUsers()
+            {
+                List<PostViewModel> posts = blooContext.posts
+                    .Include(p => p.User) 
+                    .Select(p => new PostViewModel
+                    {
+                        UserName = p.User.FirstName + " " + p.User.LastName,
+                        UserImgUrl = p.User.ProfileImageUrl,
+                        Content = p.Content,
+                        ImgUrl = p.ImgUrl,
+                        LikeCount = p.LikeCount,
+                        CommentCount = p.CommentCount
+                    })
+                    .ToList();
+
+                return posts;
+            }
+        public List<PostViewModel> GetAllPostsWithId(int id)
+        {
+            List<PostViewModel> posts = blooContext.posts
+                .Include(p => p.User)
+                .Where(p => p.UserId==id)
+                .Select(p => new PostViewModel
+                {
+                    UserName = p.User.FirstName + " " + p.User.LastName,
+                    UserImgUrl = p.User.ProfileImageUrl,
+                    Content = p.Content,
+                    ImgUrl = p.ImgUrl,
+                    LikeCount = p.LikeCount,
+                    CommentCount = p.CommentCount
+                })
+                .ToList();
+
+            return posts;
         }
 
         public Post GetById(int id)

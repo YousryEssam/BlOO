@@ -9,6 +9,8 @@
     bool isFollower = false;
 }
 
+<link rel="stylesheet" href="~/css/post-page.css" asp-append-version="true" />
+
 <link rel="stylesheet" href="~/css/profile-page.css" asp-append-version="true" />
 
 @* ********************************** Profile info Section begin *************************************** *@
@@ -36,7 +38,7 @@
             {
                 if (isProfileOwner)
                 {
-                    <button class="btn btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit profile</button>
+                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit profile</a>
                 }
                 else
                 {
@@ -59,17 +61,17 @@
 
     <!-- Stats Section -->
     <div class="profile-stats">
-        <div class="stat">
+        <div class="stat-profile-page">
             <i class="fas fa-users"></i>
             <p>Followers</p>
             <strong> @Model.FollowersCount </strong>
         </div>
-        <div class="stat">
+        <div class="stat-profile-page">
             <i class="fas fa-user-friends"></i>
             <p>Following</p>
             <strong>@Model.FollowingCount</strong>
         </div>
-        <div class="stat">
+        <div class="stat-profile-page">
             <i class="fas fa-file-alt"></i>
             <p>Posts</p>
             <strong>@Model.PostCount</strong>
@@ -79,15 +81,33 @@
 </div>
 @* ********************************** Profile info Section end *************************************** *@
 
-@await Component.InvokeAsync("PostInput")
 
+@* **********************************Add post by partial view *************************************** *@
+<partial name="_AddPosts" />
 
 <div class="container">
     <h1 class="text-center">Posts</h1>
-    <div class="container bg-white h-100 posts rounded">
         @* <p>hello</p> *@
-    </div>
+        <div id="postContainer">
+
+            @if (Model.Posts != null)
+            {
+                @foreach (var post in Model.Posts)
+                {
+                    <partial name="_ShowPosts" model="post" />
+                }
+            }
+        </div>
+
 </div>
+ <script>
+     console.log(@Model);
+ </script>   
+
+
+@* ********************************** Add post by partial view end *************************************** *@
+
+
     
 
 @* <div class="container" >

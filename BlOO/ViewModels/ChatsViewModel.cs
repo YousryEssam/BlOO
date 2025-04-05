@@ -11,7 +11,8 @@
         public string Content { get; set; } = "How are you ?";
         public bool MessageSeen { get; set; } = false;
         public DateTime SendingDate { get; set; } = DateTime.UtcNow;
-
+        public ActiveChatViewModel ActiveChat { get; set; } = new ActiveChatViewModel();
+        public List<ConversationViewModel> Conversations { get; set; } = new List<ConversationViewModel>();
         public ChatsViewModel() { }
 
         public ChatsViewModel(ApplicationUser user)
@@ -21,14 +22,14 @@
             LastName = user.LastName;
             ProfileImageUrl = user.ProfileImageUrl;
         }
-        public ChatsViewModel(ApplicationUser user, int TargetUserId)
+        public ChatsViewModel(ApplicationUser user, ApplicationUser TargetUser)
         {
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
             ProfileImageUrl = user.ProfileImageUrl;
-            this.TargetUserId = TargetUserId;
-
+            this.TargetUserId = TargetUser.Id;
+            ActiveChat = new ActiveChatViewModel(TargetUser);
         }
     }
 }

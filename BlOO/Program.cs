@@ -18,9 +18,7 @@ namespace BlOO
 
             builder.Services.AddDbContext<BlooContext>( Contextbuilder => 
             {
-
-                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("Nourcs"));
-
+                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
             });
 
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();

@@ -95,3 +95,19 @@ li {
     height: 1.4rem;
     position: absolute;
 }
+.navbar-toggler-icon {
+    filter: invert(0%);
+}
+
+.collapse {
+    transition: height 0.3s ease-in-out;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.nav-item {
+    text-align: center;
+}

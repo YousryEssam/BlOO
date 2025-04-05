@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -31,6 +32,17 @@ namespace BlOO.Repositories
             return blooContext.follows.FirstOrDefault(f => f.Id == id);
         }
 
+
+        public async Task<List<int>> GetFollowedUsersAsync(int userId, int pageNumber, int pageSize)
+        {
+            return await blooContext.follows
+                .Where(f => f.FollowerId == userId)
+                .OrderBy(f => f.FollowingDate)  // لضمان ترتيب البيانات
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
+        }
         public void Insert(Follow entity)
         {
             blooContext.follows.Add(entity);

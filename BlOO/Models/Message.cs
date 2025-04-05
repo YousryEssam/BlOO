@@ -14,11 +14,11 @@ namespace BlOO.Models
 
         [Required]
         [ForeignKey(nameof(Receiver))]
-        public int ReceiverId { get; set; } 
+        public int ReceiverId { get; set; }
 
 
         [Required]
-        public string Content {  get; set; }
+        public string Content { get; set; } = "";
 
         public bool MessageSeen { get; set; } = false;
 

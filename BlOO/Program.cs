@@ -18,6 +18,8 @@ namespace BlOO
 
             builder.Services.AddDbContext<BlooContext>( Contextbuilder => 
             {
+                  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("MarlyCS"));
+
                   Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
             });
 

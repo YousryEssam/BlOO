@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using NuGet.Protocol;
 using BlOO.Repositories;
+using Microsoft.AspNetCore.SignalR;
+using BLOO.Hubs;
 
 namespace BlOO.Controllers
 {
@@ -12,12 +14,14 @@ namespace BlOO.Controllers
         private readonly IFollowRepository followRepository;
         private readonly IApplicationUserRepository applicationUser;
         private readonly IMessageRepository messageRepository;
+        private IHubContext<ChatMessageHub> ChatHubContext { get; }
 
         public ChatsController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            IFollowRepository followRepository, IApplicationUserRepository applicationUser, IMessageRepository messageRepository)
+            IFollowRepository followRepository, IApplicationUserRepository applicationUser, IMessageRepository messageRepository , IHubContext<ChatMessageHub> chatHubContext )
         {
             _UserManager = userManager;
             _SignInManager = signInManager;
+            ChatHubContext = chatHubContext;
             this.followRepository = followRepository;
             this.applicationUser = applicationUser;
             this.messageRepository = messageRepository;
@@ -26,7 +30,8 @@ namespace BlOO.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int pageNumber=1,int pageSize=3)
         {
-            if (pageNumber <= 1) {
+            if (pageNumber <= 1) 
+            {
                 pageNumber = 1;
             }
             ApplicationUser? user = await _UserManager.GetUserAsync(User);
@@ -69,7 +74,6 @@ namespace BlOO.Controllers
             ApplicationUser? user = await _UserManager.GetUserAsync(User);
             ApplicationUser? target = await _UserManager.FindByIdAsync(id.ToString());
             ChatsViewModel chatViewModel = new ChatsViewModel(user, target);
-
             return View("Index", chatViewModel);
         }
     }

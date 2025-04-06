@@ -21,17 +21,11 @@ public class HomeController : Controller
         _SignInManager = signInManager;
     }
 
-    public IActionResult Index()
-    {
-        if (!_SignInManager.IsSignedIn(User))
-        {
-            return RedirectToAction("Welcome");
-        }
-        return View();
-    }
+
 
     public IActionResult Welcome()
     {
+        ViewData["HideNavbar"] = "true";
         return View();
     }
 

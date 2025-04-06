@@ -4,7 +4,7 @@
 <form id="postForm" enctype="multipart/form-data" class="post-input-container">
     <img src="@User.FindFirst("imgUrl")?.Value" alt="Profile Picture" class="profile-img">
 
-    <input name="Content" type="text" class="post-input" placeholder="What is in your mind ?" onclick="openPost()" required>
+    <textarea name="Content" class="post-input" placeholder="What is in your mind ?" o onfocus="openPost()"></textarea>
 
     <label for="file-upload" class="upload-icon">
         <img src="~/assets/icons/upload-img.png" alt="Upload">

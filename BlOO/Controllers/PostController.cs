@@ -6,22 +6,31 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.IO;
 using BlOO.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlOO.Controllers
 {
     public class PostController : Controller
     {
         IPostRepository postRepository;
-        public PostController(IPostRepository postRepository)
+        private SignInManager<ApplicationUser> _SignInManager;
+
+        public PostController(IPostRepository postRepository, SignInManager<ApplicationUser> signInManager)
         {
             this.postRepository = postRepository;
+            _SignInManager = signInManager;
         }
 
         [Authorize]
         public IActionResult HomePage()
         {
-            List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
-            return View("Post", posts);
+            //if (!_SignInManager.IsSignedIn(User))
+            //{ }
+                List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
+                return View("Post", posts);
+            
+
+
         }
 
         [HttpPost]

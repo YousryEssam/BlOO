@@ -22,6 +22,7 @@ namespace BlOO.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewData["HideNavbar"] = "true";
             return View("Register");
         }
 
@@ -96,6 +97,7 @@ namespace BlOO.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
+            ViewData["HideNavbar"] = "true";
             return View("LogIn");
         }
 
@@ -130,7 +132,7 @@ namespace BlOO.Controllers
             };
 
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
-            return RedirectToAction("Profile", "User", new { id = UserFromDatabase.Id });
+            return RedirectToAction("HomePage", "Post", new { id = UserFromDatabase.Id });
         }
 
 

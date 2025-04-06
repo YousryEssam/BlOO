@@ -106,7 +106,7 @@
 
                     <div id="messageArea">
 
-                        <div class="chat-container">
+                        <div id="chat-container" class="chat-container">
                             @{
                                 foreach (var item in Model.OpenChat)
                                 {
@@ -134,7 +134,9 @@
 
                     <div class="message-input-container">
                         <input type="text" name="message" placeholder="Type a Message!" id="MessageBox" class="form-control message-input" />
-                        <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
+                        <button name="send" onclick="SendMessage()" class="send-button">
+                            <i class="fa-regular fa-paper-plane"></i>
+                        </button>
                     </div>
                 }
             }
@@ -144,11 +146,32 @@
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
+
+
 <script>
-    window.onload = function () {
-            var messageArea = document.getElementById("messageArea");
-            messageArea.scrollTop = messageArea.scrollHeight;
-        };
+       function GoToChatBottom() {
+        var messageArea = document.getElementById("messageArea");
+        messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    function NewMessageFromSender(messageContent) {
+        // Example values (replace with actual dynamic values as needed)
+        var profileImageUrl = '@Model.ProfileImageUrl'; // you can pass from Razor to JS
+
+        var senderMessageHtml = `
+        <div class="message-row sender">
+            <img src="${profileImageUrl}" alt="Sender" class="avatar">
+            <div class="message-bubble sender-bubble">${messageContent}</div>
+        </div>
+        `;
+
+        $("#chat-container").append(senderMessageHtml);
+
+        // Optional: scroll to bottom
+        //$("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+
+    }
+
     // Create Connection
     var connection = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
 
@@ -156,22 +179,21 @@
     connection.start().then(function () {
         console.log("Connected");
     })
-    .catch(function (err) {
-        return console.error(err.toString());
-    });
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
 
     // connection.on("TestNewMsg", function (MSG){
     //     console.log(MSG);
     // });
 
-    function SendMessage(Model){
+    function SendMessage(Model) {
         var NewMessage = $("#MessageBox").val();
         $("#MessageBox").val("");
 
-        if(NewMessage == "") {
+        if (NewMessage == "") {
             return;
         }
-
 
         var newMessageObj = {
             SenderId: @Model.Id,
@@ -179,35 +201,30 @@
             Message: NewMessage
         };
 
-        connection.invoke("NewMessage" , newMessageObj).
-        catch(function (err) {
+        connection.invoke("NewMessage", newMessageObj)
+            .catch(function (err) {
                 return console.error(err.toString());
-        });
+            }
+            );
+        NewMessageFromSender(NewMessage);
+        GoToChatBottom();
     }
 
 
 
 
-    // function SendMessage() {
-    //     var messageArea = document.getElementById("messageArea");
-    //     var msg = document.getElementById("msgtext").value;
 
-    //     hub.invoke("writeMessage", msg);
+    /////////////////////////////////////////
+    window.onload = function () {
+        GoToChatBottom();
+    };
 
-    // }
-    // hub.on("NewMessage", function (text) {
-    //     var messageDiv = document.createElement("div");
-    //     messageDiv.className = "message-div";
-        // if (IsReciver) {
-        //     messageDiv.classList.add("message-style");
-        // }
-        // else {
-        //     messageDiv.classList.remove("message-style");
-        // }
-        // messageDiv.innerHTML = <img src="/assets/icons/user.png" alt = "Alternate Text" /> <div style="width: 90%;" > <p>${ text } </p> </div >;
+    $(".message-input").keydown(function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            SendMessage();
+        }
+    });
 
-    //     messageArea.appendChild(messageDiv);
-    //     document.getElementById("msgtext").value = "";
-    // })
 
 </script> 

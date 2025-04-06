@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -50,12 +51,16 @@ namespace BlOO.Repositories
             return blooContext.messages
                 .Where(m => (m.SenderId == senderID && m.ReceiverId == receiverID) ||
                             (m.SenderId == receiverID && m.ReceiverId == senderID))
-                .OrderByDescending(m => m.SendingDate) // ترتيب تنازلي حسب أحدث رسالة
-                .FirstOrDefault(); // استخدام FirstOrDefault بدلاً من LastOrDefault
+                .OrderByDescending(m => m.SendingDate)
+                .FirstOrDefault();
         }
-      
 
+        public List<Message> GetChatMessages(int senderID, int reciverID)
+        {
+            return blooContext.messages.
+                Where(msg => (msg.SenderId == senderID && msg.ReceiverId == reciverID) || (msg.SenderId == reciverID && msg.ReceiverId == senderID)).
+                OrderBy(msg => msg.SendingDate).AsNoTracking().ToList();
 
-
+        }
     }
 }

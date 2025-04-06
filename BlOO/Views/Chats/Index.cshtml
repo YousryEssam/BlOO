@@ -3,7 +3,8 @@
     ViewData["Title"] = "Chats";
 }
 
-<link rel="stylesheet" href="~/css/chats-page.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/chats.css" asp-append-version="true" />
+
 
 
 <div class="container-fluid">
@@ -23,40 +24,27 @@
 
             <div class="chats-list">
 
-                @foreach (var item in Model.Conversations)
-                {
-                    <a asp-controller="Chats" asp-action="Chat" asp-route-id="@item.Id" class="chat-item">
-                        <div class="d-flex justify-content-between conversation-item">
-                            <div class="d-flex ">
-                                <img src="@item.UserImgURL" class="rounded-circle" />
-                                <div class="details-user">
-                                    <h5>@item.FirstName @item.LastName</h5>
-                                    <p class="justify-content-center">@item.LastMessage</p>
+                @{
+                    foreach (var item in Model.Conversations)
+                    {
+                        <a asp-controller="Chats" asp-action="Chat" asp-route-id="@item.Id" class="chat-item">
+                            <div class="d-flex justify-content-between conversation-item">
+                                <div class="d-flex ">
+                                    <img src="@item.UserImgURL" class="rounded-circle" />
+                                    <div class="details-user">
+                                        <h5>@item.FirstName @item.LastName</h5>
+                                        <p class="justify-content-center">@item.LastMessage</p>
+                                    </div>
+                                </div>
+
+                                <div class="date-place">
+                                    <h6>@item.SendingDate</h6>
                                 </div>
                             </div>
-
-                            <div class="date-place">
-                                <h6>@item.SendingDate</h6>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
+                    }
                 }
 
-                @* **************** This Will remove after get data from database **********************************@
-                @*     @for (var i = 1; i <= 6; i++)
-                {
-
-                <div class="d-flex justify-content-around conversation-item">
-                <img src="@Model.ProfileImageUrl" class="rounded-circle" />
-                <div class="details-user">
-                <h5>@Model.FirstName @Model.LastName</h5>
-                <p>@Model.Content</p>
-                </div>
-                <div class="date-place">
-                <h6>@Model.SendingDate</h6>
-                </div>
-                </div>
-                } *@
             </div>
 
 
@@ -90,36 +78,65 @@
 
         @* Open Chat Container *@
         <div class="col-8 active-chat">
-            @if (Model.TargetUserId == 0)
-            {
+            @{
                 @* if no chat is active *@
-                <div class="container d-flex justify-content-center align-items-center vh-100 text-black">
-                    <div class="text-center">
-                        <h3 class="mt-3 fw-semibold">BlOO Chats</h3>
-                        <p class="text-muted">Send and receive messages with your friends.</p>
-                        <p class="text-muted small"><i class="bi bi-lock"></i> End-to-end encrypted</p>
+                if (Model.TargetUserId == 0)
+                {
+                    <div class="container d-flex justify-content-center align-items-center vh-100 text-black">
+                        <div class="text-center">
+                            <h3 class="mt-3 fw-semibold">BlOO Chats</h3>
+                            <p class="text-muted">Send and receive messages with your friends.</p>
+                            <p class="text-muted small"><i class="bi bi-lock"></i> End-to-end encrypted</p>
+                        </div>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="d-flex justify-content-between align-items-center chats-list-header">
-                    <div class="user_info">
-                        <img src="@Model.ActiveChat.ProfileImageUrl" />
-                        <h4>@Model.ActiveChat.FirstName @Model.ActiveChat.LastName</h4>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-between align-items-center chats-list-header">
+                        <div class="user_info">
+                            <img src="@Model.ActiveChat.ProfileImageUrl" />
+                            <h4>@Model.ActiveChat.FirstName @Model.ActiveChat.LastName</h4>
+                        </div>
+                        <div>
+                            <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.ActiveChat.Id" class="btn btn_profile">
+                                View Profile
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.ActiveChat.Id" class="btn btn_profile">View Profile</a>
+
+                    <div id="messageArea">
+
+                        <div class="chat-container">
+                            @{
+                                foreach (var item in Model.OpenChat)
+                                {
+                                    if (item.SenderId == Model.Id)
+                                    {
+                                        <!-- Sender Message -->
+                                        <div class="message-row sender">
+                                            <img src="@Model.ProfileImageUrl" alt="Sender" class="avatar">
+                                            <div class="message-bubble sender-bubble">@item.Content </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <!-- Receiver Message -->
+                                        <div class="message-row receiver">
+                                            <div class="message-bubble receiver-bubble">@item.Content</div>
+                                            <img src="@Model.ReciverImageURL" alt="Receiver" class="avatar">
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                       
                     </div>
-                </div>
 
-                <div id="messageArea"></div>
-
-                <div class="message-input-container">
-                    <input type="text" name="message" placeholder="Type a Message!" id="MessageBox" class="form-control message-input" />
-                    <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
-                </div>
-
+                    <div class="message-input-container">
+                        <input type="text" name="message" placeholder="Type a Message!" id="MessageBox" class="form-control message-input" />
+                        <button name="send" onclick="SendMessage()" class="send-button"><i class="fa-regular fa-paper-plane"></i> </button>
+                    </div>
+                }
             }
         </div>
     </div>
@@ -128,6 +145,10 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 <script>
+    window.onload = function () {
+            var messageArea = document.getElementById("messageArea");
+            messageArea.scrollTop = messageArea.scrollHeight;
+        };
     // Create Connection
     var connection = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
 

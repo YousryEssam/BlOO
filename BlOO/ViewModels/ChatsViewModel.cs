@@ -7,8 +7,10 @@
         public string FirstName { get; set; } = "Madonna";
         public string LastName { get; set; } = "Hany";
         public string ProfileImageUrl { get; set; } = "/assets/icons/user.png";
-        [Required]
-        public string Content { get; set; } = "How are you ?";
+        public string ReciverImageURL { get; set; }
+        //[Required]
+        //public string Content { get; set; } = "How are you ?";
+        public List<Message>? OpenChat {  get; set; }
         public bool MessageSeen { get; set; } = false;
         public DateTime SendingDate { get; set; } = DateTime.UtcNow;
         public ActiveChatViewModel ActiveChat { get; set; } = new ActiveChatViewModel();
@@ -30,6 +32,7 @@
             ProfileImageUrl = user.ProfileImageUrl;
             this.TargetUserId = TargetUser.Id;
             ActiveChat = new ActiveChatViewModel(TargetUser);
+            ReciverImageURL = TargetUser.ProfileImageUrl;
         }
     }
 }

@@ -62,6 +62,7 @@ namespace BlOO.Controllers
             if (target != null)
             {
                 chatViewModel = new ChatsViewModel(user, target);
+                chatViewModel.OpenChat = messageRepository.GetChatMessages(user.Id, target.Id);
             }
             else
             {

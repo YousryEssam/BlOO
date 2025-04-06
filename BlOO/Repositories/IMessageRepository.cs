@@ -4,6 +4,7 @@ namespace BlOO.Repositories
 {
     public interface IMessageRepository: IGenericRepository<Message>
     {
-       public Message getLastMessage(int senderID,int reciverID);
+        Message getLastMessage(int senderID,int reciverID);
+        List<Message> GetChatMessages(int senderID, int reciverID);
     }
 }

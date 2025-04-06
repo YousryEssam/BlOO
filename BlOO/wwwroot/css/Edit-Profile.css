@@ -4,6 +4,61 @@
     padding: 0;
 }
 
+.editlayout {
+    background-color: white;
+    max-width: 900px;
+    justify-items: center;
+    padding: 0.5rem;
+    margin: 0.5rem auto;
+    border-radius: 20px;
+}
+
+    .editlayout:hover, .editlayout:focus {
+        box-shadow: 0 0 10px 2px #6482AD;
+    }
+
+.title {
+    text-align: center;
+    padding: 1rem;
+    background-color: #6482AD;
+    border-radius: 12px;
+    color: white;
+}
+
 .form-group {
-    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    gap: 2rem;
+}
+
+    .form-group label {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .form-group input {
+        flex: 2;
+        max-width: 100%;
+    }
+
+.btnsubmit {
+    background-color: #6482AD;
+    border: 1px solid #E2DAD6;
+    box-shadow: 5px 5px 18px #E2DAD6;
+    color: #E2DAD6;
+    max-width: 35% !important;
+}
+
+    .btnsubmit:hover {
+        background-color: #E2DAD6;
+        border: 1px solid #6482AD;
+        box-shadow: 3px 3px 5px #6482AD;
+        color: #6482AD;
+    }
+
+.btns {
+    justify-content: normal;
 }

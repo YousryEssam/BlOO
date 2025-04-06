@@ -91,12 +91,12 @@ namespace BlOO.Controllers
                     LastMessage = message?.Content ?? "No messages yet",
                     SendingDate = message?.SendingDate ?? DateTime.UtcNow
                 });
-
-                ViewBag.PageNumber = pageNumber;
-                ViewBag.PageSize = pageSize;
-                ViewBag.HasNextPage = followsIDs.Count == pageSize;
-                ViewBag.HasPreviousPage = pageNumber > 1;
             }
+            chatViewModel.Conversations = chatViewModel.Conversations.OrderByDescending(c => c.SendingDate).ToList();
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.HasNextPage = followsIDs.Count == pageSize;
+            ViewBag.HasPreviousPage = pageNumber > 1;
             return chatViewModel;
         }
     }

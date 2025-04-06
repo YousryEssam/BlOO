@@ -24,6 +24,11 @@ namespace BLOO.Hubs
             NewMessage.ReceiverId = message.ReceiverId;
             _messageRepository.Insert(NewMessage);
             _messageRepository.Save();
+
+            int temp = message.ReceiverId;
+            message.ReceiverId = message.SenderId;
+            message.SenderId = temp;
+            Clients.AllExcept(Context.ConnectionId).SendAsync("ReceiveNewMessage", message);
         }
 
         //[Authorize]

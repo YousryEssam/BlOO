@@ -149,51 +149,54 @@
 
 
 <script>
-       function GoToChatBottom() {
+    function GoToChatBottom() {
         var messageArea = document.getElementById("messageArea");
         messageArea.scrollTop = messageArea.scrollHeight;
     }
 
     function NewMessageFromSender(messageContent) {
-        // Example values (replace with actual dynamic values as needed)
-        var profileImageUrl = '@Model.ProfileImageUrl'; // you can pass from Razor to JS
+        var profileImageUrl = '@Model.ProfileImageUrl';
 
         var senderMessageHtml = `
-        <div class="message-row sender">
-            <img src="${profileImageUrl}" alt="Sender" class="avatar">
-            <div class="message-bubble sender-bubble">${messageContent}</div>
-        </div>
+            <div class="message-row sender">
+                <img src="${profileImageUrl}" alt="Sender" class="avatar">
+                <div class="message-bubble sender-bubble">${messageContent}</div>
+            </div>
         `;
-
         $("#chat-container").append(senderMessageHtml);
-
-        // Optional: scroll to bottom
-        //$("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
-
     }
 
-    // Create Connection
+    function NewMessageFromReceiver(messageContent) {
+        var profileImageUrl = '@Model.ReciverImageURL';
+        var receiverMessageHtml = `
+            <div class="message-row receiver">
+                <div class="message-bubble receiver-bubble">${messageContent}</div>
+                <img src="${profileImageUrl}" alt="Receiver" class="avatar">
+            </div>
+        `;
+        $("#chat-container").append(receiverMessageHtml);
+    }
+
     var connection = new signalR.HubConnectionBuilder().withUrl("/ChatMessage").build();
 
-    // Test Connection
     connection.start().then(function () {
         console.log("Connected");
-    })
-        .catch(function (err) {
-            return console.error(err.toString());
-        });
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
 
-    // connection.on("TestNewMsg", function (MSG){
-    //     console.log(MSG);
-    // });
+    connection.on("ReceiveNewMessage", function (msg) {
+        if (msg.senderId == @Model.Id && msg.receiverId == @Model.TargetUserId) {
+            NewMessageFromReceiver(msg.message);
+            GoToChatBottom();
+        }
+    });
 
-    function SendMessage(Model) {
+    function SendMessage() {
         var NewMessage = $("#MessageBox").val();
         $("#MessageBox").val("");
 
-        if (NewMessage == "") {
-            return;
-        }
+        if (NewMessage === "") return;
 
         var newMessageObj = {
             SenderId: @Model.Id,
@@ -201,23 +204,17 @@
             Message: NewMessage
         };
 
-        connection.invoke("NewMessage", newMessageObj)
-            .catch(function (err) {
+        connection.invoke("NewMessage", newMessageObj).catch(function (err) 
+            {    
                 return console.error(err.toString());
             }
-            );
+        );
+
         NewMessageFromSender(NewMessage);
         GoToChatBottom();
     }
 
-
-
-
-
-    /////////////////////////////////////////
-    window.onload = function () {
-        GoToChatBottom();
-    };
+    window.onload = GoToChatBottom;
 
     $(".message-input").keydown(function (e) {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -225,6 +222,5 @@
             SendMessage();
         }
     });
-
 
 </script> 

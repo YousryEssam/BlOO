@@ -1,5 +1,13 @@
 ﻿@model PostViewModel
 
+<style>
+    .dots {
+      font-size: 15px;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+</style>
+
 <div class="post_container">
     <div class="post_card">
         <div class="post_section">
@@ -8,10 +16,15 @@
                     <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
                     <h3>@Model.UserName</h3>
                 </div>
-
-                <a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
+                <div class="dropdown">
+                    <button class="btn btn-light border-0" type="button" data-bs-toggle="dropdown">
+                        <span class="dots">⋯</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="dropdown-item">Edit</a></li>
+                        <li><a class="dropdown-item" href="#">Report</a></li>
+                    </ul>
+                </div>
 
             </div>
             <p>@Model.Content</p>
@@ -35,5 +48,7 @@
             <strong>@Model.CommentCount</strong>
         </div>
         <input type="text" placeholder="Add Comment" class="comment-input" />
+
     </div>
+
 </div>

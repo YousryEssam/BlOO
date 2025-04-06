@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.IO;
 
 namespace BlOO.Controllers
 {
@@ -36,7 +37,7 @@ namespace BlOO.Controllers
                 {
                     Image.CopyTo(fileStream);
                 }
-                postViewModel.ImgUrl = "/assets/post-pictures/" + uniqueFileName;
+                postViewModel.ImgUrl = uniqueFileName;
 
             }
             string? UserName = $"{User.FindFirst("FirstName")?.Value} {User.FindFirst("LastName")?.Value}";
@@ -95,12 +96,35 @@ namespace BlOO.Controllers
 
 
         [HttpPost]
-        public IActionResult SaveEditedPost(PostViewModel postVM)
+        public IActionResult SaveEditedPost(PostViewModel postVM, IFormFile Image)
         {
             var postFromDB = postRepository.GetById(postVM.Id);
             if (postFromDB == null)
             {
                 return NotFound(); 
+            }
+
+            if (Image != null)
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/post-pictures");
+
+                if (!string.IsNullOrEmpty(postFromDB.ImgUrl))
+                {
+                    string oldImagePath = Path.Combine(uploadsFolder, postFromDB.ImgUrl);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                    }
+                }
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    Image.CopyTo(fileStream);
+                }
+                postVM.ImgUrl = uniqueFileName;
+
             }
 
             if (ModelState.IsValid)

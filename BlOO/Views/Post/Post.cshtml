@@ -1,5 +1,4 @@
-@model PostViewModel 
-@* @model List<PostViewModel> *@
+@model List<PostViewModel>
 @{
     ViewData["Title"] = "Post";
 }
@@ -12,34 +11,35 @@
 <partial name="_AddPosts" />
 
 
-@if (!string.IsNullOrEmpty(Model.ImgUrl))
-{
-    <img src="@Model.ImgUrl" class="post-image" />
-}
-
-<!-- Stats Section -->
-<div class="post-stats">
-    <div class="stat">
-        <i class="fa-regular fa-heart"></i>
-        <strong>@Model.LikeCount</strong>
-    </div>
-    <div class="stat">
-        <i class="fa-regular fa-comment-dots"></i>
-        <strong>@Model.CommentCount</strong>
-    </div>
-    <input type="text" placeholder="Add Comment" class="comment-input" />
-
+<div id="postContainer">
+    @foreach (var post in Model)
+    {
+        <partial name="_PostComponent" model="post" />
+    }
 </div>
-<a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="chat-item">Edit </a>
+
+
+
+@* @if (!string.IsNullOrEmpty(Model.ImgUrl)) *@
+@* { *@
+@*     <img src="@Model.ImgUrl" class="post-image" /> *@
+@* } *@
+
+@* <!-- Stats Section --> *@
+@* <div class="post-stats"> *@
+@*     <div class="stat"> *@
+@*         <i class="fa-regular fa-heart"></i> *@
+@*         <strong>@Model.LikeCount</strong> *@
+@*     </div> *@
+@*     <div class="stat"> *@
+@*         <i class="fa-regular fa-comment-dots"></i> *@
+@*         <strong>@Model.CommentCount</strong> *@
+@*     </div> *@
+@*     <input type="text" placeholder="Add Comment" class="comment-input" /> *@
+
+@* </div> *@
+@* <a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="chat-item">Edit </a> *@
 @* <a href="/Post/EditPost/@Model.Id" class="btn btn-primary">Edit</a> *@
 
 
 @* Edittttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt *@
-
-@* <div id="postContainer">
-    @foreach (var post in Model)
-    {
-        <partial name="_ShowPosts" model="post" />
-    }
-</div> *@
-

@@ -4,23 +4,75 @@
     ViewData["Title"] = "Edit Post";
 }
 
-<link rel="stylesheet" href="/css/EditPost.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Add&EditPost.css" asp-append-version="true" />
 
-<h2>Edit Post</h2>
+@* <link rel="stylesheet" href="/css/EditPost.css" asp-append-version="true" /> *@
 
-<div class="edit-post-container">
-    <form asp-controller="Post" asp-action="SaveEditedPost" method="post" enctype="multipart/form-data">
-        <span asp-validation-for="Content" class="text-danger"></span>
-        <input type="hidden" asp-for="Id" value="@Model.Id" />
-        <input type="hidden" asp-for="OwnerId" value="@Model.OwnerId" />
+<h2 class="edit-post-title">Edit Post</h2>
 
-        <div class="form-group">
-            <label asp-for="Content">Post Content</label>
-            <textarea asp-for="Content" class="form-control"></textarea>
+
+    <form id="postForm" class="post-input-container" asp-controller="Post" asp-action="SaveEditedPost" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <input type="hidden" asp-for="OwnerId" value="@Model.OwnerId" />
+    <img src="@User.FindFirst("imgUrl")?.Value" alt="Profile Picture" class="profile-img">
+
+    <textarea asp-for="Content" class="post-input" onfocus="openPost()"></textarea>
+ 
+    <label  for="file-upload" class="upload-icon">
+        <img src="~/assets/icons/upload-img.png" alt="Upload">
+    </label>
+    <input name="Image" id="file-upload" type="file" class="d-none" accept="image/*">
+
+    <span asp-validation-for="Content" class="text-danger"></span>
+
+    <div class="form-actions">
+        <button type="submit" class="add-post-btn">Save Changes</button>
+        <a href="javascript:history.back()" class="cancel-btn">Cancel edit</a>
+    </div>
+
+   
+</form>
+
+ <div class="post-input-container" style="text-align:center;">
+    @if (!string.IsNullOrEmpty(Model.ImgUrl))
+    {
+        <div class="post-image-container" style="display: flex; justify-content: center; align-items: center; width: 100%; height: auto;">
+            <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image"  />
         </div>
-        <div class="form-group">
-            <label asp-for="ImgUrl">New Image</label>
-            <input asp-for="ImgUrl" class="form-control" />
+    }
+
+</div>
+
+
+<div class="overlay" id="overlay" onclick="closePost()"></div>
+
+
+<script>
+    function openPost() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("postForm").classList.add("expanded");
+    }
+
+    function closePost() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("postForm").classList.remove("expanded");
+    }
+
+</script>
+
+    @* <div class="edit-post-container"> *@
+    @* <form asp-controller="Post" asp-action="SaveEditedPost" method="post" enctype="multipart/form-data"> *@
+    @*     <span asp-validation-for="Content" class="text-danger"></span> *@
+    @*     <input type="hidden" asp-for="Id" value="@Model.Id" /> *@
+    @*     <input type="hidden" asp-for="OwnerId" value="@Model.OwnerId" /> *@
+
+    @*     <div class="form-group"> *@
+    @*         <label asp-for="Content">Post Content</label> *@
+    @*         <textarea asp-for="Content" class="form-control"></textarea> *@
+    @*     </div> *@
+    @*     <div class="form-group"> *@
+    @*         <label asp-for="ImgUrl">New Image</label> *@
+    @*         <input asp-for="ImgUrl" class="form-control" /> *@
 
             @* <label>New Image</label> *@
             @* <label for="file-upload" class="upload-icon"> *@
@@ -28,14 +80,14 @@
             @* </label> *@
             @* <input name="Image" id="file-upload" type="file" class="d-none" accept="image/*"> *@
 
-        </div>
+@*         </div> *@
 
-        <div class="form-actions">
-            <button type="submit" class="btn btnSave ">Save Changes</button>
-            <a href="javascript:history.back()" class="btn btn-secondary">
-                Cancel edit
-            </a>
-        </div>
+@*         <div class="form-actions"> *@
+@*             <button type="submit" class="btn btnSave ">Save Changes</button> *@
+@*             <a href="javascript:history.back()" class="btn btn-secondary"> *@
+@*                 Cancel edit *@
+@*             </a> *@
+@*         </div> *@
 
-    </form>
-</div>
+@*     </form> *@
+@* </div> *@

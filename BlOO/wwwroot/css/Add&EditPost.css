@@ -106,11 +106,13 @@
     cursor: pointer;
     text-decoration: none;
     transition: all 0.3s;
+    margin:4px;
 }
 
     .cancel-btn:hover {
         background: #f8f8f8;
         border-color: #aaa;
+
     }
 
 

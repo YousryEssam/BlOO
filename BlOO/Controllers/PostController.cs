@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.IO;
+using BlOO.Models;
 
 namespace BlOO.Controllers
 {
@@ -59,6 +60,8 @@ namespace BlOO.Controllers
 
             postRepository.Insert(post);
             postRepository.Save();
+
+            postViewModel.Id = post.Id;
 
             return PartialView("_PostComponent", postViewModel);
         }

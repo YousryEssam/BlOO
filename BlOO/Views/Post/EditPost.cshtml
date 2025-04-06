@@ -32,17 +32,14 @@
 
    
 </form>
-
- <div class="post-input-container" style="text-align:center;">
-    @if (!string.IsNullOrEmpty(Model.ImgUrl))
+ @if (!string.IsNullOrEmpty(Model.ImgUrl))
     {
-        <div class="post-image-container" style="display: flex; justify-content: center; align-items: center; width: 100%; height: auto;">
-            <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image"  />
+    <div class="post-input-container" style="text-align:center; width: 80%;">
+        <div class="post-image-container" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image" style="max-width: 100%; height: auto;" />
         </div>
+    </div>
     }
-
-</div>
-
 
 <div class="overlay" id="overlay" onclick="closePost()"></div>
 

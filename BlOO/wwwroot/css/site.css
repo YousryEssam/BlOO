@@ -19,5 +19,5 @@ html {
 
 body {
     margin-bottom: 5rem;
-    background-color: #F5EDED !important;
+    background: linear-gradient(135deg, #f6f7f9 0%, #e9ecef 100%) !important;
 }

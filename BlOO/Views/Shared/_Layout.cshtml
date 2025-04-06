@@ -30,7 +30,7 @@
             <div class="container-fluid">
                 <!-- Logo + Search -->
                 <div class="d-flex align-items-center">
-                    <a class="navbar-brand d-flex align-items-center" href="#">
+                    <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
                         <img src="~/assets/logo/Logo-only.png" class="rounded-circle logo-img" alt="BlOO Logo" />
                     </a>
                     <div class="group search-box d-none d-lg-flex" title="Search">
@@ -51,7 +51,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
                                 <img src="~/assets/icons/home-button-icon.svg" class="nav-hover icon-img" />
                             </a>
                         </li>

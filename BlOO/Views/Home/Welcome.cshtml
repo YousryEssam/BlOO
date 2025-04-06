@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Welcome";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HeroUI Chat - App</title>
+
+    <!-- Link to your CSS file -->
+    <link href="~/css/welcome.css" rel="stylesheet" />
+</head>
+<body class="h-full min-h-screen">
+    <div id="root" class="new-container">
+        <div class="card">
+            <i class="sparkle-icon"><img src="~/assets/logo/Logo-only.png" alt="Alternate Text" style="width : 120px;" /></i>
+            <div class="title">Welcome to BlOO!</div>
+            <div class="subtitle">Join our community or sign in to your account.</div>
+
+            <div class="buttons">
+                <button class="btn primary" onclick="location.href='@Url.Action("Login", "Account")'">
+                    <span class="icon">🔑</span> Login
+                </button>
+                <button class="btn secondary" onclick="location.href='@Url.Action("Register", "Account")'">
+                    <span class="icon">📝</span> Register
+                </button>
+            </div>
+            <p class="terms">By signing up, you agree to our terms of service.</p>
+        </div>
+    </div>
+    <script src="~/js/welcome.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BlOO.Models;
 using BlOO.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlOO.Controllers;
 
@@ -9,12 +10,27 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    private UserManager<ApplicationUser> _UserManager;
+    private RoleManager<IdentityRole<int>> _RoleManager;
+    private SignInManager<ApplicationUser> _SignInManager;
+    public HomeController(ILogger<HomeController> logger , UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager)
     {
         _logger = logger;
+        _UserManager = userManager;
+        _RoleManager = roleManager;
+        _SignInManager = signInManager;
     }
 
     public IActionResult Index()
+    {
+        if (!_SignInManager.IsSignedIn(User))
+        {
+            return RedirectToAction("Welcome");
+        }
+        return View();
+    }
+
+    public IActionResult Welcome()
     {
         return View();
     }

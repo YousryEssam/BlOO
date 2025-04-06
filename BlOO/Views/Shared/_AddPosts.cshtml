@@ -1,4 +1,5 @@
-﻿<form id="postForm" enctype="multipart/form-data" class="post-input-container">
+﻿
+<form id="postForm" enctype="multipart/form-data" class="post-input-container">
     <img src="@User.FindFirst("imgUrl")?.Value" alt="Profile Picture" class="profile-img">
 
     <input name="Content" type="text" class="post-input" placeholder="What is in your mind ?" onclick="openPost()" required>

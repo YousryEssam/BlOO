@@ -11,10 +11,10 @@ namespace BlOO.Controllers
 {
     public class UserController : Controller
     {
+        private IPostRepository postRepository;
         private UserManager<ApplicationUser> _UserManager;
         private RoleManager<IdentityRole<int>> _RoleManager;
         private SignInManager<ApplicationUser> _SignInManager;
-        IPostRepository postRepository;
 
         public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager, IPostRepository postRepository)
         {
@@ -22,7 +22,6 @@ namespace BlOO.Controllers
             _RoleManager = roleManager;
             _SignInManager = signInManager;
             this.postRepository = postRepository;
-
         }
 
 
@@ -35,7 +34,8 @@ namespace BlOO.Controllers
                 return NotFound();
             }
             ProfileViewModel ProfileVM = new ProfileViewModel(applicationUser);
-            ProfileVM.Posts = postRepository.GetAllPostsWithId(id);
+            ProfileVM.Posts = postRepository.GetAllPostsWithId(applicationUser.Id);
+            ProfileVM.PostCount = ProfileVM.Posts.Count;
             return View(ProfileVM);
         }
 

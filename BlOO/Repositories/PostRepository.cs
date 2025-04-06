@@ -1,6 +1,4 @@
-﻿using BlOO.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -26,24 +24,26 @@ namespace BlOO.Repositories
             return blooContext.posts.ToList();
         }
 
-   
-            public List<PostViewModel> GetAllPostsWithUsers()
-            {
-                List<PostViewModel> posts = blooContext.posts
-                    .Include(p => p.User) 
-                    .Select(p => new PostViewModel
-                    {
-                        UserName = p.User.FirstName + " " + p.User.LastName,
-                        UserImgUrl = p.User.ProfileImageUrl,
-                        Content = p.Content,
-                        ImgUrl = p.ImgUrl,
-                        LikeCount = p.LikeCount,
-                        CommentCount = p.CommentCount
-                    })
-                    .ToList();
 
-                return posts;
-            }
+        public List<PostViewModel> GetAllPostsWithUsers()
+        {
+            List<PostViewModel> posts = blooContext.posts
+                .Include(p => p.User)
+                .Select(p => new PostViewModel
+                {
+                    Id = p.Id,
+                    OwnerId = p.UserId,
+                    UserName = p.User.FirstName + " " + p.User.LastName,
+                    UserImgUrl = p.User.ProfileImageUrl,
+                    Content = p.Content,
+                    ImgUrl = p.ImgUrl,
+                    LikeCount = p.LikeCount,
+                    CommentCount = p.CommentCount
+                })
+                .ToList();
+
+            return posts;
+        }
         public List<PostViewModel> GetAllPostsWithId(int id)
         {
             List<PostViewModel> posts = blooContext.posts
@@ -51,6 +51,8 @@ namespace BlOO.Repositories
                 .Where(p => p.UserId==id)
                 .Select(p => new PostViewModel
                 {
+                    Id = p.Id,
+                    OwnerId = p.UserId,
                     UserName = p.User.FirstName + " " + p.User.LastName,
                     UserImgUrl = p.User.ProfileImageUrl,
                     Content = p.Content,

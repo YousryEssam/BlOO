@@ -8,13 +8,18 @@
                     <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
                     <h3>@Model.UserName</h3>
                 </div>
-                <a href="/Post/EditPost/@Model.Id"><i class="fa-solid fa-pen-to-square"></i></a>
+
+                <a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+
             </div>
             <p>@Model.Content</p>
-
-            @if (!string.IsNullOrEmpty(Model.ImgUrl))
-            {
-                <img src="@Model.ImgUrl" class="post-image" />
+            @{
+                if (!string.IsNullOrEmpty(Model.ImgUrl)) 
+                {
+                    <img src="@Model.ImgUrl" class="post-image" />
+                }
             }
         </div>
     </div>

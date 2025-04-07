@@ -1,0 +1,43 @@
+﻿
+.comments{
+    display:none;
+}
+.commentImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.userComment{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+.comments2{
+    display:block;
+}
+.commentContent {
+    background-color: #6482adab;
+    border-radius: 0 15px 15px 15px;
+    /* margin-block: 5px; */
+    margin-inline: 50px;
+    width:90%
+}
+.commentContent p{
+    padding:15px;
+    color:white;
+}
+.commentReacts{
+display:flex;
+align-items:center
+}
+.stat1{
+    margin-left: -35px;
+}
+
+.comments {
+    display: none;
+}
+
+.comments2 {
+    display: block;
+}

@@ -2,11 +2,12 @@
 
 <style>
     .dots {
-      font-size: 15px;
-      cursor: pointer;
-      padding: 0 5px;
+        font-size: 15px;
+        cursor: pointer;
+        padding: 0 5px;
     }
 </style>
+<link href="~/css/postComment.css" rel="stylesheet" />
 
 <div class="post_container">
     <div class="post_card">
@@ -25,30 +26,95 @@
                         <li><a class="dropdown-item" href="#">Report</a></li>
                     </ul>
                 </div>
-
             </div>
+
             <p>@Model.Content</p>
-            @{
-                if (!string.IsNullOrEmpty(Model.ImgUrl)) 
-                {
-                    <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image" />
-                }
+            @if (!string.IsNullOrEmpty(Model.ImgUrl))
+            {
+                <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image" />
             }
         </div>
     </div>
 
     <!-- Stats Section -->
     <div class="post-stats">
-        <div class="stat">
-            <i class="fa-regular fa-heart"></i>
-            <strong>@Model.LikeCount</strong>
+        <div class="stat-icons">
+            <div class="stat">
+                <i class="fa-regular fa-heart"></i>
+                <strong>@Model.LikeCount</strong>
+            </div>
+            <div class="stat">
+                <i class="fa-regular fa-comment-dots  " onclick="getComments(this)"></i>
+                <strong class="comment-count">@Model.CommentCount</strong>
+            </div>
         </div>
-        <div class="stat">
-            <i class="fa-regular fa-comment-dots"></i>
-            <strong>@Model.CommentCount</strong>
-        </div>
-        <input type="text" placeholder="Add Comment" class="comment-input" />
-
+        <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
     </div>
 
+    <div class="comments comment-section"></div>
 </div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/microsoft-signalr/signalr.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // لما يضغط Enter يضيف الكومنت
+        $(document).on("keydown", ".write-comment", function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+
+                var input = $(this).val().trim();
+                if (input === "") return;
+
+                var userImg = "@Model.UserImgUrl";
+                var userName = "@Model.UserName";
+
+                var commentHtml = `
+                    <div class="comment">
+                        <div class="userComment">
+                            <img src="${userImg}" alt="User" class="commentImg" />
+                            <h6 class="commentName">${userName}</h6>
+                        </div>
+                        <div class="commentReacts">
+                            <div class="commentContent"><p>${input}</p></div>
+                            <div class="stat1">
+                                <i class="fa-regular fa-heart"></i>
+                                <strong>0</strong>
+                            </div>
+                        </div>
+                    </div>`;
+
+                var postContainer = $(this).closest(".post_container");
+                postContainer.find(".comment-section").append(commentHtml);
+
+                let countElem = postContainer.find(".comment-count");
+                let currentCount = parseInt(countElem.text());
+                countElem.text(currentCount + 1);
+
+                $(this).val("");
+            }
+        });
+
+        // لما يدوس على علامة الكومنت يفتح الكومنتات
+        $(document).on("click", ".toggle-comments", function () {
+            var postContainer = $(this).closest(".post_container");
+            postContainer.find(".comment-section").toggleClass("comments2");
+        });
+    });
+        function getComments(elem) {
+        var postContainer = $(elem).closest(".post_container");
+        postContainer.find(".comment-section").toggleClass("comments2");
+    }
+</script>
+
+<style>
+    .comments {
+        display: none;
+    }
+
+    .comments2 {
+        display: block;
+    }
+</style>

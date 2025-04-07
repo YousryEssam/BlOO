@@ -85,12 +85,15 @@
 
 /* Comment Input */
 .comment-input {
-    width: 80%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
-
+.stat-icons{
+    display:flex;
+    gap:15px;
+}
 /* Upload Post Section */
 .in_mind {
     width: 80%;

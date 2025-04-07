@@ -24,11 +24,18 @@ namespace BlOO.Repositories
             return blooContext.posts.ToList();
         }
 
-
-        public List<PostViewModel> GetAllPostsWithUsers()
+        public List<PostViewModel> GetPostsUsersFollow(int currentUserId)
         {
+            List<int> followedUserIds = blooContext.follows
+             .Where(f => f.FollowerId == currentUserId) // User
+             .Select(f => f.FollowingId)                 // الناس اللي يوزر متابعهم
+             .ToList();
+
+
             List<PostViewModel> posts = blooContext.posts
                 .Include(p => p.User)
+                .Where(p => followedUserIds.Contains(p.UserId))
+                .OrderByDescending(p => p.PostDate) 
                 .Select(p => new PostViewModel
                 {
                     Id = p.Id,
@@ -44,6 +51,38 @@ namespace BlOO.Repositories
 
             return posts;
         }
+
+        public List<PostViewModel> GetRandomPosts(int currentUserId)
+        {
+            List<int> followedUserIds = blooContext.follows
+               .Where(f => f.FollowerId == currentUserId) 
+               .Select(f => f.FollowingId)                 // الناس اللي يوزر متابعهم
+               .ToList();
+
+            List<PostViewModel> posts = blooContext.posts
+                .Include(p => p.User)
+                .Where(p => !followedUserIds.Contains(p.UserId))  // هنشيل الي متابعهم
+                .OrderBy(r => Guid.NewGuid())  // ترتيب عشوائي
+                .Select(p => new PostViewModel
+                {
+                    Id = p.Id,
+                    OwnerId = p.UserId,
+                    UserName = p.User.FirstName + " " + p.User.LastName,
+                    UserImgUrl = p.User.ProfileImageUrl,
+                    Content = p.Content,
+                    ImgUrl = p.ImgUrl,
+                    LikeCount = p.LikeCount,
+                    CommentCount = p.CommentCount
+                })
+                .ToList();
+
+            return posts;
+
+        }
+
+
+
+
         public List<PostViewModel> GetAllPostsWithId(int id)
         {
             List<PostViewModel> posts = blooContext.posts

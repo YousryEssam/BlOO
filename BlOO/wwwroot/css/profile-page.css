@@ -1,10 +1,11 @@
 ﻿/* Card Styling */
 .profile-card {
     margin: auto;
-    max-width: 100%;
+    max-width: 80%;
     overflow: hidden;
     background: white;
     border-radius: 10px;
+    margin-block: 0.5rem;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 

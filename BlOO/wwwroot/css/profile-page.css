@@ -1,4 +1,12 @@
-﻿/* Card Styling */
+﻿:root {
+    --primary-color: #6482AD;
+    --secondary-color: #F5EDED;
+    --bubble-blue: #6482AD;
+    --bubble-white: #ffffff;
+    --accent-color: #B8001F;
+    --shadow: 0 0 15px 2px;
+}
+/* Card Styling */
 .profile-card {
     margin: auto;
     max-width: 80%;
@@ -6,7 +14,8 @@
     background: white;
     border-radius: 10px;
     margin-block: 0.5rem;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    /*    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);*/
+    box-shadow: var(--shadow) var(--primary-color);
 }
 
 /* Cover Image */

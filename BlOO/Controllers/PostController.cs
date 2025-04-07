@@ -24,13 +24,8 @@ namespace BlOO.Controllers
         [Authorize]
         public IActionResult HomePage()
         {
-            //if (!_SignInManager.IsSignedIn(User))
-            //{ }
-                List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
-                return View("Post", posts);
-            
-
-
+            List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
+            return View("Post", posts);
         }
 
         [HttpPost]

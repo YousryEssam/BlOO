@@ -12,11 +12,31 @@
 
 
 <div id="postContainer" class="container">
-    @foreach (var post in Model)
+    @if (Model.Count > 0)
     {
-        <partial name="_PostComponent" model="post" />
+        @foreach (var post in Model)
+        {
+            <partial name="_PostComponent" model="post" />
+        }
     }
+    else
+    {
+        <div class="container my-5">
+            <div class="row justify-content-center text-center">
+                <div class="col-md-11">
+                    <div class="no-posts-box text-center shadow-sm p-5">
+                        <img src="~/assets/post-pictures/NoPostsYet.jpg" alt="No posts" class="mb-6 no-posts-img">
+                        <h3 class="text-muted mb-2">No posts available at the moment</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    }
+
 </div>
+
 
 
 
@@ -45,3 +65,4 @@
 
 
 @* Edittttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt *@
+

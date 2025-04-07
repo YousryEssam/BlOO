@@ -60,7 +60,7 @@
 <script>
     $(document).ready(function () {
 
-        // لما يضغط Enter يضيف الكومنت
+       
         $(document).on("keydown", ".write-comment", function (e) {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -97,7 +97,7 @@
             }
         });
 
-        // لما يدوس على علامة الكومنت يفتح الكومنتات
+       
         $(document).on("click", ".toggle-comments", function () {
             var postContainer = $(this).closest(".post_container");
             postContainer.find(".comment-section").toggleClass("comments2");

@@ -24,7 +24,14 @@ namespace BlOO.Controllers
         [Authorize]
         public IActionResult HomePage()
         {
-            List<PostViewModel> posts = postRepository.GetAllPostsWithUsers();
+            int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
+            List<PostViewModel> posts = postRepository.GetPostsUsersFollow(UserId);
+            return View("Post", posts);
+        }
+        public IActionResult Explore()
+        {
+            int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
+            List<PostViewModel> posts = postRepository.GetRandomPosts(UserId);
             return View("Post", posts);
         }
 

@@ -6,6 +6,12 @@
         cursor: pointer;
         padding: 0 5px;
     }
+
+    .link-to-profile{
+        text-decoration:none;
+        display: flex;
+        align-items: center;
+    }
 </style>
 <link href="~/css/postComment.css" rel="stylesheet" />
 <div class="post_container"
@@ -19,8 +25,10 @@
         <div class="post_section">
             <div class="post_card_section_head">
                 <div>
-                    <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
-                    <h3>@Model.UserName</h3>
+                    <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.OwnerId" class="link-to-profile text-black" title="See Profile">
+                        <img src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
+                        <h3>@Model.UserName</h3>
+                    </a>
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-light border-0" type="button" data-bs-toggle="dropdown">

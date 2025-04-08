@@ -1,8 +1,8 @@
-using BlOO.Models;
-using BlOO.Repositories;
 using BLOO.Hubs;
+using BlOO.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BlOO.Hubs;
 
 namespace BlOO
 {
@@ -21,11 +21,12 @@ namespace BlOO
 
 
                 Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
+                
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("Nourcs"));
 
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("MarlyCS"));
 
-               // Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
 
             });
 

@@ -55,7 +55,7 @@ namespace BlOO.Controllers
                     if (result.Succeeded)
                     {
                         await signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("HomePage", "Post");
+                        return RedirectToAction("LogIn", "Account");
                     }
                     foreach (var error in result.Errors)
                     {

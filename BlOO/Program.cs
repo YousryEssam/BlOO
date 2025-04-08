@@ -20,13 +20,13 @@ namespace BlOO
             {
 
 
-                Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
+               // Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
                 
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("Nourcs"));
 
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("MarlyCS"));
 
-                //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
 
             });
 

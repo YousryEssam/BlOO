@@ -32,6 +32,10 @@ namespace BlOO.Repositories
             return blooContext.follows.FirstOrDefault(f => f.Id == id);
         }
 
+        public async Task<Follow> GetByUsersIds(int userId, int profileId)
+        {
+            return await blooContext.follows.FirstOrDefaultAsync(f=> f.FollowingId == profileId && f.FollowerId == userId);
+        }
 
         public async Task<List<int>> GetFollowedUsersAsync(int userId, int pageNumber, int pageSize)
         {
@@ -46,6 +50,24 @@ namespace BlOO.Repositories
         public void Insert(Follow entity)
         {
             blooContext.follows.Add(entity);
+        }
+
+        public bool IsFollowing(int userId, int profileId)
+        {
+            var follow = blooContext.follows.FirstOrDefault(f => f.FollowerId == userId && f.FollowingId == profileId);
+            if (follow != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> IsFollowingAsync(int userId, int profileId)
+        {
+            var follow = await blooContext.follows
+                .FirstOrDefaultAsync(f => f.FollowerId == userId && f.FollowingId == profileId);
+
+            return follow != null;
         }
 
         public void Save()

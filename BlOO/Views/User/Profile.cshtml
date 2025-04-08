@@ -7,6 +7,7 @@
     var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
     bool isProfileOwner = loggedInUser != null && loggedInUser.Id == Model.UserId;
     bool isFollower = false;
+    int curUser = loggedInUser.Id;
 }
 
 <link rel="stylesheet" href="~/css/post-page.css" asp-append-version="true" />
@@ -36,20 +37,19 @@
         <div class="profile-actions d-flex justify-content-end gap-3">
             @if (SignInManager.IsSignedIn(User))
             {
+                // to Get data in Js file
+                <div style="display :none;" id="user-data" data-profile-id="@Model.UserId" data-current-user="@curUser"></div>
+
                 if (isProfileOwner)
                 {
                     <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit profile</a>
                 }
                 else
                 {
-                    if (isFollower)
-                    {
-                        <button class="btn btn-danger"><i class="fas fa-user-minus"></i> Unfollow</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Follow</button>
-                    }
+                    // Follow buttons
+                    <button id="follow-btn" class="btn btn-primary visually-hidden" onclick="FollowUser()"><i class="fas fa-user-plus"></i> Follow</button>
+                    <button id="unfollow-btn" class="btn btn-danger visually-hidden" onclick="UnfollowUser()"><i class="fas fa-user-minus"></i> Unfollow</button>
+         
                     <a asp-controller="Chats" asp-action="Chat" asp-route-id="@Model.UserId" class="btn btn-outline-secondary">
                         <i class="fas fa-envelope"></i> Message
                     </a>
@@ -64,12 +64,12 @@
         <div class="stat-profile-page">
             <i class="fas fa-users"></i>
             <p>Followers</p>
-            <strong> @Model.FollowersCount </strong>
+            <strong id="FollowersCount"> @Model.FollowersCount </strong>
         </div>
         <div class="stat-profile-page">
             <i class="fas fa-user-friends"></i>
             <p>Following</p>
-            <strong>@Model.FollowingCount</strong>
+            <strong id="FollowingCount">@Model.FollowingCount</strong>
         </div>
         <div class="stat-profile-page">
             <i class="fas fa-file-alt"></i>
@@ -131,3 +131,7 @@
 }
 
 
+@* Imports script *@
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/microsoft-signalr/signalr.min.js"></script>
+<script src="~/js/followers-system.js"></script>

@@ -1,3 +1,4 @@
+using BlOO.Hubs;
 using BlOO.Models;
 using BlOO.Repositories;
 using BLOO.Hubs;
@@ -52,6 +53,7 @@ namespace BlOO
 
             app.UseRouting();
             app.MapHub<ChatMessageHub>("/ChatMessage");
+            app.MapHub<FollowersSystemHub>("/FollowersSystem");
             app.UseAuthorization();
 
             app.MapControllerRoute(

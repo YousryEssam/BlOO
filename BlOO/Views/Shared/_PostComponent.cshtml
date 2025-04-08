@@ -8,8 +8,13 @@
     }
 </style>
 <link href="~/css/postComment.css" rel="stylesheet" />
+<div class="post_container"
+     data-post-id="@Model.Id"
+     data-user-id="@Model.OwnerId"
+     data-user-img="@Model.UserImgUrl"
+     data-user-name="@Model.UserName">
 
-<div class="post_container">
+
     <div class="post_card">
         <div class="post_section">
             <div class="post_card_section_head">
@@ -27,7 +32,6 @@
                     </ul>
                 </div>
             </div>
-
             <p>@Model.Content</p>
             @if (!string.IsNullOrEmpty(Model.ImgUrl))
             {
@@ -36,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Stats Section -->
     <div class="post-stats">
         <div class="stat-icons">
             <div class="stat">
@@ -44,70 +47,93 @@
                 <strong>@Model.LikeCount</strong>
             </div>
             <div class="stat">
-                <i class="fa-regular fa-comment-dots  " onclick="getComments(this)"></i>
+                <i class="fa-regular fa-comment-dots comment-icon" onclick="getComments(this)"></i>
                 <strong class="comment-count">@Model.CommentCount</strong>
             </div>
         </div>
         <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
     </div>
 
-    <div class="comments comment-section"></div>
+    <div class="comments comment-section">
+    </div>
 </div>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 
+
 <script>
-    $(document).ready(function () {
+    const hub = new signalR.HubConnectionBuilder().withUrl("/PostComment").build();
 
-       
-        $(document).on("keydown", ".write-comment", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
+    hub.start().then(() => {
+        console.log("SignalR connected");
+    }).catch(err => console.error(" Error connecting:", err.toString()));
 
-                var input = $(this).val().trim();
-                if (input === "") return;
+    hub.on("NewComment", function (newComment) {
+        const postContainer = $(`.post_container[data-post-id="${newComment.postId}"]`);
 
-                var userImg = "@Model.UserImgUrl";
-                var userName = "@Model.UserName";
+        const userImg = postContainer.data("user-img");
+        const userName = postContainer.data("user-name");
 
-                var commentHtml = `
-                    <div class="comment">
-                        <div class="userComment">
-                            <img src="${userImg}" alt="User" class="commentImg" />
-                            <h6 class="commentName">${userName}</h6>
-                        </div>
-                        <div class="commentReacts">
-                            <div class="commentContent"><p>${input}</p></div>
-                            <div class="stat1">
-                                <i class="fa-regular fa-heart"></i>
-                                <strong>0</strong>
-                            </div>
-                        </div>
-                    </div>`;
+        const commentHtml = `
+            <div class="comment">
+                <div class="userComment">
+                    <img src="${userImg}" alt="User" class="commentImg" />
+                    <h6 class="commentName">${userName}</h6>
+                </div>
+                <div class="commentReacts">
+                    <div class="commentContent"><p>${newComment.content}</p></div>
+                    <div class="stat1">
+                        <i class="fa-regular fa-heart"></i>
+                        <strong>${newComment.likeCount}</strong>
+                    </div>
+                </div>
+            </div>`;
 
-                var postContainer = $(this).closest(".post_container");
-                postContainer.find(".comment-section").append(commentHtml);
+        postContainer.find(".comment-section").append(commentHtml);
 
-                let countElem = postContainer.find(".comment-count");
-                let currentCount = parseInt(countElem.text());
-                countElem.text(currentCount + 1);
-
-                $(this).val("");
-            }
-        });
-
-       
-        $(document).on("click", ".toggle-comments", function () {
-            var postContainer = $(this).closest(".post_container");
-            postContainer.find(".comment-section").toggleClass("comments2");
-        });
+        let countElem = postContainer.find(".comment-count");
+        let currentCount = parseInt(countElem.text());
+        countElem.text(currentCount + 1);
     });
-        function getComments(elem) {
+
+
+    $(document).on("keydown", ".write-comment", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+
+            const input = $(this).val().trim();
+            if (!input) return;
+
+            const postContainer = $(this).closest(".post_container");
+            const postId = postContainer.data("post-id");
+            const userId = postContainer.data("user-id");
+
+
+            const commentData = {
+                Content: input,
+                PostId: postId,
+                UserId: userId
+            };
+
+            hub.invoke("writeComment", commentData)
+                .then(() => {
+                    console.log(" Comment sent");
+                    $(this).val("");
+                })
+                .catch(err => {
+                    console.error(" Error sending comment:", err.toString());
+                });
+        }
+    });
+
+    function getComments(elem) {
         var postContainer = $(elem).closest(".post_container");
         postContainer.find(".comment-section").toggleClass("comments2");
     }
 </script>
+
+
 
 <style>
     .comments {

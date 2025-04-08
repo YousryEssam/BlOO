@@ -1,24 +1,27 @@
 ﻿@model PostViewModel
-
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
+}
 <style>
     .dots {
-        font-size: 15px;
-        cursor: pointer;
-        padding: 0 5px;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 0 5px;
     }
 
     .link-to-profile{
-        text-decoration:none;
-        display: flex;
-        align-items: center;
+    text-decoration:none;
+    display: flex;
+    align-items: center;
     }
 </style>
 <link href="~/css/postComment.css" rel="stylesheet" />
 <div class="post_container"
-     data-post-id="@Model.Id"
-     data-user-id="@Model.OwnerId"
-     data-user-img="@Model.UserImgUrl"
-     data-user-name="@Model.UserName">
+data-post-id="@Model.Id"
+data-user-id="@Model.OwnerId"
+data-user-img="@Model.UserImgUrl"
+data-user-name="@Model.UserName">
 
 
     <div class="post_card">
@@ -35,7 +38,12 @@
                         <span class="dots">⋯</span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="dropdown-item">Edit</a></li>
+                        @{
+                            if (Model.OwnerId == loggedInUser.Id)
+                            {
+                                <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="dropdown-item">Edit</a></li>
+                            }
+                        }
                         <li><a class="dropdown-item" href="#">Report</a></li>
                     </ul>
                 </div>

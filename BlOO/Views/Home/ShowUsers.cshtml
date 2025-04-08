@@ -1,0 +1,34 @@
+﻿@model List<ApplicationUser>
+
+@{
+    ViewData["Title"] = "ShowUsers";
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="~/css/Search.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="searchlayout">
+            <div class="people">
+                <h3>People</h3>
+                <hr />
+                @foreach (var user in Model)
+                {
+                    <div class="d-flex showuser">
+                        <img src="@user.ProfileImageUrl" class="rounded-circle" />
+                        <div class="info">
+                            <h5>@user.FirstName @user.LastName</h5>
+                            <p>Following By @user.FollowersCount</p>
+                        </div>
+                        <div class="details">
+                            <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id" class="btn">View Profile</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </body>
+</html>
+

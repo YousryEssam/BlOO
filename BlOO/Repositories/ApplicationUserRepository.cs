@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -38,6 +39,14 @@ namespace BlOO.Repositories
         public void Save()
         {
             blooContext.SaveChanges();
+        }
+
+        public List<ApplicationUser> SearchByName(string name)
+        {
+            List<ApplicationUser> applicationUsers = blooContext.applicationUsers.Include(u => u.Posts).AsEnumerable()
+                .Where(u => u.FirstName.ToLower().Contains(name.ToLower())
+                || u.LastName.ToLower().Contains(name.ToLower())).ToList();
+            return applicationUsers;
         }
 
         public void Update(ApplicationUser entity)

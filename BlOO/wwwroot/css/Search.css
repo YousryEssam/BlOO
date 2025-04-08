@@ -1,0 +1,41 @@
+﻿* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.searchlayout {
+    background-color: white;
+    max-width: 900px;
+    margin: 0.8rem auto;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 2px #6482AD;
+}
+
+.people h3 {
+    padding: 1rem;
+}
+
+.showuser {
+    padding: 1.25rem;
+    gap: 2rem;
+}
+
+    .showuser img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .showuser .info {
+        flex: 1;
+    }
+
+    .showuser .details {
+        flex: 2;
+    }
+
+.details .btn {
+    background-color: #6482AD;
+    color: white;
+    font-size: 18px;
+}

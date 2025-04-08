@@ -54,15 +54,18 @@ namespace BlOO.Repositories
 
         public List<PostViewModel> GetRandomPosts(int currentUserId)
         {
-            List<int> followedUserIds = blooContext.follows
-               .Where(f => f.FollowerId == currentUserId) 
-               .Select(f => f.FollowingId)                 // الناس اللي يوزر متابعهم
-               .ToList();
-
-            List<PostViewModel> posts = blooContext.posts
+            var followedUserIds = blooContext.follows
+                .Where(f => f.FollowerId == currentUserId)
+                .Select(f => f.FollowingId)
+                .ToList();
+    
+            var posts = blooContext.posts
                 .Include(p => p.User)
-                .Where(p => !followedUserIds.Contains(p.UserId))  // هنشيل الي متابعهم
-                .OrderBy(r => Guid.NewGuid())  // ترتيب عشوائي
+                .Where(p =>
+                    !followedUserIds.Contains(p.UserId) && // استبعاد اللي متابعهم
+                    p.UserId != currentUserId              // استبعاد البوستات بتاعتي
+                )
+                .OrderBy(r => Guid.NewGuid())
                 .Select(p => new PostViewModel
                 {
                     Id = p.Id,
@@ -77,7 +80,6 @@ namespace BlOO.Repositories
                 .ToList();
 
             return posts;
-
         }
 
 

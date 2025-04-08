@@ -42,6 +42,8 @@ data-user-name="@Model.UserName">
                             if (Model.OwnerId == loggedInUser.Id)
                             {
                                 <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="dropdown-item">Edit</a></li>
+                                <li><a asp-controller="Post" asp-action="DeletePost" asp-route-id="@Model.Id" class="dropdown-item">Delete</a></li>
+
                             }
                         }
                         <li><a class="dropdown-item" href="#">Report</a></li>

@@ -24,14 +24,17 @@ namespace BlOO.Controllers
         [Authorize]
         public IActionResult HomePage()
         {
-            int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
-            List<PostViewModel> posts = postRepository.GetPostsUsersFollow(UserId);
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            List<PostViewModel> posts = postRepository.GetPostsUsersFollow(userId);
             return View("Post", posts);
         }
         public IActionResult Explore()
+        
         {
-            int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
-            List<PostViewModel> posts = postRepository.GetRandomPosts(UserId);
+
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            List<PostViewModel> posts = postRepository.GetRandomPosts(userId);
             return View("Post", posts);
         }
 
@@ -151,5 +154,34 @@ namespace BlOO.Controllers
             }
             return View("EditPost", postVM);
         }
+
+
+        public IActionResult DeletePost(int id)
+        {
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var Image = postRepository.GetById(id).ImgUrl;
+         
+            if (Image != null)
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/post-pictures");
+
+                if (!string.IsNullOrEmpty(Image))
+                {
+                    string oldImagePath = Path.Combine(uploadsFolder, Image);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                    }
+                }
+            }
+            postRepository.DeleteById(id);
+            postRepository.Save();
+
+            return RedirectToAction("Profile", "User", new { id = userId });
+
+        }
+
+
     }
 }

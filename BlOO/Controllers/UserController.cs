@@ -1,27 +1,29 @@
 ﻿using BlOO.Repositories;
-using BlOO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace BlOO.Controllers
 {
     public class UserController : Controller
     {
         private IPostRepository postRepository;
+        private IFollowRepository followRepository;
+        private IApplicationUserRepository applicationUserRepository;
         private UserManager<ApplicationUser> _UserManager;
         private RoleManager<IdentityRole<int>> _RoleManager;
         private SignInManager<ApplicationUser> _SignInManager;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager, IPostRepository postRepository)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager,
+            SignInManager<ApplicationUser> signInManager,IApplicationUserRepository applicationUserRepository  
+            ,IPostRepository postRepository , IFollowRepository followRepository )
         {
             _UserManager = userManager;
             _RoleManager = roleManager;
             _SignInManager = signInManager;
             this.postRepository = postRepository;
+            this.followRepository = followRepository;
+            this.applicationUserRepository = applicationUserRepository;
         }
 
 
@@ -86,7 +88,34 @@ namespace BlOO.Controllers
             return View("EditProfile", UserFromEdit);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Followers(int id)
+        {
+            UserFollowersViewModel userFollowers = new UserFollowersViewModel();
+            userFollowers.UserId = id;
+            var followersIds = await followRepository.GetUserFollowersIds(id);
+            List<ApplicationUser> followers = new List<ApplicationUser>();
+            foreach (var f in followersIds) {
+                followers.Add(applicationUserRepository.GetById(f));
+            }
+            userFollowers.Followers = followers;
+            return View(userFollowers);
+        }
 
+        public async Task<IActionResult> Following(int id)
+        {
+            UserFollowingViewModel userFollowing = new UserFollowingViewModel();
+            userFollowing.UserId = id;
+            var followingIds = await followRepository.GetUserFollowingIds(id);
+            List<ApplicationUser> followings = new List<ApplicationUser>();
+            foreach (var f in followingIds) 
+            {
+                followings.Add(applicationUserRepository.GetById(f));
+            }
+            userFollowing.Following = followings;
+            return View(userFollowing);
+        }
 
         ///////////////////////////////// Helper Methods /////////////////////////////////////////
         private async Task<string> UploadImageAsync(IFormFile imageFile, string defaultImagePath)

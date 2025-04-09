@@ -47,6 +47,23 @@ namespace BlOO.Repositories
                 .Select(f => f.FollowingId)
                 .ToListAsync();
         }
+
+        public async Task<List<int>> GetUserFollowersIds(int userId)
+        {
+            return await blooContext.follows
+                .Where(f => f.FollowingId == userId)
+                .Select(f => f.FollowerId)
+                .ToListAsync();
+        }
+
+        public async Task<List<int>> GetUserFollowingIds(int userId)
+        {
+            return await blooContext.follows
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
+        }
+
         public void Insert(Follow entity)
         {
             blooContext.follows.Add(entity);

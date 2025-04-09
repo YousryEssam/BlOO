@@ -1,0 +1,31 @@
+﻿@model UserFollowersViewModel
+
+@{
+    ViewData["Title"] = "Followers";
+}
+
+<link href="~/css/follow-list-page.css" rel="stylesheet" />
+
+<div class="followers-container">
+    <h2>Followers</h2>
+    @{
+        foreach(var user in Model.Followers)
+        {
+            <div class="follower-card justify-content-between">
+                <div class="d-flex">
+                    <img src="@user.ProfileImageUrl" alt="User" class="avatar" />
+                    <div class="user-info">
+                        <h3>
+                            @user.FirstName @user.LastName
+                        </h3>
+                        <p> &#64;@user.FirstName</p>
+                    </div>
+                </div>
+                
+                <a asp-controller="User" asp-action="Profile" asp-route-id="@user.Id" class="btn view-profile-btn">
+                    View Profile
+                </a>
+            </div>
+        }
+    }
+</div>

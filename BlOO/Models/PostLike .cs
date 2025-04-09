@@ -25,8 +25,8 @@ namespace BlOO.Models
         public DateTime LikeDate { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public virtual Post Post { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual Post? Post { get; set; }
+        public virtual ApplicationUser? User { get; set; }
 
     }
 }

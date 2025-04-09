@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -45,5 +46,11 @@ namespace BlOO.Repositories
         {
             blooContext.postLikes.Update(entity);
         }
+
+        public List<PostLike> GetAllPostLikesByPostId(int postId)
+        {
+            return blooContext.postLikes.Include(l => l.User).Where(l => l.PostId == postId).ToList();
+        }
+
     }
 }

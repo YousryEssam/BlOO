@@ -13,14 +13,19 @@ namespace BlOO.Controllers
     public class PostController : Controller
     {
         IPostRepository postRepository;
+        private readonly ICommentRepository commentRepository;
         private SignInManager<ApplicationUser> _SignInManager;
-
-        public PostController(IPostRepository postRepository, SignInManager<ApplicationUser> signInManager)
+        private readonly IApplicationUserRepository applicationUserRepository;
+        private readonly IPostLikeRepository postLikeRepository;
+        public PostController(IPostRepository postRepository, ICommentRepository commentRepository,
+            SignInManager<ApplicationUser> signInManager, IApplicationUserRepository applicationUserRepository, IPostLikeRepository postLikeRepository)
         {
             this.postRepository = postRepository;
+            this.commentRepository = commentRepository;
             _SignInManager = signInManager;
+            this.applicationUserRepository = applicationUserRepository;
+            this.postLikeRepository = postLikeRepository;
         }
-
         [Authorize]
         public IActionResult HomePage()
         {
@@ -29,12 +34,47 @@ namespace BlOO.Controllers
             return View("Post", posts);
         }
         public IActionResult Explore()
-        
         {
+            int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
+            List<PostViewModel> posts = postRepository.GetRandomPosts(UserId);
+            foreach (var post in posts)
+            {
+                if (post.Comments == null)
+                    post.Comments = new List<CommentWithUserDataViewModel>();
 
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var commentsFromDB = commentRepository.GetCommmentsByPostId(post.Id);
 
-            List<PostViewModel> posts = postRepository.GetRandomPosts(userId);
+                List<PostLike> postLikes = postLikeRepository.GetAllPostLikesByPostId(post.Id);
+                foreach (var postLike in postLikes)
+                {
+                    var user = postLike.User;
+                    post.PostLikes.Add(new PostLikesViewModel
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        ProfileImageUrl = user.ProfileImageUrl,
+                        UserId=user.Id
+                    });
+                }
+                foreach (var comment in commentsFromDB)
+                {
+                    var user = comment.User;
+
+                    post.Comments.Add(new CommentWithUserDataViewModel
+                    {
+                        UserId = user.Id,
+                        Content = comment.Content,
+                        ProfileImageUrl = user.ProfileImageUrl,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        CommentDate = comment.CommentDate,
+                        LikeCount = comment.LikeCount
+                    });
+                }
+            }
+
+
+
             return View("Post", posts);
         }
 
@@ -81,10 +121,39 @@ namespace BlOO.Controllers
         }
 
 
-
         public IActionResult Post()
         {
             PostViewModel postViewModel = new PostViewModel();
+            List<Comment> CommentsfromDB = commentRepository.GetCommmentsByPostId(postViewModel.Id);
+
+            List<PostLike> postLikes = postLikeRepository.GetAllPostLikesByPostId(postViewModel.Id);
+            foreach (var postLike in postLikes)
+            {
+                var user = postLike.User;
+                postViewModel.PostLikes.Add(new PostLikesViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ProfileImageUrl = user.ProfileImageUrl,
+                    UserId = user.Id
+                });
+            }
+            foreach (Comment comment in CommentsfromDB)
+            {
+                ApplicationUser user = applicationUserRepository.GetById(comment.UserId);
+                postViewModel.Comments.Add(new CommentWithUserDataViewModel
+                {
+                    UserId = user.Id,
+                    Content = comment.Content,
+                    ProfileImageUrl = user.ProfileImageUrl,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    CommentDate = comment.CommentDate,
+                }
+                    );
+            }
+
+
             return View(postViewModel);
         }
 

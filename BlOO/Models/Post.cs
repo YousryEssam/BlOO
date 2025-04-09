@@ -42,7 +42,7 @@ namespace BlOO.Models
         public virtual ApplicationUser User { get; set; }
         public virtual ICollection<Repost> Reposts { get; set; }
         public virtual ICollection<PostLike> Likes { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<PostReport> Reports { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -45,5 +46,13 @@ namespace BlOO.Repositories
         {
             blooContext.comments.Update(entity);
         }
+
+        public List<Comment> GetCommmentsByPostId(int postId)
+        {
+            return blooContext.comments.Include(c => c.User).Where(c => c.PostId == postId).ToList();
+
+        }
+
+
     }
 }

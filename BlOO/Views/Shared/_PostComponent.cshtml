@@ -3,25 +3,33 @@
 @{
     var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
 }
+
+
 <style>
     .dots {
-    font-size: 15px;
-    cursor: pointer;
-    padding: 0 5px;
+        font-size: 15px;
+        cursor: pointer;
+        padding: 0 5px;
     }
 
-    .link-to-profile{
-    text-decoration:none;
-    display: flex;
-    align-items: center;
+    .link-to-profile {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .stat1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 </style>
 <link href="~/css/postComment.css" rel="stylesheet" />
 <div class="post_container"
-data-post-id="@Model.Id"
-data-user-id="@Model.OwnerId"
-data-user-img="@Model.UserImgUrl"
-data-user-name="@Model.UserName">
+     data-post-id="@Model.Id"
+     data-user-id="@loggedInUser.Id"
+     data-user-img="@loggedInUser.ProfileImageUrl"
+     data-user-name="@loggedInUser.FirstName">
 
 
     <div class="post_card">
@@ -61,8 +69,10 @@ data-user-name="@Model.UserName">
     <div class="post-stats">
         <div class="stat-icons">
             <div class="stat">
-                <i class="fa-regular fa-heart"></i>
-                <strong>@Model.LikeCount</strong>
+                <i class="fa-solid fa-heart " onclick="AddReact(this)"></i>
+                @*   <i class="fa-regular fa-heart  racts" ></i> *@
+                <strong class="react-count" onclick="GetLikes(this)" id="like-count-@Model.Id">@Model.LikeCount</strong>
+
             </div>
             <div class="stat">
                 <i class="fa-regular fa-comment-dots comment-icon" onclick="getComments(this)"></i>
@@ -73,7 +83,60 @@ data-user-name="@Model.UserName">
     </div>
 
     <div class="comments comment-section">
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            foreach (CommentWithUserDataViewModel comment in Model.Comments)
+            {
+                <div class="comment" style="margin-block:10px;">
+                    <div class="userComment">
+                        <img src="@comment.ProfileImageUrl" alt="User" class="commentImg" />
+                        <h6 class="commentName">@comment.FirstName @comment.LastName</h6>
+                    </div>
+                    <div class="commentReacts">
+                        <div class="commentContent"><p>@comment?.Content</p></div>
+                        <div class="stat1">
+                            <i class="fa-regular fa-heart"></i>
+                            <strong>@comment?.LikeCount</strong>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+        else
+        {
+            <p class="text-muted ps-3"></p>
+        }
+
     </div>
+
+    @*  Post reacts  *@
+    <div class="likes likes-section    likesHidden  ">
+        @if (Model.PostLikes != null && Model.PostLikes.Any())
+        {
+            foreach (PostLikesViewModel like in Model.PostLikes)
+            {
+                <div class="likesDiv" data-userid="@like.UserId" style="margin-block:10px;">
+                    <div class="Userlikes">
+                        <img src="@like.ProfileImageUrl" alt="User" class="commentImg" />
+                        <h6 class="commentName">@like.FirstName @like.LastName</h6>
+
+                    </div>
+
+                    <div class="stat1">
+                        <i class="fa-solid fa-heart " style="color:red"></i>
+                    </div>
+                </div>
+
+            }
+        }
+        else
+        {
+            <p class="text-muted ps-3"></p>
+        }
+
+    </div>
+    @*   ////////////////////////////////// *@
 </div>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -81,7 +144,12 @@ data-user-name="@Model.UserName">
 
 
 <script>
-    const hub = new signalR.HubConnectionBuilder().withUrl("/PostComment").build();
+
+
+    var flag = false;
+
+
+        const hub = new signalR.HubConnectionBuilder().withUrl("/PostComment").build();
 
     hub.start().then(() => {
         console.log("SignalR connected");
@@ -89,15 +157,11 @@ data-user-name="@Model.UserName">
 
     hub.on("NewComment", function (newComment) {
         const postContainer = $(`.post_container[data-post-id="${newComment.postId}"]`);
-
-        const userImg = postContainer.data("user-img");
-        const userName = postContainer.data("user-name");
-
         const commentHtml = `
             <div class="comment">
                 <div class="userComment">
-                    <img src="${userImg}" alt="User" class="commentImg" />
-                    <h6 class="commentName">${userName}</h6>
+                    <img src="${newComment.image}" alt="User" class="commentImg" />
+                    <h6 class="commentName">${newComment.userName}</h6>
                 </div>
                 <div class="commentReacts">
                     <div class="commentContent"><p>${newComment.content}</p></div>
@@ -107,14 +171,13 @@ data-user-name="@Model.UserName">
                     </div>
                 </div>
             </div>`;
-
         postContainer.find(".comment-section").append(commentHtml);
 
         let countElem = postContainer.find(".comment-count");
-        let currentCount = parseInt(countElem.text());
+        var currentCount = parseInt(countElem.text());
         countElem.text(currentCount + 1);
-    });
 
+    });
 
     $(document).on("keydown", ".write-comment", function (e) {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -127,14 +190,14 @@ data-user-name="@Model.UserName">
             const postId = postContainer.data("post-id");
             const userId = postContainer.data("user-id");
 
-
             const commentData = {
                 Content: input,
                 PostId: postId,
                 UserId: userId
+                // Removed commentCount here
             };
 
-            hub.invoke("writeComment", commentData)
+            hub.invoke("WriteComment", commentData)
                 .then(() => {
                     console.log(" Comment sent");
                     $(this).val("");
@@ -145,10 +208,84 @@ data-user-name="@Model.UserName">
         }
     });
 
+    function GetLikes(ele) {
+        var postContainer = $(ele).closest(".post_container");
+
+        //
+        postContainer.find(".comment-section").removeClass("comments2");
+
+        //
+        postContainer.find(".likes-section").toggleClass("likesHidden");
+    }
+
     function getComments(elem) {
         var postContainer = $(elem).closest(".post_container");
+
+        //
+        postContainer.find(".likes-section").addClass("likesHidden");
+
+
         postContainer.find(".comment-section").toggleClass("comments2");
     }
+
+      hub.on("NewReact", function (data) {
+        const postContainer = $(`.post_container[data-post-id="${data.postId}"]`);
+        const likesSection = postContainer.find(".likes-section");
+
+        const reactHtmlr = `
+            <div class="likesDiv" data-userid="${data.userId}" style="margin-block:10px;">
+                <div class="Userlikes">
+                    <img src="${data.image}" alt="User" class="commentImg" />
+                    <h6 class="commentName">${data.userName}</h6>
+                </div>
+                <div class="stat1">
+                    <i class="fa-solid fa-heart " style="color:red"></i>
+                </div>
+            </div>`;
+
+        
+        let countElem = document.getElementById("like-count-" + data.postId);
+        var currentCount = parseInt(countElem.innerText);
+        countElem.innerText = currentCount + data.change;
+
+        
+        if (data.exist) {
+            // 
+            if (likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).length === 0) {
+                likesSection.append(reactHtmlr);
+            }
+        } else {
+            // 
+            likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).remove();
+        }
+    });
+
+
+
+
+    function AddReact(ele) {
+        var postContainer = $(ele).closest(".post_container");
+
+        postContainer.find(".React-section").toggleClass("reacts2");
+
+       // $(ele).toggleClass("reactsActive");
+
+        const postId = postContainer.data("post-id");
+        const userId = postContainer.data("user-id");
+
+        const LikeData = {
+            UserId: userId,
+            PostId: postId,
+            LikeDate: new Date().toISOString()
+            // Removed commentCount here
+        };
+
+
+
+        hub.invoke("NewReact", LikeData);
+    }
+
+
 </script>
 
 

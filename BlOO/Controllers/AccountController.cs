@@ -83,9 +83,9 @@ namespace BlOO.Controllers
             IdentityResult result = await roleManager.CreateAsync(role);
             if (result.Succeeded)
             {
-                return true;//ملهمش لزمة لحد دلوقتي
+                return true;
             }
-            return false;//already exist + ملهمش لزمة لحد دلوقتي
+            return false;
 
         }
         public async Task<IActionResult> LogOut()

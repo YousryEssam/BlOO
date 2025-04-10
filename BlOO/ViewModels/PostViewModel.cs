@@ -13,5 +13,11 @@ namespace BlOO.ViewModels
         public int LikeCount { get; set; }
         public int CommentCount { get; set; } 
         public int RepostCount { get; set; }
+
+        public List<CommentWithUserDataViewModel> Comments { get; set; } = new List<CommentWithUserDataViewModel>();
+        public List<PostLikesViewModel> PostLikes { get; set; } = new List<PostLikesViewModel>();
+
+
+
     }
 }

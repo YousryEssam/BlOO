@@ -9,5 +9,7 @@ namespace BlOO.Repositories
         public bool IsFollowing(int userId, int profileId);
         public Task<bool> IsFollowingAsync(int userId, int profileId);
         public Task<Follow> GetByUsersIds(int userId, int profileId);
+        public Task<List<int>> GetUserFollowersIds(int userId);
+        public Task<List<int>> GetUserFollowingIds(int userId);
     }
 }

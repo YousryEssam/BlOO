@@ -62,14 +62,19 @@
     <!-- Stats Section -->
     <div class="profile-stats">
         <div class="stat-profile-page">
-            <i class="fas fa-users"></i>
-            <p>Followers</p>
-            <strong id="FollowersCount"> @Model.FollowersCount </strong>
+           
+            <a asp-controller="User" asp-action="Followers" asp-route-id="@Model.UserId" class="btn">
+                <i class="fas fa-users"></i>
+                <p>Followers</p>
+                <strong id="FollowersCount"> @Model.FollowersCount </strong>
+            </a>
         </div>
         <div class="stat-profile-page">
-            <i class="fas fa-user-friends"></i>
-            <p>Following</p>
-            <strong id="FollowingCount">@Model.FollowingCount</strong>
+            <a asp-controller="User" asp-action="Following" asp-route-id="@Model.UserId" class="btn">
+                <i class="fas fa-user-friends"></i>
+                <p>Following</p>
+                <strong id="FollowingCount">@Model.FollowingCount</strong>
+            </a>
         </div>
         <div class="stat-profile-page">
             <i class="fas fa-file-alt"></i>
@@ -108,8 +113,6 @@
             </div>
         </div>
 
-
-       
     }
     else
     {

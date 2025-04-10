@@ -41,3 +41,32 @@ align-items:center
 .comments2 {
     display: block;
 }
+.racts, .reactsActive:hover {
+    color: hsl(0deg 0% 33.33% / 43.14%);
+}
+
+.reactsActive, .reacts:hover {
+    color: red;
+}
+
+.likesDiv {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+    align-items: center;
+    width: 30%;
+}
+
+.Userlikes {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.likesHidden {
+    display: none;
+}
+
+.react-count:hover {
+    cursor: pointer;
+}

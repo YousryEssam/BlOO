@@ -32,5 +32,11 @@ namespace BlOO.Controllers
             ViewBag.UserId = userId;
             return View(notificationsViewModel);
         }
+        public async Task<JsonResult> CheckUnreadNotifications()
+        {
+            int userId = int.Parse(_UserManager.GetUserId(User));
+            bool unSeenNotification = await notificationRepository.HasUnseenNotificationByUserId(userId);
+            return Json(unSeenNotification);
+        }
     }
 }

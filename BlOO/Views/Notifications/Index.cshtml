@@ -281,8 +281,9 @@
     });
 
     //===================================================================================
-     // Every 5 minutes
-    setInterval(() => {
-        fetch('/notifications').then(/* update notifications */);
-    }, 300000);
+    // Every 1 minutes update page
+    setInterval(()=>{
+        location.reload();
+    } ,60000);
+
 </script>

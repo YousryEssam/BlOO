@@ -81,6 +81,12 @@
                                                     <span class="visually-hidden">New alerts</span>
                                                 </span>
                                             }
+                                            else
+                                            {
+                                                <span id="notification-dot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="display:none;">
+                                                    <span class="visually-hidden">New alerts</span>
+                                                </span>
+                                            }
                                         }
 
                                     </a>
@@ -160,6 +166,38 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+
+        //// Update notificatoin
+
+        // Function to check unread notifications
+        function checkUnreadNotifications() {
+            $.ajax({
+                url: '@Url.Action("CheckUnreadNotifications", "Notifications")',
+                type: 'GET',
+                success: function (response) {
+                    if (response) 
+                    {
+                        $('#notification-dot').show();
+                    } else 
+                    {
+                        $('#notification-dot').hide();
+                    }
+                },
+                error: function () 
+                {
+                    console.log('Error checking notifications');
+                }
+            });
+        }
+
+        // Call the function every 5 seconds to check for updates
+        setInterval(checkUnreadNotifications, 5000);
+
+        // Initial check on page load
+        $(document).ready(function() {
+            checkUnreadNotifications();
+        });
+
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

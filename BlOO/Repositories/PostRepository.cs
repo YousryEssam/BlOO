@@ -125,5 +125,14 @@ namespace BlOO.Repositories
         {
             blooContext.posts.Update(entity);
         }
+
+        public List<Post> SearchByName(string searchvalue)
+        {
+            var postRepositories = blooContext.posts.Include(p => p.User).AsEnumerable()
+                .Where(p => p.User.FirstName.ToLower().Contains(searchvalue.ToLower()) ||
+                p.User.LastName.ToLower().Contains(searchvalue.ToLower())
+                ).ToList();
+            return postRepositories;
+        }
     }
 }

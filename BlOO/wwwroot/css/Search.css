@@ -12,7 +12,7 @@
     box-shadow: 0 0 10px 2px #6482AD;
 }
 
-.people h3 {
+.people h3, .posts h3 {
     padding: 1rem;
 }
 

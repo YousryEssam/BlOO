@@ -134,5 +134,12 @@ namespace BlOO.Repositories
                 ).ToList();
             return postRepositories;
         }
+
+        public Post GetByIdWithComments(int postId)
+        {
+            return blooContext.posts
+                .Include(p => p.Comments)
+                .FirstOrDefault(p => p.Id == postId);
+        }
     }
 }

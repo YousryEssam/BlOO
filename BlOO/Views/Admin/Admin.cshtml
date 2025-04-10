@@ -1,74 +1,50 @@
-﻿@{
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/css/post-page.css" asp-append-version="true" />
+
+
+@model List<ReportPostWithReporterNameVM>
+@{
     ViewData["Title"] = "Admin";
 }
 <table class="table table-bordered table-hover text-center table-striped align-middle shadow mt-4">
     <thead class="table-dark">
         <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Min Degree</th>
-            <th>Department</th>
-            <th>Instructor</th>
-            <th>Course Results</th>
-            <th>Actions</th>
+            <th>Reporter Name</th>
+            <th>Reason</th>
+            <th>Action</th>
+
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Mathematics</td>
-            <td>50</td>
-            <td>Science</td>
-            <td>
-                <select class="form-select form-select-sm">
-                    <option>Dr. Ahmed</option>
-                    <option>Dr. Sara</option>
-                </select>
-            </td>
-            <td>
-                85, 90, 78
-            </td>
-            <td>
-                <a href="#" class="btn btn-sm btn-primary me-1">
-                    <i class="bi bi-eye"></i> Show
-                </a>
-                <a href="#" class="btn btn-sm btn-warning me-1">
-                    <i class="bi bi-pencil-square"></i> No Action
-                </a>
-                <form style="display:inline" method="post" onsubmit="return confirm('Are you sure you want to delete this course?');">
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Physics</td>
-            <td>60</td>
-            <td>Engineering</td>
-            <td>
-                <select class="form-select form-select-sm">
-                    <option>Dr. Hany</option>
-                    <option>Dr. Mona</option>
-                </select>
-            </td>
-            <td>
-                72, 88
-            </td>
-            <td>
-                <a href="#" class="btn btn-sm btn-primary me-1">
-                    <i class="bi bi-eye"></i> Show
-                </a>
-                <a href="#" class="btn btn-sm btn-warning me-1">
-                    <i class="bi bi-pencil-square"></i> No Action
-                </a>
-                <form style="display:inline" method="post" onsubmit="return confirm('Are you sure you want to delete this course?');">
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                </form>
-            </td>
-        </tr>
+            @foreach (var report in Model)
+            {
+             <tr>
+
+                <td><img class="img-fluid rounded-circle" style="width: 40px;" src="@report.ImgUrl" alt="Alternate Text" />
+                    @report.Name
+                </td>
+                <td>
+                    @report.Content
+                </td>
+                    <td>
+
+                    <a asp-controller="Admin" asp-action="ShowPost" asp-route-PostId="@report.PostId" class="btn btn-sm btn-primary me-1">
+                            <i class="bi bi-eye"></i> Show Post
+                     </a>
+                    <a asp-controller="Admin" asp-action="DeletePostFromreportposts" asp-route-ReportId="@report.Id" class="btn btn-sm btn-warning me-1">
+                            <i class="bi bi-pencil-square"></i> No Action
+                    </a>
+
+                    <form asp-controller="Admin" asp-action="DeletePost" asp-route-postId="@report.PostId" asp-route-ReptId="@report.Id" style="display:inline" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Delete Post
+                        </button>
+                    </form>
+
+                
+                    </td>
+             </tr>
+
+           }
     </tbody>
 </table>

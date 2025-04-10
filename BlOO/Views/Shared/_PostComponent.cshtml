@@ -7,29 +7,45 @@
 
 <style>
     .dots {
-        font-size: 15px;
-        cursor: pointer;
-        padding: 0 5px;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 0 5px;
     }
 
     .link-to-profile {
-        text-decoration: none;
-        display: flex;
-        align-items: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
     }
 
     .stat1 {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    }
+
+    /* report menu */
+    .dropdown-submenu {
+    position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+    position: absolute;
+    display: none;
+    }
+
+    .dropdown-submenu .dropdown-menu.show {
+    display: block;
     }
 </style>
+
+
 <link href="~/css/postComment.css" rel="stylesheet" />
 <div class="post_container"
-     data-post-id="@Model.Id"
-     data-user-id="@loggedInUser.Id"
-     data-user-img="@loggedInUser.ProfileImageUrl"
-     data-user-name="@loggedInUser.FirstName">
+data-post-id="@Model.Id"
+data-user-id="@loggedInUser.Id"
+data-user-img="@loggedInUser.ProfileImageUrl"
+data-user-name="@loggedInUser.FirstName">
 
 
     <div class="post_card">
@@ -51,10 +67,22 @@
                             {
                                 <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@Model.Id" class="dropdown-item">Edit</a></li>
                                 <li><a asp-controller="Post" asp-action="DeletePost" asp-route-id="@Model.Id" class="dropdown-item">Delete</a></li>
-
+                            }
+                            else
+                            {
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Report</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Spam">Spam</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Abuse">Abuse</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Inappropriate">Inappropriate</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Misinformation">Misinformation</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Other">Other</a></li>
+                                    </ul>
+                                </li>
                             }
                         }
-                        <li><a class="dropdown-item" href="#">Report</a></li>
+                       
                     </ul>
                 </div>
             </div>
@@ -262,7 +290,7 @@
 
 
 
-
+    /* report menu */
     function AddReact(ele) {
         var postContainer = $(ele).closest(".post_container");
 
@@ -286,7 +314,32 @@
     }
 
 
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
+
+        dropdownSubmenus.forEach(function (submenu) {
+            submenu.addEventListener('mouseenter', function () {
+                let dropdownMenu = submenu.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.classList.add('show');
+                    dropdownMenu.style.top = submenu.offsetHeight + 'px'; 
+                    dropdownMenu.style.left = '0px'; 
+                }
+            });
+
+            submenu.addEventListener('mouseleave', function () {
+                let dropdownMenu = submenu.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    });
+
 </script>
+
 
 
 

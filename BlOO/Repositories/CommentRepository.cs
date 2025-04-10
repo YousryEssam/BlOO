@@ -53,6 +53,16 @@ namespace BlOO.Repositories
 
         }
 
+        public void DeleteByPostId(int postId)
+        {
+            var comments = blooContext.comments.Where(c => c.PostId == postId).ToList();
+
+            if (comments.Any())
+            {
+                blooContext.comments.RemoveRange(comments);
+            }
+        }
+
 
     }
 }

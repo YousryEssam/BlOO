@@ -20,7 +20,8 @@ namespace BlOO.Controllers
         private readonly IPostReportRepository postReportRepository;
 
         public PostController(IPostRepository postRepository, ICommentRepository commentRepository,
-            SignInManager<ApplicationUser> signInManager, IApplicationUserRepository applicationUserRepository, IPostLikeRepository postLikeRepository)
+            SignInManager<ApplicationUser> signInManager, IApplicationUserRepository applicationUserRepository,
+            IPostLikeRepository postLikeRepository, IPostReportRepository postReportRepository)
         {
             this.postRepository = postRepository;
             this.commentRepository = commentRepository;
@@ -34,8 +35,34 @@ namespace BlOO.Controllers
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             List<PostViewModel> posts = postRepository.GetPostsUsersFollow(userId);
+
+            foreach (var post in posts)
+            {
+                if (post.Comments == null)
+                    post.Comments = new List<CommentWithUserDataViewModel>();
+
+                var commentsFromDB = commentRepository.GetCommmentsByPostId(post.Id);
+
+                foreach (var comment in commentsFromDB)
+                {
+                    var user = comment.User;
+
+                    post.Comments.Add(new CommentWithUserDataViewModel
+                    {
+                        UserId = user.Id,
+                        Content = comment.Content,
+                        ProfileImageUrl = user.ProfileImageUrl,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        CommentDate = comment.CommentDate,
+                        LikeCount = comment.LikeCount
+                    });
+                }
+            }
+
             return View("Post", posts);
         }
+
         public IActionResult Explore()
         {
             int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value);
@@ -254,13 +281,16 @@ namespace BlOO.Controllers
 
         }
 
-        public IActionResult ReportPost(int id)
+        public IActionResult ReportPost(int id , ReportReason reason)
         {
             int userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             PostReport postReport = new PostReport()
             {
                    ReporterId = userid,
                    PostId = id,
+                   Reason = reason,
+     
+                
             };
             postReportRepository.Insert(postReport);
             postReportRepository.Save();

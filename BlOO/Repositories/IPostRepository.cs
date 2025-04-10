@@ -10,5 +10,8 @@ namespace BlOO.Repositories
         List<PostViewModel> GetAllPostsWithId(int id);
 
         List<Post> SearchByName(string searchvalue);
+
+        public Post GetByIdWithComments(int postId);
+
     }
 }

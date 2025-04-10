@@ -14,11 +14,13 @@ namespace BlOO.Controllers
     {
         IPostRepository postRepository;
         private SignInManager<ApplicationUser> _SignInManager;
+        private readonly IPostReportRepository postReportRepository;
 
-        public PostController(IPostRepository postRepository, SignInManager<ApplicationUser> signInManager)
+        public PostController(IPostRepository postRepository, SignInManager<ApplicationUser> signInManager, IPostReportRepository postReportRepository)
         {
             this.postRepository = postRepository;
             _SignInManager = signInManager;
+            this.postReportRepository = postReportRepository;
         }
 
         [Authorize]
@@ -130,7 +132,7 @@ namespace BlOO.Controllers
                     string oldImagePath = Path.Combine(uploadsFolder, postFromDB.ImgUrl);
                     if (System.IO.File.Exists(oldImagePath))
                     {
-                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                        System.IO.File.Delete(oldImagePath); // مسح الصورة القديمة
                     }
                 }
                 string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
@@ -171,7 +173,7 @@ namespace BlOO.Controllers
                     string oldImagePath = Path.Combine(uploadsFolder, Image);
                     if (System.IO.File.Exists(oldImagePath))
                     {
-                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                        System.IO.File.Delete(oldImagePath); // مسح الصورة القديمة
                     }
                 }
             }
@@ -182,6 +184,18 @@ namespace BlOO.Controllers
 
         }
 
+        public IActionResult ReportPost(int id)
+        {
+            int userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            PostReport postReport = new PostReport()
+            {
+                   ReporterId = userid,
+                   PostId = id,
+            };
+            postReportRepository.Insert(postReport);
+            postReportRepository.Save();
+            return RedirectToAction("HomePage", "Post");
+        }
 
     }
 }

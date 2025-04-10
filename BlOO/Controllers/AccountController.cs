@@ -132,6 +132,12 @@ namespace BlOO.Controllers
             };
 
             await signInManager.SignInWithClaimsAsync(UserFromDatabase, UserFromLogin.RememberMe, claims);
+
+            if(UserFromDatabase.Email == "Admin@gmail.com")
+            {
+                return RedirectToAction("AdminPage", "Admin");
+            }
+
             return RedirectToAction("HomePage", "Post", new { id = UserFromDatabase.Id });
         }
 

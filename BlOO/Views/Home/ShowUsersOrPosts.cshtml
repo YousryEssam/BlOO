@@ -40,6 +40,9 @@
                         </div>
                         <div class="details">
                             <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id" class="btn">View Profile</a>
+                            <a asp-controller="Chats" asp-action="Chat" asp-route-id="@user.Id" class="btn">
+                                <i class="fas fa-envelope"></i> Message
+                            </a>
                         </div>
                     </div>
                 }

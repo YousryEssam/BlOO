@@ -8,28 +8,30 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <link href="~/css/Search.css" rel="stylesheet" />
-        <link href="~/css/post-page.css" rel="stylesheet" />
-        <style>
-            .dots {
-                font-size: 15px;
-                cursor: pointer;
-                padding: 0 5px;
-            }
+<head>
+    <link href="~/css/Search.css" rel="stylesheet" />
+    <link href="~/css/post-page.css" rel="stylesheet" />
+    <style>
+        .dots {
+        font-size: 15px;
+        cursor: pointer;
+        padding: 0 5px;
+        }
 
-            .link-to-profile {
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="searchlayout">
-            <div class="people">
-                <h3>People</h3>
-                <hr />
+        .link-to-profile {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="searchlayout">
+        <div class="people">
+            <h3>People</h3>
+            <hr />
+            @if(Model.Users != null)
+            {
                 @foreach (var user in Model.Users)
                 {
                     <div class="d-flex showuser">
@@ -46,10 +48,22 @@
                         </div>
                     </div>
                 }
-            </div>
-            <hr />
-            <div class="posts">
-                <h3>Posts</h3>
+            }
+            else
+            {
+                <div class="no-posts-box text-center shadow-sm p-5">
+                    <i class="fas fa-users"></i>
+                    <h3 class="text-muted mb-2">No Users Found</h3>
+                </div>
+            }
+        </div>
+        
+
+
+        <div class="posts">
+            <h3>Posts</h3>
+            @if(Model.Posts != null)
+            {
                 @foreach (var post in Model.Posts)
                 {
                     <div class="post_container" style="box-shadow: 0 0 5px 1px #6482AD;">
@@ -102,7 +116,15 @@
                         </div>
                     </div>
                 }
-            </div>
+            }
+            else
+            {
+                <div class="no-posts-box text-center shadow-sm p-5">
+                    <img src="~/assets/post-pictures/NoPostsYet.jpg" alt="No posts" class="mb-6 no-posts-img">
+                    <h3 class="text-muted mb-2">No posts Found</h3>
+                </div>
+            }
+        </div>
         </div>
     </body>
 </html>

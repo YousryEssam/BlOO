@@ -1,0 +1,313 @@
+﻿@model PostViewModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
+}
+
+
+<style>
+    .dots {
+        font-size: 15px;
+        cursor: pointer;
+        padding: 0 5px;
+    }
+
+    .link-to-profile {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .stat1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+ 
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/css/post-page.css" asp-append-version="true" />
+
+
+
+
+<link href="~/css/postComment.css" rel="stylesheet" />
+
+<div id="postContainer" class="container">
+
+
+    <div class="post_container"
+         data-post-id="@Model.Id"
+         data-user-id="@Model.OwnerId"
+         data-user-img="@Model.ImgUrl"
+         data-user-name="@Model.UserName">
+
+
+        <div class="post_card">
+            <div class="post_section">
+                <div class="post_card_section_head">
+                    <div>
+                        <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.OwnerId" class="link-to-profile text-black" title="See Profile">
+                            <img width="10px" src="@Model.UserImgUrl" alt="ProfileImage" class="user_profile-photo">
+                            <h3>@Model.UserName</h3>
+                        </a>
+                    </div>
+                
+                </div>
+                <p>@Model.Content</p>
+                @if (!string.IsNullOrEmpty(Model.ImgUrl))
+                {
+                    <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image" />
+                }
+               
+        
+            </div>
+        </div>
+
+        <div class="post-stats">
+            <div class="stat-icons">
+                <div class="stat">
+                    <i class="fa-solid fa-heart " onclick="AddReact(this)"></i>
+                    <strong class="react-count" onclick="GetLikes(this)" id="like-count-@Model.Id">@Model.LikeCount</strong>
+                </div>
+                <div class="stat">
+                    <i class="fa-regular fa-comment-dots comment-icon" onclick="getComments(this)"></i>
+                    <strong class="comment-count">@Model.CommentCount</strong>
+                </div>
+            </div>
+            <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
+        </div>
+
+        <div class="comments comment-section">
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                foreach (CommentWithUserDataViewModel comment in Model.Comments)
+                {
+                    <div class="comment" style="margin-block:10px;">
+                        <div class="userComment">
+                            <img src="@comment.ProfileImageUrl" alt="User" class="commentImg" />
+                            <h6 class="commentName">@comment.FirstName @comment.LastName</h6>
+                        </div>
+                        <div class="commentReacts">
+                            <div class="commentContent"><p>@comment?.Content</p></div>
+                            <div class="stat1">
+                                <i class="fa-regular fa-heart"></i>
+                                <strong>@comment?.LikeCount</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+            else
+            {
+                <p class="text-muted ps-3"></p>
+            }
+
+        </div>
+        <div>
+            <a asp-controller="Admin" asp-action="AdminPage" class="btn btn-sm btn-primary me-1">
+                <i class="bi bi-eye"></i> Back
+            </a>
+        </div>
+        @*  Post reacts  *@
+        <div class="likes likes-section    likesHidden  ">
+            @if (Model.PostLikes != null && Model.PostLikes.Any())
+            {
+                foreach (PostLikesViewModel like in Model.PostLikes)
+                {
+                    <div class="likesDiv" data-userid="@like.UserId" style="margin-block:10px;">
+                        <div class="Userlikes">
+                            <img src="@like.ProfileImageUrl" alt="User" class="commentImg" />
+                            <h6 class="commentName">@like.FirstName @like.LastName</h6>
+
+                        </div>
+
+                        <div class="stat1">
+                            <i class="fa-solid fa-heart " style="color:red"></i>
+                        </div>
+                    </div>
+
+                }
+            }
+            else
+            {
+                <p class="text-muted ps-3"></p>
+            }
+      
+     
+        </div>
+        @*   ////////////////////////////////// *@
+    </div>
+
+
+
+
+
+
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/microsoft-signalr/signalr.min.js"></script>
+
+
+<script>
+
+
+    var flag = false;
+
+
+        const hub = new signalR.HubConnectionBuilder().withUrl("/PostComment").build();
+
+    hub.start().then(() => {
+        console.log("SignalR connected");
+    }).catch(err => console.error(" Error connecting:", err.toString()));
+
+    hub.on("NewComment", function (newComment) {
+        const postContainer = $(`.post_container[data-post-id="${newComment.postId}"]`);
+        const commentHtml = `
+            <div class="comment">
+                <div class="userComment">
+                    <img src="${newComment.image}" alt="User" class="commentImg" />
+                    <h6 class="commentName">${newComment.userName}</h6>
+                </div>
+                <div class="commentReacts">
+                    <div class="commentContent"><p>${newComment.content}</p></div>
+                    <div class="stat1">
+                        <i class="fa-regular fa-heart"></i>
+                        <strong>${newComment.likeCount}</strong>
+                    </div>
+                </div>
+            </div>`;
+        postContainer.find(".comment-section").append(commentHtml);
+
+        let countElem = postContainer.find(".comment-count");
+        var currentCount = parseInt(countElem.text());
+        countElem.text(currentCount + 1);
+
+    });
+
+    $(document).on("keydown", ".write-comment", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+
+            const input = $(this).val().trim();
+            if (!input) return;
+
+            const postContainer = $(this).closest(".post_container");
+            const postId = postContainer.data("post-id");
+            const userId = postContainer.data("user-id");
+
+            const commentData = {
+                Content: input,
+                PostId: postId,
+                UserId: userId
+                // Removed commentCount here
+            };
+
+            hub.invoke("WriteComment", commentData)
+                .then(() => {
+                    console.log(" Comment sent");
+                    $(this).val("");
+                })
+                .catch(err => {
+                    console.error(" Error sending comment:", err.toString());
+                });
+        }
+    });
+
+    function GetLikes(ele) {
+        var postContainer = $(ele).closest(".post_container");
+
+        //
+        postContainer.find(".comment-section").removeClass("comments2");
+
+        //
+        postContainer.find(".likes-section").toggleClass("likesHidden");
+    }
+
+    function getComments(elem) {
+        var postContainer = $(elem).closest(".post_container");
+
+        //
+        postContainer.find(".likes-section").addClass("likesHidden");
+
+
+        postContainer.find(".comment-section").toggleClass("comments2");
+    }
+
+      hub.on("NewReact", function (data) {
+        const postContainer = $(`.post_container[data-post-id="${data.postId}"]`);
+        const likesSection = postContainer.find(".likes-section");
+
+        const reactHtmlr = `
+            <div class="likesDiv" data-userid="${data.userId}" style="margin-block:10px;">
+                <div class="Userlikes">
+                    <img src="${data.image}" alt="User" class="commentImg" />
+                    <h6 class="commentName">${data.userName}</h6>
+                </div>
+                <div class="stat1">
+                    <i class="fa-solid fa-heart " style="color:red"></i>
+                </div>
+            </div>`;
+
+
+        let countElem = document.getElementById("like-count-" + data.postId);
+        var currentCount = parseInt(countElem.innerText);
+        countElem.innerText = currentCount + data.change;
+
+
+        if (data.exist) {
+            //
+            if (likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).length === 0) {
+                likesSection.append(reactHtmlr);
+            }
+        } else {
+            //
+            likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).remove();
+        }
+    });
+
+
+
+    /* report menu */
+    function AddReact(ele) {
+        var postContainer = $(ele).closest(".post_container");
+
+        postContainer.find(".React-section").toggleClass("reacts2");
+
+       // $(ele).toggleClass("reactsActive");
+
+        const postId = postContainer.data("post-id");
+        const userId = postContainer.data("user-id");
+
+        const LikeData = {
+            UserId: userId,
+            PostId: postId,
+            LikeDate: new Date().toISOString()
+            // Removed commentCount here
+        };
+
+
+
+        hub.invoke("NewReact", LikeData);
+    }
+
+</script>
+
+
+
+
+<style>
+    .comments {
+        display: none;
+    }
+
+    .comments2 {
+        display: block;
+    }
+</style>

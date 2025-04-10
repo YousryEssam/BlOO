@@ -1,4 +1,5 @@
 ﻿using BlOO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlOO.Repositories
 {
@@ -42,6 +43,17 @@ namespace BlOO.Repositories
         public void Update(PostReport entity)
         {
             blooContext.postReports.Update(entity);
+        }
+        public void DeleteReportsByPostId(int postId)
+        {
+            var reports = blooContext.postReports
+                .Where(r => r.PostId == postId)
+                .ToList();
+
+            if (reports.Any())
+            {
+                blooContext.postReports.RemoveRange(reports);
+            }
         }
     }
 }

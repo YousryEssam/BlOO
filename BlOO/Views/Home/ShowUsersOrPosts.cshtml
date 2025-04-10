@@ -1,0 +1,130 @@
+﻿@model (List<ApplicationUser> Users, List<Post> Posts)
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "ShowUsersOrPosts";
+    var loggedInUser = await UserManager.GetUserAsync(User);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/Search.css" rel="stylesheet" />
+    <link href="~/css/post-page.css" rel="stylesheet" />
+    <style>
+        .dots {
+        font-size: 15px;
+        cursor: pointer;
+        padding: 0 5px;
+        }
+
+        .link-to-profile {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="searchlayout">
+        <div class="people">
+            <h3>People</h3>
+            <hr />
+            @if(Model.Users != null)
+            {
+                @foreach (var user in Model.Users)
+                {
+                    <div class="d-flex showuser">
+                        <img src="@user.ProfileImageUrl" class="rounded-circle" />
+                        <div class="info">
+                            <h5>@user.FirstName @user.LastName</h5>
+                            <p>Following By @user.FollowersCount</p>
+                        </div>
+                        <div class="details">
+                            <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id" class="btn">View Profile</a>
+                            <a asp-controller="Chats" asp-action="Chat" asp-route-id="@user.Id" class="btn">
+                                <i class="fas fa-envelope"></i> Message
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-posts-box text-center shadow-sm p-5">
+                    <i class="fas fa-users"></i>
+                    <h3 class="text-muted mb-2">No Users Found</h3>
+                </div>
+            }
+        </div>
+        
+
+
+        <div class="posts">
+            <h3>Posts</h3>
+            @if(Model.Posts != null)
+            {
+                @foreach (var post in Model.Posts)
+                {
+                    <div class="post_container" style="box-shadow: 0 0 5px 1px #6482AD;">
+                        <div class="post_card">
+                            <div class="post_section">
+                                <div class="post_card_section_head">
+                                    <div>
+                                        <a asp-controller="User" asp-action="Profile" asp-route-id="@post.UserId" class="link-to-profile text-black" title="See Profile">
+                                            <img src="@post.User.ProfileImageUrl" alt="ProfileImage" class="user_profile-photo">
+                                            <h5>@post.User.FirstName @post.User.LastName</h5>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light border-0" type="button" data-bs-toggle="dropdown">
+                                            <span class="dots">⋯</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            @{
+                                                if (post.UserId == loggedInUser.Id)
+                                                {
+                                                    <li><a asp-controller="Post" asp-action="EditPost" asp-route-id="@post.Id" class="dropdown-item">Edit</a></li>
+                                                    <li><a asp-controller="Post" asp-action="DeletePost" asp-route-id="@post.Id" class="dropdown-item">Delete</a></li>
+
+                                                }
+                                            }
+                                            <li><a class="dropdown-item" href="#">Report</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p>@post.Content</p>
+                                @if (!string.IsNullOrEmpty(post.ImgUrl))
+                                {
+                                    <img src="/assets/post-pictures/@post.ImgUrl" class="post-image" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="post-stats">
+                            <div class="stat-icons">
+                                <div class="stat">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <strong>@post.LikeCount</strong>
+                                </div>
+                                <div class="stat">
+                                    <i class="fa-regular fa-comment-dots comment-icon" onclick="getComments(this)"></i>
+                                    <strong class="comment-count">@post.CommentCount</strong>
+                                </div>
+                            </div>
+                            <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-posts-box text-center shadow-sm p-5">
+                    <img src="~/assets/post-pictures/NoPostsYet.jpg" alt="No posts" class="mb-6 no-posts-img">
+                    <h3 class="text-muted mb-2">No posts Found</h3>
+                </div>
+            }
+        </div>
+        </div>
+    </body>
+</html>

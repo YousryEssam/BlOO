@@ -15,13 +15,18 @@ public class HomeController : Controller
     private RoleManager<IdentityRole<int>> _RoleManager;
     private SignInManager<ApplicationUser> _SignInManager;
     private IApplicationUserRepository _applicationUserRepository;
-    public HomeController(ILogger<HomeController> logger , UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager,IApplicationUserRepository applicationUserRepository)
+    private readonly IPostRepository _postRepository;
+
+    public HomeController(ILogger<HomeController> logger , UserManager<ApplicationUser> userManager, 
+        RoleManager<IdentityRole<int>> roleManager, SignInManager<ApplicationUser> signInManager,
+        IApplicationUserRepository applicationUserRepository, IPostRepository postRepository)
     {
         _logger = logger;
         _UserManager = userManager;
         _RoleManager = roleManager;
         _SignInManager = signInManager;
         _applicationUserRepository = applicationUserRepository;
+        _postRepository = postRepository;
     }
 
 
@@ -37,12 +42,13 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult ShowUsers(string searchvalue)
+    public IActionResult ShowUsersOrPosts(string searchvalue)
     {
         if (!string.IsNullOrEmpty(searchvalue))
         {
             List<ApplicationUser> applicationUsers = _applicationUserRepository.SearchByName(searchvalue);
-            return View(applicationUsers);
+            List<Post> posts = _postRepository.SearchByName(searchvalue);
+            return View((applicationUsers, posts));
         }
         return View("Welcome");
     }

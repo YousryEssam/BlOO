@@ -52,5 +52,14 @@ namespace BlOO.Repositories
             return blooContext.postLikes.Include(l => l.User).Where(l => l.PostId == postId).ToList();
         }
 
+        public void DeleteLikesByPostId(int postId)
+        {
+            var likes = blooContext.postLikes.Where(l => l.PostId == postId).ToList();
+            if (likes.Any())
+            {
+                blooContext.postLikes.RemoveRange(likes);
+            }
+        }
+
     }
 }

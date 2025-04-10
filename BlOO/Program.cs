@@ -26,7 +26,7 @@ namespace BlOO
 
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("MarlyCS"));
 
-                //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
 
             });
 

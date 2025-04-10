@@ -1,7 +1,14 @@
 ﻿@inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject INotificationRepository notificationRepository
 @{
     var user = await UserManager.GetUserAsync(User);
+    bool unSeenNotification = false;
+    int userId;
+    if (int.TryParse(UserManager.GetUserId(User), out userId))
+    {
+        unSeenNotification = await notificationRepository.HasUnseenNotificationByUserId(userId);
+    }    
 }
 
 <!DOCTYPE html>
@@ -24,7 +31,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 </head>
-<body >
+<body>
     <header>
         @{
             if (ViewData["HideNavbar"] == null || (string)ViewData["HideNavbar"] != "true")
@@ -46,7 +53,7 @@
 
                         <!-- Navbar Toggler -->
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
 
@@ -63,11 +70,22 @@
                                         <img src="~/assets/icons/compass-icon.svg" class="nav-hover icon-img" />
                                     </a>
                                 </li>
+
                                 <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notification">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link position-relative" asp-controller="Notifications" asp-action="Index">
                                         <img src="~/assets/icons/notification-icon.svg" class="nav-hover icon-img" />
+                                        @{
+                                            if (unSeenNotification)
+                                            {
+                                                <span id="notification-dot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                                    <span class="visually-hidden">New alerts</span>
+                                                </span>
+                                            }
+                                        }
+
                                     </a>
                                 </li>
+
                                 <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Setting">
                                     <a class="nav-link" href="#">
                                         <img src="~/assets/icons/setting-icon.svg" class="nav-hover icon-img" />
@@ -125,14 +143,12 @@
 
 
 
-
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @* Tooltip active *@
+    
     <script>
+        // Tooltip active 
         document.addEventListener("DOMContentLoaded", function () {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -142,5 +158,6 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

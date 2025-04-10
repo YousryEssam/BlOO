@@ -20,9 +20,9 @@ namespace BlOO
             {
 
 
-              //  Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
-                
-                Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("Nourcs"));
+                Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
+
+                //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("Nourcs"));
 
                 //Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("MarlyCS"));
 
@@ -52,9 +52,11 @@ namespace BlOO
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.MapHub<CommentHub>("/PostComment");
             app.MapHub<ChatMessageHub>("/ChatMessage");
             app.MapHub<FollowersSystemHub>("/FollowersSystem");
-            app.MapHub<CommentHub>("/PostComment");
+            app.MapHub<NotificationsSystemHub>("/NotificationsSystem");
             app.UseAuthorization();
 
             app.MapControllerRoute(

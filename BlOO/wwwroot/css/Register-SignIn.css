@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
 body {
     font-family: 'Poppins', sans-serif !important;
 }
@@ -18,15 +19,15 @@ body {
 
 html, body {
     overflow: auto;
-    
 }
+
 .password__icon {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 
 /* backgroun grey */
 
@@ -34,9 +35,9 @@ html, body {
     background: #f0f0f0;
 }
 
-.bg-grey-light:focus {
-    background: #f0f0f0;
-}
+    .bg-grey-light:focus {
+        background: #f0f0f0;
+    }
 
 @media (min-width: 1024px) {
     body {
@@ -44,38 +45,44 @@ html, body {
     }
     /* add circle blue background */
     .ball {
-        overflow: hidden;
-        transition: margin 1s;
         width: 850px;
-        height: 60%;
-        border-radius: 10px;
+        height: 100vh;
+        overflow: hidden;
+        border-radius: 20px;
+        transition: margin 1s;
         background-color: #6482AD;
     }
-    .ball.login {
-        margin-left: 33%;
-        margin-top: 5%;
-    }
-    .ball.register {
-        margin-left: 14%;
-        margin-top: 6%;
-    }
+
+        .ball.login {
+            margin-left: 33%;
+            margin-top: 5%;
+        }
+
+        .ball.register {
+            margin-left: 33%;
+            margin-top: 5%;
+        }
     /* bouncing effect */
     .bounce {
         animation: bounce 2s infinite alternate;
         -webkit-animation: bounce 2s infinite alternate;
     }
+
     @keyframes bounce {
         from {
             transform: translateY(0px);
         }
+
         to {
             transform: translateY(-35px);
         }
     }
+
     @-webkit-keyframes bounce {
         from {
             transform: translateY(0px);
         }
+
         to {
             transform: translateY(-35px);
         }
@@ -88,6 +95,7 @@ html, body {
     .container .col-12.p-5 {
         padding: 0px !important;
     }
+
     body {
         overflow-x: hidden;
     }
@@ -105,12 +113,12 @@ html, body {
 }
 
 
-/* register form active */
+    /* register form active */
 
-.register__form.active {
-    margin-left: -5%;
-    opacity: 1;
-}
+    .register__form.active {
+        margin-left: -5%;
+        opacity: 1;
+    }
 
 
 /* login form default */
@@ -124,7 +132,7 @@ html, body {
 }
 
 
-/* login form active */
+    /* login form active */
 
     .login__form.active {
         opacity: 1;
@@ -145,7 +153,8 @@ i:hover {
     box-shadow: 5px 5px 18px #E2DAD6;
     color: #E2DAD6;
 }
-.btnregister:hover {
+
+    .btnregister:hover {
         background-color: #E2DAD6;
         border: 1px solid #6482AD;
         box-shadow: 3px 3px 5px #6482AD;

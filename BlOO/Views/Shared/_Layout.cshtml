@@ -68,10 +68,16 @@
                                         <img src="~/assets/icons/notification-icon.svg" class="nav-hover icon-img" />
                                     </a>
                                 </li>
-                                <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Setting">
-                                    <a class="nav-link" href="#">
-                                        <img src="~/assets/icons/setting-icon.svg" class="nav-hover icon-img" />
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                                       data-bs-toggle="dropdown" data-bs-placement="bottom"
+                                       title="Chats">
+                                        <img src="~/assets/icons/setting-icon.svg"
+                                             class="nav-hover icon-img" />
                                     </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="btn dropdown-item" asp-controller="User" asp-action="EditProfile" style="background-color:#6482AD; color:white;">Edit Profile</a></li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Chats">
                                     <a class="nav-link" asp-controller="Chats" asp-action="Index">

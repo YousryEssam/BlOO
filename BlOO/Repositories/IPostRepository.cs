@@ -4,6 +4,7 @@ namespace BlOO.Repositories
 {
     public interface IPostRepository : IGenericRepository<Post>
     {
+        ApplicationUser GetPostOwnerByPostId(int postId);
         List<PostViewModel> GetPostsUsersFollow(int currentUserId);
         List<PostViewModel> GetRandomPosts(int currentUserId);
 

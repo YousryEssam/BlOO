@@ -1,5 +1,6 @@
 ﻿using BlOO.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace BlOO.Repositories
 {
@@ -35,6 +36,7 @@ namespace BlOO.Repositories
         public void Insert(Message entity)
         {
             blooContext.messages.Add(entity);
+            NewMessageNotification(entity);
         }
 
         public void Save()
@@ -61,6 +63,20 @@ namespace BlOO.Repositories
                 Where(msg => (msg.SenderId == senderID && msg.ReceiverId == reciverID) || (msg.SenderId == reciverID && msg.ReceiverId == senderID)).
                 OrderBy(msg => msg.SendingDate).AsNoTracking().ToList();
 
+        }
+        //================================ Helper Methods ========================\\
+        private void NewMessageNotification(Message message)
+        {
+            Notification notification = new Notification();
+            var receiver = blooContext.applicationUsers.FirstOrDefault(u => u.Id == message.ReceiverId);
+            var Sender = blooContext.applicationUsers.FirstOrDefault(u => u.Id == message.SenderId);
+            notification.UserId = receiver.Id;
+            notification.ActorId = message.SenderId;
+            notification.NotificationMessage = $"You have a new message from {Sender.FirstName} {Sender.LastName}.";
+            notification.ReferenceId = message.Id;
+            notification.NotificationType = Models.NotificationType.Message;
+            blooContext.notifications.Add(notification);
+            blooContext.SaveChanges();
         }
     }
 }

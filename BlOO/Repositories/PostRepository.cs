@@ -27,8 +27,8 @@ namespace BlOO.Repositories
         public List<PostViewModel> GetPostsUsersFollow(int currentUserId)
         {
             List<int> followedUserIds = blooContext.follows
-             .Where(f => f.FollowerId == currentUserId) // User
-             .Select(f => f.FollowingId)                 // الناس اللي يوزر متابعهم
+             .Where(f => f.FollowerId == currentUserId)
+             .Select(f => f.FollowingId)
              .ToList();
 
 
@@ -62,8 +62,8 @@ namespace BlOO.Repositories
             var posts = blooContext.posts
                 .Include(p => p.User)
                 .Where(p =>
-                    !followedUserIds.Contains(p.UserId) && // استبعاد اللي متابعهم
-                    p.UserId != currentUserId              // استبعاد البوستات بتاعتي
+                    !followedUserIds.Contains(p.UserId) && 
+                    p.UserId != currentUserId             
                 )
                 .OrderBy(r => Guid.NewGuid())
                 .Select(p => new PostViewModel
@@ -111,9 +111,15 @@ namespace BlOO.Repositories
             return blooContext.posts.FirstOrDefault(p => p.Id == id);
         }
 
+        public ApplicationUser GetPostOwnerByPostId(int postId)
+        {
+            Post post = blooContext.posts.FirstOrDefault(p => p.Id == postId);
+            return blooContext.applicationUsers.FirstOrDefault(u => u.Id == post.UserId);
+        }
         public void Insert(Post entity)
         {
             blooContext.posts.Add(entity);
+            NewPostNotification(entity);
         }
 
         public void Save()
@@ -137,9 +143,28 @@ namespace BlOO.Repositories
 
         public Post GetByIdWithComments(int postId)
         {
-            return blooContext.posts
-                .Include(p => p.Comments)
-                .FirstOrDefault(p => p.Id == postId);
+            return blooContext.posts.Include(p => p.Comments).FirstOrDefault(p => p.Id == postId);
         }
+        //================================ Helper Methods ========================
+        private void NewPostNotification(Post post)
+        {
+            var followers = blooContext.follows
+                .Where(f => f.FollowingId == post.UserId)
+                .Select(f => f.FollowerId)
+                .ToList();
+            var user = blooContext.applicationUsers.FirstOrDefault(u => u.Id == post.UserId);
+            foreach (var follower in followers) {
+                Notification notification = new Notification();
+                notification.UserId = follower;
+                notification.ActorId = post.UserId;
+                notification.NotificationMessage = $"{user.FirstName} {user.LastName} just dropped a new post!";
+                notification.ReferenceId = post.Id;
+                notification.NotificationType = Models.NotificationType.Post;
+                blooContext.notifications.Add(notification);
+            }
+            blooContext.SaveChanges();
+        }
+
+
     }
 }

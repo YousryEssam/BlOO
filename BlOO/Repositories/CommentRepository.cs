@@ -35,6 +35,7 @@ namespace BlOO.Repositories
         public void Insert(Comment entity)
         {
             blooContext.comments.Add(entity);
+            NewCommentNotification(entity);
         }
 
         public void Save()
@@ -62,7 +63,21 @@ namespace BlOO.Repositories
                 blooContext.comments.RemoveRange(comments);
             }
         }
-
+        //================================ Helper Methods ========================\\
+        private void NewCommentNotification(Comment comment)
+        {
+            Notification notification = new Notification();
+            var post = blooContext.posts.FirstOrDefault(p => p.Id == comment.PostId);
+            var postOwner = blooContext.applicationUsers.FirstOrDefault(u => u.Id == post.UserId);
+            var user = blooContext.applicationUsers.FirstOrDefault(u => u.Id == comment.UserId);
+            notification.UserId = postOwner.Id;
+            notification.ActorId = comment.UserId;
+            notification.NotificationMessage = $"New comment from {user.FirstName} {user.LastName} on your post.";
+            notification.ReferenceId = comment.Id;
+            notification.NotificationType = Models.NotificationType.Comment;
+            blooContext.notifications.Add(notification);
+            blooContext.SaveChanges();
+        }
 
     }
 }

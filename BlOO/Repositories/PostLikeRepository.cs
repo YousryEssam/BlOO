@@ -35,6 +35,7 @@ namespace BlOO.Repositories
         public void Insert(PostLike entity)
         {
             blooContext.postLikes.Add(entity);
+            NewPostLikeNotification(entity);
         }
 
         public void Save()
@@ -60,6 +61,19 @@ namespace BlOO.Repositories
                 blooContext.postLikes.RemoveRange(likes);
             }
         }
-
+        //================================ Helper Methods ========================
+        private void NewPostLikeNotification(PostLike postLike)
+        {
+            Post post = blooContext.posts.FirstOrDefault(p => p.Id == postLike.PostId);
+            var likingUser = blooContext.applicationUsers.FirstOrDefault(u => u.Id == postLike.UserId);
+            Notification notification = new Notification();
+            notification.UserId = post.UserId;
+            notification.ActorId = postLike.UserId;
+            notification.NotificationMessage = $"{likingUser.FirstName} {likingUser.LastName} just Liked your post!";
+            notification.ReferenceId = post.Id;
+            notification.NotificationType = Models.NotificationType.Like;
+            blooContext.notifications.Add(notification);
+            blooContext.SaveChanges();
+        }
     }
 }

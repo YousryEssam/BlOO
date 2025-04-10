@@ -67,6 +67,7 @@ namespace BlOO.Repositories
         public void Insert(Follow entity)
         {
             blooContext.follows.Add(entity);
+            NewFollowNotification(entity);
         }
 
         public bool IsFollowing(int userId, int profileId)
@@ -95,6 +96,21 @@ namespace BlOO.Repositories
         public void Update(Follow entity)
         {
             blooContext.follows.Update(entity);
+        }
+
+        //================================ Helper Methods ========================\\
+        private void NewFollowNotification(Follow follow)
+        {
+            Notification notification = new Notification();
+            var follower = blooContext.applicationUsers.FirstOrDefault(u => u.Id == follow.FollowerId);
+            var following = blooContext.applicationUsers.FirstOrDefault(u => u.Id == follow.FollowingId);
+            notification.UserId = following.Id;
+            notification.ActorId = follower.Id;
+            notification.NotificationMessage = $"{follower.FirstName} {follower.LastName} started following you.";
+            notification.ReferenceId = follow.Id;
+            notification.NotificationType = Models.NotificationType.Follow;
+            blooContext.notifications.Add(notification);
+            blooContext.SaveChanges();
         }
     }
 }

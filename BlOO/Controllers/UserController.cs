@@ -77,67 +77,79 @@ namespace BlOO.Controllers
             return View(ProfileVM);
         }
 
-                [Authorize]
-                [HttpGet]
-                public IActionResult EditProfile()
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EditProfileAsync()
+        {
+            var userFromDb = await _UserManager.GetUserAsync(User);
+            if (userFromDb == null)
+                return NotFound();
+
+            var oldInfoUser = new EditProfileViewModel
+            {
+                FirstName = userFromDb.FirstName,
+                LastName = userFromDb.LastName,
+                Bio = userFromDb.Bio,
+                Email = userFromDb.Email
+            };
+
+            return View(oldInfoUser);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveEdit(EditProfileViewModel UserFromEdit)
+        {
+            ViewBag.Id = _UserManager.GetUserId(User);
+            if (!ModelState.IsValid)
+                return View("EditProfile", UserFromEdit);
+
+            var userFromDb = await _UserManager.FindByEmailAsync(UserFromEdit.Email);
+            if (userFromDb == null)
+                return NotFound();
+
+            userFromDb.ProfileImageUrl = await UploadImageAsync(UserFromEdit.ProfileImage, "/assets/profile-pictures/default-user.jpg");
+            userFromDb.CoverImageUrl = await UploadImageAsync(UserFromEdit.CoverImage, "/assets/profile-covers/default-cover.jpg");
+            userFromDb.FirstName = UserFromEdit.FirstName;
+            userFromDb.LastName = UserFromEdit.LastName;
+            userFromDb.Bio = UserFromEdit.Bio;
+
+            var changePass = await _UserManager.ChangePasswordAsync(userFromDb, UserFromEdit.OldPassword, UserFromEdit.NewPassword);
+            if (!changePass.Succeeded)
+            {
+                foreach (var error in changePass.Errors)
                 {
-                    return View();
+                    ModelState.AddModelError("", error.Description);
                 }
+                return View("EditProfile", UserFromEdit);
+            }
 
-                [HttpPost]
-                [ValidateAntiForgeryToken]
-                public async Task<IActionResult> SaveEdit(EditProfileViewModel UserFromEdit)
-                {
-                    ViewBag.Id = _UserManager.GetUserId(User);
-                    if (!ModelState.IsValid)
-                        return View("EditProfile", UserFromEdit);
+            var result = await _UserManager.UpdateAsync(userFromDb);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Profile", new { id = userFromDb.Id });
+            }
 
-                    var userFromDb = await _UserManager.FindByEmailAsync(UserFromEdit.Email);
-                    if (userFromDb == null)
-                        return NotFound();
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
 
-                    userFromDb.ProfileImageUrl = await UploadImageAsync(UserFromEdit.ProfileImage, "/assets/profile-pictures/default-user.jpg");
-                    userFromDb.CoverImageUrl = await UploadImageAsync(UserFromEdit.CoverImage, "/assets/profile-covers/default-cover.jpg");
-                    userFromDb.FirstName = UserFromEdit.FirstName;
-                    userFromDb.LastName = UserFromEdit.LastName;
-                    userFromDb.Bio = UserFromEdit.Bio;
+            return View("EditProfile", UserFromEdit);
+        }
 
-                    var changePass = await _UserManager.ChangePasswordAsync(userFromDb, UserFromEdit.OldPassword, UserFromEdit.NewPassword);
-                    if (!changePass.Succeeded)
-                    {
-                        foreach (var error in changePass.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                        return View("EditProfile", UserFromEdit);
-                    }
-
-                    var result = await _UserManager.UpdateAsync(userFromDb);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Profile", new { id = userFromDb.Id });
-                    }
-
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
-
-                    return View("EditProfile", UserFromEdit);
-                }
-
-                [HttpGet]
-                [Authorize]
-                public async Task<IActionResult> Followers(int id)
-                {
-                    UserFollowersViewModel userFollowers = new UserFollowersViewModel();
-                    userFollowers.UserId = id;
-                    var followersIds = await followRepository.GetUserFollowersIds(id);
-                    List<ApplicationUser> followers = new List<ApplicationUser>();
-                    foreach (var f in followersIds) {
-                        followers.Add(applicationUserRepository.GetById(f));
-                    }
-                    userFollowers.Followers = followers;
-                    return View(userFollowers);
-                }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Followers(int id)
+        {
+            UserFollowersViewModel userFollowers = new UserFollowersViewModel();
+            userFollowers.UserId = id;
+            var followersIds = await followRepository.GetUserFollowersIds(id);
+            List<ApplicationUser> followers = new List<ApplicationUser>();
+            foreach (var f in followersIds) {
+                followers.Add(applicationUserRepository.GetById(f));
+            }
+            userFollowers.Followers = followers;
+            return View(userFollowers);
+        }
             
         public async Task<IActionResult> Following(int id)
         {

@@ -12,11 +12,13 @@ namespace BlOO.Controllers
 {
     public class PostController : Controller
     {
-        IPostRepository postRepository;
+        private readonly IPostRepository postRepository;
         private readonly ICommentRepository commentRepository;
         private SignInManager<ApplicationUser> _SignInManager;
         private readonly IApplicationUserRepository applicationUserRepository;
         private readonly IPostLikeRepository postLikeRepository;
+        private readonly IPostReportRepository postReportRepository;
+
         public PostController(IPostRepository postRepository, ICommentRepository commentRepository,
             SignInManager<ApplicationUser> signInManager, IApplicationUserRepository applicationUserRepository, IPostLikeRepository postLikeRepository)
         {
@@ -25,6 +27,7 @@ namespace BlOO.Controllers
             _SignInManager = signInManager;
             this.applicationUserRepository = applicationUserRepository;
             this.postLikeRepository = postLikeRepository;
+            this.postReportRepository = postReportRepository;
         }
         [Authorize]
         public IActionResult HomePage()
@@ -199,7 +202,7 @@ namespace BlOO.Controllers
                     string oldImagePath = Path.Combine(uploadsFolder, postFromDB.ImgUrl);
                     if (System.IO.File.Exists(oldImagePath))
                     {
-                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                        System.IO.File.Delete(oldImagePath); // مسح الصورة القديمة
                     }
                 }
                 string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
@@ -240,7 +243,7 @@ namespace BlOO.Controllers
                     string oldImagePath = Path.Combine(uploadsFolder, Image);
                     if (System.IO.File.Exists(oldImagePath))
                     {
-                        System.IO.File.Delete(oldImagePath); // حذف الصورة القديمة
+                        System.IO.File.Delete(oldImagePath); // مسح الصورة القديمة
                     }
                 }
             }
@@ -251,6 +254,18 @@ namespace BlOO.Controllers
 
         }
 
+        public IActionResult ReportPost(int id)
+        {
+            int userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            PostReport postReport = new PostReport()
+            {
+                   ReporterId = userid,
+                   PostId = id,
+            };
+            postReportRepository.Insert(postReport);
+            postReportRepository.Save();
+            return RedirectToAction("HomePage", "Post");
+        }
 
     }
 }

@@ -1,52 +1,18 @@
 ﻿@model PostViewModel
 @inject UserManager<ApplicationUser> UserManager
 @{
-    var loggedInUser = await UserManager.GetUserAsync(User); // Get current logged-in user
+    var loggedInUser = await UserManager.GetUserAsync(User);
 }
 
-
-<style>
-    .dots {
-    font-size: 15px;
-    cursor: pointer;
-    padding: 0 5px;
-    }
-
-    .link-to-profile {
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    }
-
-    .stat1 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    }
-
-    /* report menu */
-    .dropdown-submenu {
-    position: relative;
-    }
-
-    .dropdown-submenu .dropdown-menu {
-    position: absolute;
-    display: none;
-    }
-
-    .dropdown-submenu .dropdown-menu.show {
-    display: block;
-    }
-</style>
-
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <link href="~/css/postComment.css" rel="stylesheet" />
-<div class="post_container"
-data-post-id="@Model.Id"
-data-user-id="@loggedInUser.Id"
-data-user-img="@loggedInUser.ProfileImageUrl"
-data-user-name="@loggedInUser.FirstName">
+<link href="~/css/post-component.css" rel="stylesheet" />
 
+<div class="post_container"
+     data-post-id="@Model.Id"
+     data-user-id="@loggedInUser.Id"
+     data-user-img="@loggedInUser.ProfileImageUrl"
+     data-user-name="@loggedInUser.FirstName">
 
     <div class="post_card">
         <div class="post_section">
@@ -73,20 +39,19 @@ data-user-name="@loggedInUser.FirstName">
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item dropdown-toggle" href="#">Report</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Spam">Spam</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Abuse">Abuse</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Inappropriate">Inappropriate</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Misinformation">Misinformation</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Post" asp-action="ReportPost" asp-route-id="@Model.Id" asp-route-reason="Other">Other</a></li>
+                                        <li><a class="dropdown-item report-link" data-reason="Spam" data-post-id="@Model.Id">Spam</a></li>
+                                        <li><a class="dropdown-item report-link" data-reason="Abuse" data-post-id="@Model.Id">Abuse</a></li>
+                                        <li><a class="dropdown-item report-link" data-reason="Inappropriate" data-post-id="@Model.Id">Inappropriate</a></li>
+                                        <li><a class="dropdown-item report-link" data-reason="Misinformation" data-post-id="@Model.Id">Misinformation</a></li>
+                                        <li><a class="dropdown-item report-link" data-reason="Other" data-post-id="@Model.Id">Other</a></li>
                                     </ul>
                                 </li>
                             }
                         }
-                       
                     </ul>
                 </div>
             </div>
-            <p>@Model.Content</p>
+            <p class="post-content">  @Model.Content </p>
             @if (!string.IsNullOrEmpty(Model.ImgUrl))
             {
                 <img src="/assets/post-pictures/@Model.ImgUrl" class="post-image" />
@@ -97,17 +62,22 @@ data-user-name="@loggedInUser.FirstName">
     <div class="post-stats">
         <div class="stat-icons">
             <div class="stat">
-                <i class="fa-solid fa-heart " onclick="AddReact(this)"></i>
-                @*   <i class="fa-regular fa-heart  racts" ></i> *@
-                <strong class="react-count" onclick="GetLikes(this)" id="like-count-@Model.Id">@Model.LikeCount</strong>
-
+                @{
+                    bool hasLiked = Model.PostLikes?.Any(l => l.UserId == loggedInUser.Id) ?? false;
+                }
+                <i class="bi bi-heart like-icon @(hasLiked ? "d-none" : "")" data-action="add"></i>
+                <i class="bi bi-heart-fill text-danger like-icon @(hasLiked ? "" : "d-none")" data-action="remove"></i>
+                <strong class="react-count" id="like-count-@Model.Id">@Model.LikeCount</strong>
             </div>
             <div class="stat">
-                <i class="fa-regular fa-comment-dots comment-icon" onclick="getComments(this)"></i>
+                <i class="bi bi-chat-dots comment-icon"></i>
                 <strong class="comment-count">@Model.CommentCount</strong>
             </div>
         </div>
-        <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
+        <div class="comment-input-container">
+            <input type="text" placeholder="Add Comment" class="comment-input write-comment" />
+            <span class="comment-status"></span>
+        </div>
     </div>
 
     <div class="comments comment-section">
@@ -115,7 +85,7 @@ data-user-name="@loggedInUser.FirstName">
         {
             foreach (CommentWithUserDataViewModel comment in Model.Comments)
             {
-                <div class="comment" style="margin-block:10px;">
+                <div class="comment" data-comment-id="@comment.Id">
                     <div class="userComment">
                         <img src="@comment.ProfileImageUrl" alt="User" class="commentImg" />
                         <h6 class="commentName">@comment.FirstName @comment.LastName</h6>
@@ -123,70 +93,164 @@ data-user-name="@loggedInUser.FirstName">
                     <div class="commentReacts">
                         <div class="commentContent"><p>@comment?.Content</p></div>
                         <div class="stat1">
-                            <i class="fa-regular fa-heart"></i>
+                            <i class="bi bi-heart"></i>
                             <strong>@comment?.LikeCount</strong>
                         </div>
                     </div>
                 </div>
-
             }
         }
-        else
-        {
-            <p class="text-muted ps-3"></p>
-        }
-
+        <p class="no-comments-message text-muted ps-3 @(Model.Comments != null && Model.Comments.Any() ? "d-none" : "")">No comments yet. Be the first to comment!</p>
     </div>
 
-    @*  Post reacts  *@
-    <div class="likes likes-section    likesHidden  ">
+    <div class="likes likes-section likesHidden">
+        <h5 class="px-3 pt-2">People who liked this post</h5>
         @if (Model.PostLikes != null && Model.PostLikes.Any())
         {
             foreach (PostLikesViewModel like in Model.PostLikes)
             {
-                <div class="likesDiv" data-userid="@like.UserId" style="margin-block:10px;">
+                <div class="likesDiv" data-userid="@like.UserId">
                     <div class="Userlikes">
                         <img src="@like.ProfileImageUrl" alt="User" class="commentImg" />
                         <h6 class="commentName">@like.FirstName @like.LastName</h6>
-
                     </div>
-
                     <div class="stat1">
-                        <i class="fa-solid fa-heart " style="color:red"></i>
+                        <i class="bi bi-heart-fill text-danger"></i>
                     </div>
                 </div>
-
             }
         }
-        else
-        {
-            <p class="text-muted ps-3"></p>
-        }
-
+        <p class="no-likes-message text-muted ps-3 @(Model.PostLikes != null && Model.PostLikes.Any() ? "d-none" : "")">No likes yet.</p>
     </div>
-    @*   ////////////////////////////////// *@
 </div>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 
-
 <script>
-
-
-    var flag = false;
-
-
-        const hub = new signalR.HubConnectionBuilder().withUrl("/PostComment").build();
-
-    hub.start().then(() => {
-        console.log("SignalR connected");
-    }).catch(err => console.error(" Error connecting:", err.toString()));
-
+    // Initialize SignalR connection
+    const hub = new signalR.HubConnectionBuilder()
+        .withUrl("/PostComment")
+        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000]) // Reconnection strategy
+        .build();
+    
+    // Connection management
+    function startConnection() {
+        hub.start().then(() => {
+            console.log("SignalR connected");
+            $('.connection-status').removeClass('disconnected').addClass('connected');
+        }).catch(err => {
+            console.error("Error connecting:", err.toString());
+            $('.connection-status').removeClass('connected').addClass('disconnected');
+            setTimeout(startConnection, 5000);
+        });
+    }
+    
+    hub.onreconnecting(() => {
+        console.log("Reconnecting to SignalR hub...");
+        $('.connection-status').removeClass('connected').addClass('reconnecting');
+    });
+    
+    hub.onreconnected(() => {
+        console.log("Reconnected to SignalR hub");
+        $('.connection-status').removeClass('reconnecting').addClass('connected');
+    });
+    
+    hub.onclose(() => {
+        console.log("Connection closed");
+        $('.connection-status').removeClass('connected').addClass('disconnected');
+        setTimeout(startConnection, 5000);
+    });
+    
+    // Start the connection
+    startConnection();
+    
+    // Handle new comments from SignalR
     hub.on("NewComment", function (newComment) {
+        handleNewComment(newComment);
+    });
+    
+    // Handle new reactions from SignalR
+    hub.on("NewReact", function (data) {
+        handleReactionUpdate(data);
+    });
+    
+    // Document ready
+    $(document).ready(function() {
+        // Comment submission
+        $(document).on("keydown", ".write-comment", function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submitComment($(this));
+            }
+        });
+        
+        // Like/unlike actions
+        $(document).on("click", ".like-icon", function() {
+            const action = $(this).data('action');
+            toggleReaction($(this), action);
+        });
+        
+        // Show comments section
+        $(document).on("click", ".comment-icon", function() {
+            toggleCommentsSection($(this));
+        });
+        
+        // Show likes section
+        $(document).on("click", ".react-count", function() {
+            toggleLikesSection($(this));
+        });
+        
+        // Report functionality
+        $(document).on("click", ".report-link", function(e) {
+            e.preventDefault();
+            reportPost($(this));
+        });
+        
+        // Initialize dropdown submenus
+        initializeDropdownSubmenus();
+    });
+    
+    // Functions for handling UI components
+    function submitComment(inputElement) {
+        const input = inputElement.val().trim();
+        if (!input) return;
+        
+        const postContainer = inputElement.closest(".post_container");
+        const postId = postContainer.data("post-id");
+        const userId = postContainer.data("user-id");
+        
+        const statusElement = inputElement.siblings('.comment-status');
+        statusElement.text('Sending...').show();
+        
+        const commentData = {
+            Content: input,
+            PostId: postId,
+            UserId: userId
+        };
+        
+        hub.invoke("WriteComment", commentData)
+            .then(() => {
+                inputElement.val("");
+                statusElement.text('Sent!').show();
+                setTimeout(() => statusElement.fadeOut(), 2000);
+            })
+            .catch(err => {
+                console.error("Error sending comment:", err.toString());
+                statusElement.text('Failed to send. Try again.').show();
+                setTimeout(() => statusElement.fadeOut(), 3000);
+            });
+    }
+    
+    function handleNewComment(newComment) {
         const postContainer = $(`.post_container[data-post-id="${newComment.postId}"]`);
+        if (postContainer.length === 0) return;
+        
+        const commentSection = postContainer.find(".comment-section");
+        
+        // Create new comment HTML
         const commentHtml = `
-            <div class="comment">
+            <div class="comment" data-comment-id="${newComment.id || ''}">
                 <div class="userComment">
                     <img src="${newComment.image}" alt="User" class="commentImg" />
                     <h6 class="commentName">${newComment.userName}</h6>
@@ -194,161 +258,156 @@ data-user-name="@loggedInUser.FirstName">
                 <div class="commentReacts">
                     <div class="commentContent"><p>${newComment.content}</p></div>
                     <div class="stat1">
-                        <i class="fa-regular fa-heart"></i>
-                        <strong>${newComment.likeCount}</strong>
+                        <i class="bi bi-heart"></i>
+                        <strong>${newComment.likeCount || 0}</strong>
                     </div>
                 </div>
             </div>`;
-        postContainer.find(".comment-section").append(commentHtml);
-
+            
+        // Add the comment to the section
+        commentSection.find('.no-comments-message').addClass('d-none');
+        commentSection.append(commentHtml);
+        
+        // Update comment count
         let countElem = postContainer.find(".comment-count");
-        var currentCount = parseInt(countElem.text());
+        const currentCount = parseInt(countElem.text());
         countElem.text(currentCount + 1);
-
-    });
-
-    $(document).on("keydown", ".write-comment", function (e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-
-            const input = $(this).val().trim();
-            if (!input) return;
-
-            const postContainer = $(this).closest(".post_container");
-            const postId = postContainer.data("post-id");
-            const userId = postContainer.data("user-id");
-
-            const commentData = {
-                Content: input,
-                PostId: postId,
-                UserId: userId
-                // Removed commentCount here
-            };
-
-            hub.invoke("WriteComment", commentData)
-                .then(() => {
-                    console.log(" Comment sent");
-                    $(this).val("");
-                })
-                .catch(err => {
-                    console.error(" Error sending comment:", err.toString());
-                });
-        }
-    });
-
-    function GetLikes(ele) {
-        var postContainer = $(ele).closest(".post_container");
-
-        //
-        postContainer.find(".comment-section").removeClass("comments2");
-
-        //
-        postContainer.find(".likes-section").toggleClass("likesHidden");
     }
-
-    function getComments(elem) {
-        var postContainer = $(elem).closest(".post_container");
-
-        //
-        postContainer.find(".likes-section").addClass("likesHidden");
-
-
-        postContainer.find(".comment-section").toggleClass("comments2");
-    }
-
-      hub.on("NewReact", function (data) {
-        const postContainer = $(`.post_container[data-post-id="${data.postId}"]`);
-        const likesSection = postContainer.find(".likes-section");
-
-        const reactHtmlr = `
-            <div class="likesDiv" data-userid="${data.userId}" style="margin-block:10px;">
-                <div class="Userlikes">
-                    <img src="${data.image}" alt="User" class="commentImg" />
-                    <h6 class="commentName">${data.userName}</h6>
-                </div>
-                <div class="stat1">
-                    <i class="fa-solid fa-heart " style="color:red"></i>
-                </div>
-            </div>`;
-
-        
-        let countElem = document.getElementById("like-count-" + data.postId);
-        var currentCount = parseInt(countElem.innerText);
-        countElem.innerText = currentCount + data.change;
-
-        
-        if (data.exist) {
-            // 
-            if (likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).length === 0) {
-                likesSection.append(reactHtmlr);
-            }
-        } else {
-            // 
-            likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).remove();
-        }
-    });
-
-
-
-    /* report menu */
-    function AddReact(ele) {
-        var postContainer = $(ele).closest(".post_container");
-
-        postContainer.find(".React-section").toggleClass("reacts2");
-
-       // $(ele).toggleClass("reactsActive");
-
+    
+    function toggleReaction(element, action) {
+        const postContainer = element.closest(".post_container");
         const postId = postContainer.data("post-id");
         const userId = postContainer.data("user-id");
-
-        const LikeData = {
+        
+        // Toggle UI first for responsive feel
+        const likeIcons = postContainer.find('.like-icon');
+        likeIcons.toggleClass('d-none');
+        
+        const likeData = {
             UserId: userId,
             PostId: postId,
             LikeDate: new Date().toISOString()
-            // Removed commentCount here
         };
-
-
-
-        hub.invoke("NewReact", LikeData);
+        
+        hub.invoke("NewReact", likeData)
+            .catch(err => {
+                console.error("Error toggling reaction:", err.toString());
+                // Revert UI on error
+                likeIcons.toggleClass('d-none');
+            });
     }
-
-
-
-
-    document.addEventListener('DOMContentLoaded', function () {
+    
+    function handleReactionUpdate(data) {
+        const postContainer = $(`.post_container[data-post-id="${data.postId}"]`);
+        if (postContainer.length === 0) return;
+        
+        const likesSection = postContainer.find(".likes-section");
+        const likeCountElement = $(`#like-count-${data.postId}`);
+        
+        // Update the count
+        const currentCount = parseInt(likeCountElement.text());
+        likeCountElement.text(currentCount + data.change);
+        
+        // Handle like display in the likes section
+        if (data.exist) {
+            // Add new like to list if not already there
+            if (likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).length === 0) {
+                const likeHtml = `
+                    <div class="likesDiv" data-userid="${data.userId}">
+                        <div class="Userlikes">
+                            <img src="${data.image}" alt="User" class="commentImg" />
+                            <h6 class="commentName">${data.userName}</h6>
+                        </div>
+                        <div class="stat1">
+                            <i class="bi bi-heart-fill text-danger"></i>
+                        </div>
+                    </div>`;
+                likesSection.append(likeHtml);
+                likesSection.find('.no-likes-message').addClass('d-none');
+            }
+        } else {
+            // Remove like from list
+            likesSection.find(`.likesDiv[data-userid="${data.userId}"]`).remove();
+            
+            // Show "no likes" message if necessary
+            if (likesSection.find('.likesDiv').length === 0) {
+                likesSection.find('.no-likes-message').removeClass('d-none');
+            }
+        }
+        
+        // Update like buttons if this is the current user's action
+        const currentUserId = postContainer.data('user-id');
+        if (data.userId === currentUserId) {
+            const addLikeIcon = postContainer.find('.like-icon[data-action="add"]');
+            const removeLikeIcon = postContainer.find('.like-icon[data-action="remove"]');
+            
+            if (data.exist) {
+                addLikeIcon.addClass('d-none');
+                removeLikeIcon.removeClass('d-none');
+            } else {
+                addLikeIcon.removeClass('d-none');
+                removeLikeIcon.addClass('d-none');
+            }
+        }
+    }
+    
+    function toggleCommentsSection(element) {
+        const postContainer = element.closest(".post_container");
+        
+        // Hide likes section if visible
+        postContainer.find(".likes-section").addClass("likesHidden");
+        
+        // Toggle comments section
+        postContainer.find(".comment-section").toggleClass("comments2");
+    }
+    
+    function toggleLikesSection(element) {
+        const postContainer = element.closest(".post_container");
+        
+        // Hide comments section if visible
+        postContainer.find(".comment-section").removeClass("comments2");
+        
+        // Toggle likes section
+        postContainer.find(".likes-section").toggleClass("likesHidden");
+    }
+    
+    function reportPost(element) {
+        const postId = element.data('post-id');
+        const reason = element.data('reason');
+        
+        $.ajax({
+            url: `/Post/ReportPost`,
+            type: 'POST',
+            data: { id: postId, reason: reason },
+            success: function(response) {
+                alert(`Thank you for reporting this post. We'll review it soon.`);
+            },
+            error: function(error) {
+                console.error("Error reporting post:", error);
+                alert(`Error reporting post. Please try again later.`);
+            }
+        });
+    }
+    
+    function initializeDropdownSubmenus() {
         const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
-
+        
         dropdownSubmenus.forEach(function (submenu) {
             submenu.addEventListener('mouseenter', function () {
-                let dropdownMenu = submenu.querySelector('.dropdown-menu');
+                const dropdownMenu = submenu.querySelector('.dropdown-menu');
                 if (dropdownMenu) {
                     dropdownMenu.classList.add('show');
-                    dropdownMenu.style.top = submenu.offsetHeight + 'px'; 
-                    dropdownMenu.style.left = '0px'; 
+                    dropdownMenu.style.top = submenu.offsetHeight + 'px';
+                    dropdownMenu.style.left = '0px';
                 }
             });
-
+            
             submenu.addEventListener('mouseleave', function () {
-                let dropdownMenu = submenu.querySelector('.dropdown-menu');
+                const dropdownMenu = submenu.querySelector('.dropdown-menu');
                 if (dropdownMenu) {
                     dropdownMenu.classList.remove('show');
                 }
             });
         });
-    });
-
+    }
 </script>
-
-
-
-
-<style>
-    .comments {
-        display: none;
-    }
-
-    .comments2 {
-        display: block;
-    }
-</style>

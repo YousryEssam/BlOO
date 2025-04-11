@@ -1,72 +1,187 @@
-﻿
-.comments{
-    display:none;
-}
-.commentImg {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-.userComment{
-    display:flex;
-    gap:10px;
-    align-items:center;
-}
-.comments2{
-    display:block;
-}
-.commentContent {
-    background-color: #6482adab;
-    border-radius: 0 15px 15px 15px;
-    /* margin-block: 5px; */
-    margin-inline: 50px;
-    width:90%
-}
-.commentContent p{
-    padding:15px;
-    color:white;
-}
-.commentReacts{
-display:flex;
-align-items:center
-}
-.stat1{
-    margin-left: -35px;
-}
-
+﻿/* ===== Comment Section Display States ===== */
 .comments {
     display: none;
 }
 
 .comments2 {
     display: block;
-}
-.racts, .reactsActive:hover {
-    color: hsl(0deg 0% 33.33% / 43.14%);
+    max-height: 400px;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    padding: 10px 0;
 }
 
-.reactsActive, .reacts:hover {
-    color: red;
+/* ===== User and Comment Components ===== */
+/* User Image */
+.commentImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid #fff;
+}
+
+/* User Comment Header */
+.userComment {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.commentName {
+    font-weight: 500;
+    margin: 0;
+    color: #333;
+}
+
+/* Comment Content Styling */
+.commentContent {
+    background-color: #6482ad;
+    border-radius: 0 15px 15px 15px;
+    margin-left: 52px;
+    margin-bottom: 5px;
+    width: calc(100% - 80px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+    .commentContent p {
+        padding: 12px 15px;
+        margin: 0;
+        color: white;
+        font-size: 14px;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+/* Comment Section Layout */
+.commentReacts {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 52px;
+}
+
+.stat1 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+    .stat1:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+/* ===== Reaction/Like Styling ===== */
+.racts,
+.reactsActive:hover {
+    color: rgba(85, 85, 85, 0.43);
+    transition: color 0.2s ease;
+}
+
+.reactsActive,
+.reacts:hover {
+    color: #e91e63;
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+/* Like count styling */
+.react-count {
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+    .react-count:hover {
+        color: #1976d2;
+        text-decoration: underline;
+    }
+
+/* ===== Likes Section ===== */
+.likes-section {
+    border-top: 1px solid #eee;
+    padding: 10px 0;
 }
 
 .likesDiv {
     display: flex;
     justify-content: space-between;
-    margin: 15px;
     align-items: center;
-    width: 30%;
+    padding: 8px 15px;
+    border-bottom: 1px solid #f5f5f5;
+    width: 100%;
+    transition: background-color 0.2s ease;
 }
+
+    .likesDiv:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .likesDiv:last-child {
+        border-bottom: none;
+    }
 
 .Userlikes {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
 }
 
 .likesHidden {
     display: none;
 }
 
-.react-count:hover {
-    cursor: pointer;
+/* ===== Animations ===== */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.like-animation {
+    animation: pulse 0.3s ease;
+}
+
+/* ===== Media Queries ===== */
+@media (max-width: 768px) {
+    .commentContent {
+        width: calc(100% - 60px);
+    }
+
+    .likesDiv {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .commentImg {
+        width: 35px;
+        height: 35px;
+    }
+
+    .commentContent {
+        margin-left: 47px;
+    }
+
+    .commentReacts {
+        margin-left: 47px;
+    }
 }

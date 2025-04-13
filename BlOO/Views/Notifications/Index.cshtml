@@ -33,6 +33,34 @@
     </div>
 </div>
 
+@{
+    if (ViewBag.TotalPages > 1)
+    {
+        <div class="container d-flex justify-content-center my-4">
+            <nav aria-label="Notification pagination">
+                <ul class="pagination">
+                    <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                    </li>
+
+                    @for (int i = 0; i < ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">
+                                @(i+1)
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+}
+
 
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="toast" class="toast align-items-center text-white" role="alert" aria-live="assertive" aria-atomic="true">
@@ -44,7 +72,6 @@
         </div>
     </div>
 </div>
-
 
 
 <!-- Bootstrap JS Bundle with Popper -->
@@ -218,7 +245,7 @@
 
     function formatTime(date) {
         const now = new Date();
-        const diff = Math.floor((now - new Date(date)) / 1000);
+        const diff = Math.floor((now - new Date(date + 'Z')) / 1000); // UTC Time Zone
 
         if (diff < 60) return 'Just now';
         if (diff < 3600) return `${Math.floor(diff / 60)} minute${diff >= 120 ? 's' : ''} ago`;

@@ -4,12 +4,10 @@
     {
         public int Id { get; set; }
         public int TargetUserId { get; set; } = 0;
-        public string FirstName { get; set; } = "Madonna";
-        public string LastName { get; set; } = "Hany";
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string ProfileImageUrl { get; set; } = "/assets/icons/user.png";
         public string ReciverImageURL { get; set; }
-        //[Required]
-        //public string Content { get; set; } = "How are you ?";
         public List<Message>? OpenChat {  get; set; }
         public bool MessageSeen { get; set; } = false;
         public DateTime SendingDate { get; set; } = DateTime.UtcNow;

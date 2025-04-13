@@ -1,5 +1,6 @@
 ﻿using BlOO.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace BlOO.Repositories
 {
@@ -30,11 +31,28 @@ namespace BlOO.Repositories
             return blooContext.notifications.FirstOrDefault(n => n.Id == id);
         }
 
+        public  int GetNumberOfUserNotificationsById(int id)
+        {
+            return blooContext.notifications.AsNoTracking().ToList().Count;
+        }
+
         public async Task<List<Notification>> GetUserNotificationsById(int id)
         {
             return await blooContext.notifications
                 .Where(n => n.UserId == id)
                 .AsNoTracking()
+                .OrderByDescending(n => n.CreationDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Notification>> GetUserNotificationsById(int id, int pageNumber, int size)
+        {
+            return await blooContext.notifications
+                .Where(n => n.UserId == id)
+                .AsNoTracking()
+                .OrderByDescending(n => n.CreationDate)
+                .Skip(pageNumber * size)
+                .Take(size)
                 .ToListAsync();
         }
 

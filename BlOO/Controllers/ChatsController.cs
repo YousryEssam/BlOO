@@ -70,6 +70,7 @@ namespace BlOO.Controllers
             }
 
             List<int> followsIDs = await followRepository.GetFollowedUsersAsync(user.Id, pageNumber, pageSize);
+
             List<ApplicationUser> users = new List<ApplicationUser>();
 
             for (int i = 0; i < followsIDs.Count; i++)

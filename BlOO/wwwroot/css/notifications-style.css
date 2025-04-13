@@ -144,3 +144,24 @@ body {
 .toast {
     background-color: var(--primary-color);
 }
+
+
+.pagination .page-link {
+    background-color: #f8f9fc;
+    color: #36507d;
+    border: 1px solid #a6b4cf;
+    margin: 0 4px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .pagination .page-link:hover {
+        background-color: #d9e2f1;
+        color: #2a4061;
+    }
+
+.pagination .page-item.active .page-link {
+    background-color: #5a7eb1;
+    border-color: #5a7eb1;
+    color: white;
+}

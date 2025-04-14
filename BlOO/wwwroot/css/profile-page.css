@@ -21,12 +21,15 @@
 /* Cover Image */
 .cover-photo {
     width: 100%;
-    height: 40vh;
+    height: 320px;
     position: relative;
     background-size: cover;
-    background-position: center;
     background-repeat: no-repeat;
+    background-position: center center;
+    /* For small screens - ensure proper scaling */
+    background-attachment: scroll;
 }
+
 
 /* Profile Image */
 .profile-photo {

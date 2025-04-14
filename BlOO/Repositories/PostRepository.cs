@@ -99,8 +99,10 @@ namespace BlOO.Repositories
                     Content = p.Content,
                     ImgUrl = p.ImgUrl,
                     LikeCount = p.LikeCount,
-                    CommentCount = p.CommentCount
+                    CommentCount = p.CommentCount,
+                    CreationDate = p.PostDate
                 })
+                .OrderByDescending(p=> p.CreationDate)
                 .ToList();
 
             return posts;

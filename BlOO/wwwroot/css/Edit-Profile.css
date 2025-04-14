@@ -1,19 +1,20 @@
 ﻿* {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-.editlayout {
-    background-color: white;
+.edit-layout {
+    display: flex;
+    flex-direction: column;
     max-width: 900px;
-    justify-items: center;
-    padding: 0.5rem;
     margin: 0.5rem auto;
+    padding: 0.5rem;
     border-radius: 20px;
+    background-color: white;
 }
 
-    .editlayout:hover, .editlayout:focus {
+    .edit-layout:hover, .edit-layout:focus {
         box-shadow: 0 0 10px 2px #6482AD;
     }
 
@@ -26,39 +27,48 @@
 }
 
 .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
     padding: 0.5rem;
     font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    justify-items: center;
-    gap: 2rem;
+    width: 100%;
 }
+
 
     .form-group label {
         flex: 1;
-        min-width: 150px;
+        min-width: 250px;
     }
 
-    .form-group input {
+    .form-group input, textarea {
         flex: 2;
-        max-width: 100%;
+        max-width: 60%;
     }
 
 .btnsubmit {
-    background-color: #6482AD;
-    border: 1px solid #E2DAD6;
-    box-shadow: 5px 5px 18px #E2DAD6;
     color: #E2DAD6;
-    max-width: 35% !important;
+    font-weight : bold;
+    border: 1px solid #E2DAD6;
+    background-color: #6482AD;
+    max-width: 30% !important;
+    box-shadow: 5px 5px 18px #E2DAD6;
 }
 
     .btnsubmit:hover {
+        color: #6482AD;
         background-color: #E2DAD6;
         border: 1px solid #6482AD;
         box-shadow: 3px 3px 5px #6482AD;
-        color: #6482AD;
     }
 
+.back-btn{
+    font-weight : bold;
+}
+.back-btn:hover {
+    background: #B8001F !important;
+}
 .btns {
     justify-content: normal;
 }

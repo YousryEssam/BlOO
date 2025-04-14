@@ -1,81 +1,63 @@
-﻿@model BlOO.ViewModels.EditProfileViewModel
+﻿@model EditProfileViewModel
 @inject UserManager<ApplicationUser> UserManager;
 @{
-    ViewData["Title"] = "EditProfile";
+    ViewData["Title"] = "Edit Profile";
     var user = await UserManager.GetUserAsync(User);
 }
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - BlOO</title>
-        <link href="~/css/Edit-Profile.css" rel="stylesheet" />
-    </head>
-    <body>
-        <div class="container">
-            <div class="row editlayout">
-                <div class="title">
-                    <h3>Edit Your Profile</h3>
-                </div>
-                <div class="col-10">
-                    <form asp-controller="User" asp-action="SaveEdit" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label asp-for="FirstName" class="control-label"></label>
-                            <input asp-for="FirstName" class="form-control" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="LastName" class="control-label"></label>
-                            <input asp-for="LastName" class="form-control" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Email" class="control-label"></label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="OldPassword" class="control-label"></label>
-                            <input asp-for="OldPassword" class="form-control" />
-                            <span asp-validation-for="OldPassword" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="NewPassword" class="control-label"></label>
-                            <input asp-for="NewPassword" class="form-control" />
-                            <span asp-validation-for="NewPassword" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ConfirmPassword" class="control-label"></label>
-                            <input asp-for="ConfirmPassword" class="form-control" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Bio" class="control-label"></label>
-                            <input asp-for="Bio" class="form-control" />
-                            <span asp-validation-for="Bio" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ProfileImage" class="control-label"></label>
-                            <input asp-for="ProfileImage" class="form-control" type="file" />
-                            <span asp-validation-for="ProfileImage" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="CoverImage" class="control-label"></label>
-                            <input asp-for="CoverImage" class="form-control" type="file" />
-                            <span asp-validation-for="CoverImage" class="text-danger"></span>
-                        </div>
-                        <div class="form-group btns">
-                            <input type="submit" value="Save" class="btn btnsubmit" />
-                            <a asp-action="Profile" asp-route-id="@user.Id" class="btn btn-outline-secondary">Back to Profile</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<link href="~/css/edit-profile.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="row edit-layout">
+        <div class="title">
+            <h3>Edit Your Profile</h3>
         </div>
+        <div class="col-12">
+            <form asp-controller="User" asp-action="SaveEdit" method="post" enctype="multipart/form-data">
+                <div class="form-group d-none">
+                    <label asp-for="ProfileId" class="control-label"></label>
+                    <input asp-for="ProfileId" class="form-control" />
+                    <span asp-validation-for="ProfileId" class="text-danger"></span>
+                </div>
 
-        <partial name="_ValidationScriptsPartial" />
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
 
-    </body>
-</html>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Bio" class="control-label"></label>
+                    <textarea asp-for="Bio" class="form-control"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ProfileImage" class="control-label"></label>
+                    <input asp-for="ProfileImage" class="form-control" type="file" />
+                    <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CoverImage" class="control-label"></label>
+                    <input asp-for="CoverImage" class="form-control" type="file" />
+                    <span asp-validation-for="CoverImage" class="text-danger"></span>
+                </div>
+
+                <div class="form-group btns">
+                    <input type="submit" value="Save" class="btn btnsubmit" />
+                    <a asp-controller="User" asp-action="Profile" asp-route-id="@user.Id" class="btn btn-outline-secondary back-btn">Back to Profile</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

@@ -1,21 +1,26 @@
 ﻿using BlOO.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlOO.Controllers
 {
     public class AccountController : Controller
     {
         public UserManager<ApplicationUser> userManager;
-        public SignInManager<ApplicationUser> signInManager;
         public RoleManager<IdentityRole<int>> roleManager;
+        private IApplicationUserRepository _userRepository;
+        public SignInManager<ApplicationUser> signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole<int>> roleManager)
+        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole<int>> roleManager ,IApplicationUserRepository applicationUserRepository )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            _userRepository = applicationUserRepository;
         }
 
 
@@ -141,6 +146,113 @@ namespace BlOO.Controllers
             return RedirectToAction("HomePage", "Post", new { id = UserFromDatabase.Id });
         }
 
+
+        [Authorize]
+        public async Task<IActionResult> UpdateAccess()
+        {
+            var userFromDb = await userManager.GetUserAsync(User);
+            if (userFromDb == null)
+            {
+                return NotFound();
+            }
+
+            UpdateAccessViewModel accountInfo = new UpdateAccessViewModel
+            {
+                ProfileId = userFromDb.Id,
+                Email = userFromDb.Email
+            };
+
+            return View(accountInfo);
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveAccountAccessUpdates(UpdateAccessViewModel accountAccessFromView)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("UpdateAccess", accountAccessFromView);
+            }
+
+            var accountFromDB = await userManager.FindByIdAsync(accountAccessFromView.ProfileId.ToString());
+            
+            if (accountFromDB == null)
+            {
+                return NotFound();
+            }
+
+            // Validate password first
+            var isCorrectPassword = await userManager.CheckPasswordAsync(accountFromDB, accountAccessFromView.OldPassword);
+
+            if (!isCorrectPassword)
+            {
+                ModelState.AddModelError("OldPassword", "The password is incorrect.");
+                return View("UpdateAccess", accountAccessFromView);
+            }
+
+            // Handle email update
+            if (accountFromDB.NormalizedEmail != accountAccessFromView.Email.ToUpper())
+            {
+                if (!_userRepository.IsAvailableEmail(accountAccessFromView.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use.");
+                    return View("UpdateAccess", accountAccessFromView);
+                }
+
+                accountFromDB.Email = accountAccessFromView.Email;
+                var emailUpdateResult = await userManager.UpdateAsync(accountFromDB);
+                if (!emailUpdateResult.Succeeded)
+                {
+                    foreach (var error in emailUpdateResult.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View("UpdateAccess", accountAccessFromView);
+                }
+            }
+
+            // Handle password update if provided
+            bool wantsToChangePassword = !string.IsNullOrEmpty(accountAccessFromView.NewPassword) ||
+                                        !string.IsNullOrEmpty(accountAccessFromView.ConfirmPassword);
+
+            if (wantsToChangePassword)
+            {
+                // Make sure both fields are provided
+                if (string.IsNullOrEmpty(accountAccessFromView.NewPassword) ||
+                    string.IsNullOrEmpty(accountAccessFromView.ConfirmPassword))
+                {
+                    ModelState.AddModelError("", "Both new password and confirmation must be provided.");
+                    return View("UpdateAccess", accountAccessFromView);
+                }
+
+                // Check if passwords match
+                if (accountAccessFromView.NewPassword != accountAccessFromView.ConfirmPassword)
+                {
+                    ModelState.AddModelError("NewPassword", "New password does not match confirm password.");
+                    ModelState.AddModelError("ConfirmPassword", "Confirm password does not match new password.");
+                    return View("UpdateAccess", accountAccessFromView);
+                }
+
+                // Try to change password
+                var changePassResult = await userManager.ChangePasswordAsync(
+                    accountFromDB,
+                    accountAccessFromView.OldPassword,
+                    accountAccessFromView.NewPassword
+                );
+
+                if (!changePassResult.Succeeded)
+                {
+                    foreach (var error in changePassResult.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View("UpdateAccess", accountAccessFromView);
+                }
+            }
+
+            // Success - redirect to profile
+            return RedirectToAction("Profile", "User", new { id = accountFromDB.Id });
+        }
 
         ///////////////////////////////// Helper Methods /////////////////////////////////////////
 

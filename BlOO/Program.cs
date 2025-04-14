@@ -3,6 +3,8 @@ using BlOO.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BlOO.Hubs;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace BlOO
 {
@@ -18,7 +20,6 @@ namespace BlOO
 
             builder.Services.AddDbContext<BlooContext>(Contextbuilder =>
             {
-
 
                 Contextbuilder.UseSqlServer(builder.Configuration.GetConnectionString("YousryCS"));
 
@@ -41,6 +42,17 @@ namespace BlOO
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IRepostRepository, RepostRepository>();
             builder.Services.AddSignalR();
+
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 15 * 1024 * 1024; // 15MB limit
+            });
+
+            builder.Services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = 15 * 1024 * 1024; // 15MB limit
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

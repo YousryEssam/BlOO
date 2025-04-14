@@ -28,6 +28,8 @@ namespace BlOO.Controllers
             this.postLikeRepository = postLikeRepository;
             this.followRepository = followRepository;
         }
+        
+        
         [Authorize]
         public async Task<IActionResult> Profile(int id)
         {
@@ -77,20 +79,22 @@ namespace BlOO.Controllers
             return View(ProfileVM);
         }
 
-        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> EditProfileAsync()
+        [Authorize]
+        public async Task<IActionResult> EditProfile()
         {
             var userFromDb = await _UserManager.GetUserAsync(User);
             if (userFromDb == null)
-                return NotFound();
-
-            var oldInfoUser = new EditProfileViewModel
             {
-                FirstName = userFromDb.FirstName,
-                LastName = userFromDb.LastName,
+                return NotFound();
+            }
+
+            EditProfileViewModel oldInfoUser = new EditProfileViewModel
+            {
                 Bio = userFromDb.Bio,
-                Email = userFromDb.Email
+                ProfileId = userFromDb.Id,
+                FirstName = userFromDb.FirstName,
+                LastName = userFromDb.LastName
             };
 
             return View(oldInfoUser);
@@ -98,43 +102,50 @@ namespace BlOO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveEdit(EditProfileViewModel UserFromEdit)
+        public async Task<IActionResult> SaveEdit(EditProfileViewModel userFromEdit)
         {
-            ViewBag.Id = _UserManager.GetUserId(User);
             if (!ModelState.IsValid)
-                return View("EditProfile", UserFromEdit);
-
-            var userFromDb = await _UserManager.FindByEmailAsync(UserFromEdit.Email);
-            if (userFromDb == null)
-                return NotFound();
-
-            userFromDb.ProfileImageUrl = await UploadImageAsync(UserFromEdit.ProfileImage, "/assets/profile-pictures/default-user.jpg");
-            userFromDb.CoverImageUrl = await UploadImageAsync(UserFromEdit.CoverImage, "/assets/profile-covers/default-cover.jpg");
-            userFromDb.FirstName = UserFromEdit.FirstName;
-            userFromDb.LastName = UserFromEdit.LastName;
-            userFromDb.Bio = UserFromEdit.Bio;
-
-            var changePass = await _UserManager.ChangePasswordAsync(userFromDb, UserFromEdit.OldPassword, UserFromEdit.NewPassword);
-            if (!changePass.Succeeded)
             {
-                foreach (var error in changePass.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-                return View("EditProfile", UserFromEdit);
+                return View("EditProfile", userFromEdit);
+            }
+
+            var userFromDb = await _UserManager.FindByIdAsync(userFromEdit.ProfileId.ToString());
+            if (userFromDb == null)
+            {
+                return NotFound();
+            }
+
+            // Update basic info
+            userFromDb.FirstName = userFromEdit.FirstName;
+            userFromDb.LastName = userFromEdit.LastName;
+            userFromDb.Bio = userFromEdit.Bio;
+
+            // Handle profile image upload if provided
+            if (userFromEdit.ProfileImage != null && userFromEdit.ProfileImage.Length > 0)
+            {
+                userFromDb.ProfileImageUrl = await UploadImageAsync(userFromEdit.ProfileImage, "/assets/profile-pictures/default-user.jpg");
+            }
+
+            // Handle cover image upload if provided
+            if (userFromEdit.CoverImage != null && userFromEdit.CoverImage.Length > 0)
+            {
+                userFromDb.CoverImageUrl = await UploadImageAsync(userFromEdit.CoverImage, "/assets/profile-covers/default-cover.jpg");
             }
 
             var result = await _UserManager.UpdateAsync(userFromDb);
             if (result.Succeeded)
             {
-                return RedirectToAction("Profile", new { id = userFromDb.Id });
+                return RedirectToAction("Profile", "User", new { id = userFromDb.Id });
             }
 
             foreach (var error in result.Errors)
+            {
                 ModelState.AddModelError("", error.Description);
+            }
 
-            return View("EditProfile", UserFromEdit);
+            return View("EditProfile", userFromEdit);
         }
+
 
         [HttpGet]
         [Authorize]
@@ -169,27 +180,47 @@ namespace BlOO.Controllers
         private async Task<string> UploadImageAsync(IFormFile imageFile, string defaultImagePath)
         {
             if (imageFile == null || imageFile.Length == 0)
+            {
                 return defaultImagePath;
+            }
 
-            if (imageFile.Length > 2 * 1024 * 1024)
+            if (imageFile.Length > 10 * 1024 * 1024) // 10MB limit
+            {
                 return defaultImagePath;
+            }
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
             var extension = Path.GetExtension(imageFile.FileName).ToLower();
             if (!allowedExtensions.Contains(extension))
-                return defaultImagePath;
-
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await imageFile.CopyToAsync(stream);
+                return defaultImagePath;
             }
 
-            return "/uploads/" + fileName;
-        }
+            try
+            {
+                var fileName = $"{Guid.NewGuid()}{extension}";
 
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                return "/uploads/" + fileName;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error uploading image: {ex.Message}");
+                return defaultImagePath;
+            }
+        }
     }
 }

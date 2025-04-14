@@ -1,0 +1,57 @@
+﻿@model UpdateAccessViewModel
+@inject UserManager<ApplicationUser> UserManager;
+@{
+    ViewData["Title"] = "Update Account Access";
+    var user = await UserManager.GetUserAsync(User);
+}
+<link href="~/css/edit-profile.css" rel="stylesheet" />
+<div class="container">
+    <div class="row edit-layout">
+        <div class="title">
+            <h3>Edit Your Profile</h3>
+        </div>
+        <div class="col-12">
+            <form asp-controller="Account" asp-action="SaveAccountAccessUpdates" method="post" enctype="multipart/form-data">
+                <div class="form-group d-none">
+                    <label asp-for="ProfileId" class="control-label"></label>
+                    <input asp-for="ProfileId" class="form-control" />
+                    <span asp-validation-for="ProfileId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="OldPassword" class="control-label"></label>
+                    <input asp-for="OldPassword" class="form-control" type="password" />
+                    <span asp-validation-for="OldPassword" class="text-danger"></span>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle me-2"></i>
+                    To keep your current password, leave both "New Password" fields empty.
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="NewPassword" class="control-label"></label>
+                    <input asp-for="NewPassword" class="form-control" />
+                    <span asp-validation-for="NewPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-group btns">
+                    <input type="submit" value="Save" class="btn btnsubmit" />
+                    <a asp-action="Profile" asp-controller="User" asp-route-id="@user.Id" class="btn btn-outline-secondary back-btn">Back to Profile</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

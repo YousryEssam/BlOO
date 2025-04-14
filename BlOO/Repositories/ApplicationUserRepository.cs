@@ -36,6 +36,11 @@ namespace BlOO.Repositories
             blooContext.applicationUsers.Add(entity);
         }
 
+        public bool IsAvailableEmail(string email)
+        {
+            return blooContext.applicationUsers.FirstOrDefault(u => u.NormalizedEmail == email.ToUpper()) == null;
+        }
+
         public void Save()
         {
             blooContext.SaveChanges();

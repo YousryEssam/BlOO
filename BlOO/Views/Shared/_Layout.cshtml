@@ -1,5 +1,6 @@
 ﻿@inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<IdentityRole<int>> RoleManager
 @inject INotificationRepository notificationRepository
 @{
     var user = await UserManager.GetUserAsync(User);
@@ -8,7 +9,8 @@
     if (int.TryParse(UserManager.GetUserId(User), out userId))
     {
         unSeenNotification = await notificationRepository.HasUnseenNotificationByUserId(userId);
-    }    
+    }
+    bool isAdminUser = user != null && await UserManager.IsInRoleAsync(user, "Admin");
 }
 
 <!DOCTYPE html>
@@ -57,13 +59,24 @@
 
                         <!-- Navbar Toggler -->
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
 
                         <!-- Collapsible Navbar -->
                         <div class="collapse navbar-collapse" id="navbarNav">
                             <ul class="navbar-nav mx-auto">
+                                @{
+                                    if (isAdminUser)
+                                    {
+                                        <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reports">
+                                            <a class="nav-link" asp-controller="Admin" asp-action="AdminPage">
+                                                <img src="~/assets/icons/browser-error-icon.png" class="nav-hover icon-img" />
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
                                 <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home">
                                     <a class="nav-link" asp-controller="Post" asp-action="HomePage">
                                         <img src="~/assets/icons/home-button-icon.svg" class="nav-hover icon-img" />

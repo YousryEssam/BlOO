@@ -16,7 +16,7 @@
 
 @* ********************************** Profile info Section begin *************************************** *@
 <div class="profile-card">    
-    <div class="cover-photo" style="background : url('@Model.CoverImageUrl');">
+    <div class="cover-photo" id="user-cover-photo" data-cover-url="@Model.CoverImageUrl">
         <img src="@Model.ProfileImageUrl" alt="Profile" class="profile-photo">
     </div>
 
@@ -138,3 +138,15 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/microsoft-signalr/signalr.min.js"></script>
 <script src="~/js/followers-system.js"></script>
+
+<script>
+    // cove image
+    document.addEventListener('DOMContentLoaded', function() {
+        const coverPhoto = document.getElementById('user-cover-photo');
+        if (coverPhoto) {
+            const imageUrl = coverPhoto.dataset.coverUrl;
+            coverPhoto.style.backgroundImage = `url('${imageUrl}')`;
+        }
+    });
+
+</script>

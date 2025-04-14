@@ -79,8 +79,6 @@ namespace BlOO.Controllers
             postReportRepository.Save();
 
             return RedirectToAction("AdminPage");
-
-
         }
 
         [Authorize(Roles = "Admin")]
@@ -92,17 +90,11 @@ namespace BlOO.Controllers
             {
                 return NotFound();
             }
-            // احذف كل لايك المرتبطة بالبوست
             postLikeRepository.DeleteLikesByPostId(postId);
-            // احذف كل التعليقات المرتبطة بالبوست
             commentRepository.DeleteByPostId(postId);
-            // 3. حذف التقارير
             postReportRepository.DeleteReportsByPostId(postId);
-
             postRepository.DeleteById(postId);
-
             postRepository.Save(); 
-
             return RedirectToAction("AdminPage", new { ReportId = ReptId });
         }
 
